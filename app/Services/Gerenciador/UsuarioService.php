@@ -10,6 +10,11 @@ use App\Models\Gerenciador\Usuario;
 use App\Repositorios\Gerenciador\Interfaces\IUsuarioRepositorio;
 use App\Services\Gerenciador\Interfaces\IUsuarioService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Http\DTO\Gerenciador\UsuarioLoginDTO;
+
+
+
 
 class UsuarioService implements IUsuarioService
 {
@@ -38,5 +43,20 @@ class UsuarioService implements IUsuarioService
 
             return $this->usuario_repositorio->criarNovo($usuario);
         });
+    }
+
+
+
+
+    public function autenticar(UsuarioLoginDTO $dados): Usuario
+    {
+        throw_unless(
+            Auth::attempt($dados->credenciais(), $dados->lembrar),
+            new \Exception('Credenciais Inválidas')
+        );
+
+
+        $usuario = Auth::user();
+        return $usuario;
     }
 }
