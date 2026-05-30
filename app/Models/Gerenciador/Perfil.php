@@ -2,7 +2,7 @@
 
 namespace App\Models\Gerenciador;
 
-use App\Models\Usuario;
+use App\Models\Gerenciador\Usuario;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;

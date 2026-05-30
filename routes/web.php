@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Gerenciador\DashboardController;
 use App\Http\Controllers\Gerenciador\UsuarioController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,4 +23,8 @@ Route::post('/usuario/incluir', [UsuarioController::class, 'incluir'])->name('ge
 // Login
 Route::get('/usuario/acessar', [UsuarioController::class, 'acessar'])->name('gerenciador.usuario.acessar');
 Route::post('/usuario/autenticar', [UsuarioController::class, 'autenticar'])->name('gerenciador.usuario.autenticar');
+
+
+//Dashboard
+Route::get('/dashboard', [DashboardController::class, 'visualizar'])->name('gerenciador.dashboard.visualizar');
 

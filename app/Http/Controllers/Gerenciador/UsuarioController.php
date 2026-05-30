@@ -43,7 +43,7 @@ class UsuarioController extends Controller
         return view(view: 'auth.login');
     }
 
-    public function auutenticar(Request $request)
+    public function autenticar(Request $request)
     {
 
         $dto = UsuarioLoginDTO::fromRequest(request: $request, bool_validar_login: true);
