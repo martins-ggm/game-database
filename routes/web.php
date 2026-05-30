@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Gerenciador\DashboardController;
+use App\Http\Controllers\Gerenciador\PerfilController;
 use App\Http\Controllers\Gerenciador\UsuarioController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,4 +28,8 @@ Route::post('/usuario/autenticar', [UsuarioController::class, 'autenticar'])->na
 
 //Dashboard
 Route::get('/dashboard', [DashboardController::class, 'visualizar'])->name('gerenciador.dashboard.visualizar');
+
+
+//Perfil
+Route::get('/perfil', [PerfilController::class, 'visualizar'])->name('gerenciador.perfil.visualizar');
 

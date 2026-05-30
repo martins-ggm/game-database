@@ -37,7 +37,7 @@
             </a>
 
             <div class="flex items-center gap-8">
-                <a href="#"
+                <a href="{{ route('gerenciador.perfil.visualizar') }}"
                     class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">PERFIL</a>
                 <a href="#"
                     class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">SAIR</a>
