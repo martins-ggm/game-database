@@ -19,31 +19,7 @@
 
 <body class="bg-[#11101A] text-white min-h-screen flex flex-col">
 
-    {{-- topbar --}}
-    <header class="border-b border-white/10">
-        <nav class="max-w-[1600px] mx-auto px-6 sm:px-12 py-5 flex items-center justify-between">
-            <div class="flex items-center gap-8">
-                <a href="{{ route('gerenciador.dashboard.visualizar') }}"
-                    class="text-sm font-bold tracking-widest uppercase hover:text-[#6B5B9E] transition">HOME</a>
-                <a href="#catalogo"
-                    class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">CATÁLOGO</a>
-                <a href="#listas"
-                    class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">LISTAS</a>
-            </div>
-
-            <a href="{{ route('gerenciador.dashboard.visualizar') }}"
-                class="text-2xl sm:text-3xl font-black tracking-widest">
-                GAME<span class="text-[#6B5B9E]">DB</span>
-            </a>
-
-            <div class="flex items-center gap-8">
-                <a href="{{ route('gerenciador.perfil.visualizar') }}"
-                    class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">PERFIL</a>
-                <a href="#"
-                    class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">SAIR</a>
-            </div>
-        </nav>
-    </header>
+    <x-navbar />
 
     <main class="flex-1">
 
@@ -77,7 +53,8 @@
                     <button type="button"
                         class="px-3 py-1 text-[10px] font-black tracking-widest uppercase bg-[#1C1B26] text-white/60 hover:bg-[#25232F] hover:text-white transition">FPS</button>
                     <button type="button"
-                        class="px-3 py-1 text-[10px] font-black tracking-widest uppercase bg-[#1C1B26] text-white/60 hover:bg-[#25232F] hover:text-white transition">EM ANDAMENTO</button>
+                        class="px-3 py-1 text-[10px] font-black tracking-widest uppercase bg-[#1C1B26] text-white/60 hover:bg-[#25232F] hover:text-white transition">EM
+                        ANDAMENTO</button>
                     <button type="button"
                         class="px-3 py-1 text-[10px] font-black tracking-widest uppercase bg-[#1C1B26] text-white/60 hover:bg-[#25232F] hover:text-white transition">COMPLETOS</button>
                 </div>

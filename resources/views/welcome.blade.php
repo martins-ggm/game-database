@@ -38,7 +38,7 @@
                     class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">NEWS</a>
                 <a href="{{ route('gerenciador.usuario.criar') }}"
                     class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">REGISTER</a>
-                       <a href="{{ route('gerenciador.usuario.acessar') }}"
+                       <a href="{{ route('gerenciador.usuario.login') }}"
                     class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">LOGIN</a>
             </div>
         </nav>

@@ -89,7 +89,7 @@
 
             <p class="text-center text-xs text-white/40 mt-6 tracking-wide">
                 Já tem conta?
-                <a href="{{ route('gerenciador.usuario.acessar') }}"
+                <a href="{{ route('gerenciador.usuario.login') }}"
                     class="text-[#6B5B9E] font-bold hover:text-[#8674B8] uppercase tracking-widest">Entrar</a>
             </p>
         </div>

@@ -12,9 +12,7 @@ use App\Services\Gerenciador\Interfaces\IUsuarioService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\DTO\Gerenciador\UsuarioLoginDTO;
-
-
-
+use Illuminate\Support\Facades\Cache;
 
 class UsuarioService implements IUsuarioService
 {
@@ -57,6 +55,34 @@ class UsuarioService implements IUsuarioService
 
 
         $usuario = Auth::user();
+        return $usuario;
+    }
+
+
+
+    public function desautenticar(): void
+    {
+
+        $usuario_id = Auth::id();
+
+        Auth::logout();
+
+        if ($usuario_id !== null) {
+
+            Cache::forget(key: 'permissoes_usuario_' . $usuario_id);
+        }
+    }
+
+
+    public function buscarPorId(int $id): Usuario
+    {
+        $usuario = $this->usuario_repositorio->buscarPorId(id: $id);
+
+        throw_unless(
+            $usuario,
+            new \Exception('Usuário não encontrado.'),
+        );
+
         return $usuario;
     }
 }

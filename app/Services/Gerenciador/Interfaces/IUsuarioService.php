@@ -15,8 +15,9 @@ interface IUsuarioService
     public function criar(UsuarioDTO $dados): Usuario;
 
     public function autenticar(UsuarioLoginDTO $dados): Usuario;
+
+    public function desautenticar(): void;
+
+   public function buscarPorId(int $id): Usuario;
+
 }
-
-
-
-

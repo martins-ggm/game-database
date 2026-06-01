@@ -12,4 +12,8 @@ interface IUsuarioRepositorio
 
 
     public function criarNovo(Usuario $usuario): Usuario;
+
+
+
+    public function buscarPorId(int $id): ?Usuario;
 }

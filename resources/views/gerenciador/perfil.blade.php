@@ -19,31 +19,8 @@
 
 <body class="bg-[#11101A] text-white min-h-screen flex flex-col">
 
-    {{-- topbar --}}
-    <header class="border-b border-white/10">
-        <nav class="max-w-[1600px] mx-auto px-6 sm:px-12 py-5 flex items-center justify-between">
-            <div class="flex items-center gap-8">
-                <a href="{{ route('gerenciador.dashboard.visualizar') }}"
-                    class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">HOME</a>
-                <a href="{{ route('gerenciador.dashboard.visualizar') }}#catalogo"
-                    class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">CATÁLOGO</a>
-                <a href="#"
-                    class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">LISTAS</a>
-            </div>
+    <x-navbar />
 
-            <a href="{{ route('gerenciador.dashboard.visualizar') }}"
-                class="text-2xl sm:text-3xl font-black tracking-widest">
-                GAME<span class="text-[#6B5B9E]">DB</span>
-            </a>
-
-            <div class="flex items-center gap-8">
-                <a href="{{ route('gerenciador.perfil.visualizar') }}"
-                    class="text-sm font-bold tracking-widest uppercase hover:text-[#6B5B9E] transition">PERFIL</a>
-                <a href="#"
-                    class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">SAIR</a>
-            </div>
-        </nav>
-    </header>
 
     <main class="flex-1">
 
@@ -60,8 +37,9 @@
                 {{-- nome + stats --}}
                 <div class="flex-1 w-full">
                     <p class="text-[10px] font-black tracking-widest uppercase text-white/40 mb-2">Jogador</p>
-                    <h1 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight uppercase leading-[0.95] mb-3">
-                        Guilherme Martins
+                    <h1
+                        class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight uppercase leading-[0.95] mb-3">
+                        {{ $usuario->name }}
                     </h1>
                     <p class="text-sm text-white/60 mb-6">square.ggm@gmail.com · Membro desde 2026</p>
 
@@ -83,7 +61,8 @@
         <section class="border-t border-white/10">
             <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-10">
                 <div class="flex items-center justify-between mb-8">
-                    <h2 class="text-xl sm:text-2xl font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-4">
+                    <h2
+                        class="text-xl sm:text-2xl font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-4">
                         Últimos jogos
                     </h2>
                     <span class="text-[10px] font-black tracking-widest uppercase text-white/40">10 mais recentes</span>
@@ -93,14 +72,16 @@
                     @for ($i = 1; $i <= 10; $i++)
                         <article
                             class="flex-shrink-0 w-56 sm:w-64 bg-[#1C1B26] hover:bg-[#25232F] transition cursor-pointer flex flex-col">
-                            <div class="aspect-video bg-[#11101A] flex items-center justify-center border-b border-white/5">
+                            <div
+                                class="aspect-video bg-[#11101A] flex items-center justify-center border-b border-white/5">
                                 <span class="text-white/15 text-xs tracking-widest uppercase">PLACEHOLDER</span>
                             </div>
                             <div class="p-4 flex-1 flex flex-col">
                                 <span
                                     class="self-start inline-block px-2 py-0.5 mb-2 text-[10px] font-black tracking-widest uppercase bg-[#6B5B9E] text-black">RPG</span>
                                 <h3 class="text-sm font-bold leading-snug">Jogo #{{ $i }}</h3>
-                                <span class="text-[10px] text-white/40 mt-auto pt-3">Registrado em 2026-05-{{ str_pad(28 - ($i - 1), 2, '0', STR_PAD_LEFT) }}</span>
+                                <span class="text-[10px] text-white/40 mt-auto pt-3">Registrado em
+                                    2026-05-{{ str_pad(28 - ($i - 1), 2, '0', STR_PAD_LEFT) }}</span>
                             </div>
                         </article>
                     @endfor
@@ -112,7 +93,8 @@
         <section class="border-t border-white/10">
             <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-10">
                 <div class="flex items-center justify-between mb-8">
-                    <h2 class="text-xl sm:text-2xl font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-4">
+                    <h2
+                        class="text-xl sm:text-2xl font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-4">
                         Últimas reviews
                     </h2>
                     <a href="#"
@@ -128,16 +110,19 @@
                             $estrelas = str_repeat('★', $nota) . str_repeat('☆', 5 - $nota);
                         @endphp
                         <article class="bg-[#1C1B26] hover:bg-[#25232F] transition p-5 flex gap-4">
-                            <div class="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-[#11101A] border border-white/5 flex items-center justify-center">
+                            <div
+                                class="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-[#11101A] border border-white/5 flex items-center justify-center">
                                 <span class="text-white/15 text-[10px] tracking-widest uppercase">CAPA</span>
                             </div>
                             <div class="flex-1 min-w-0 flex flex-col">
                                 <div class="flex items-start justify-between gap-3 mb-1">
                                     <h3 class="text-base font-bold leading-snug">Jogo Review #{{ $i }}</h3>
-                                    <span class="text-[10px] text-white/40 flex-shrink-0">2026-05-{{ str_pad(28 - ($i - 1) * 2, 2, '0', STR_PAD_LEFT) }}</span>
+                                    <span
+                                        class="text-[10px] text-white/40 flex-shrink-0">2026-05-{{ str_pad(28 - ($i - 1) * 2, 2, '0', STR_PAD_LEFT) }}</span>
                                 </div>
                                 <div class="text-[#6B5B9E] text-sm font-black tracking-widest mb-2">
-                                    {{ $estrelas }} <span class="text-white/40 text-[10px] font-bold ml-1">{{ $nota }}/5</span>
+                                    {{ $estrelas }} <span
+                                        class="text-white/40 text-[10px] font-bold ml-1">{{ $nota }}/5</span>
                                 </div>
                                 <p class="text-sm text-white/60 leading-relaxed line-clamp-2">
                                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
