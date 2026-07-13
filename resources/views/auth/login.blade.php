@@ -128,7 +128,7 @@
                         contentType: 'application/json',
                         data: JSON.stringify({
                             email: $('#email').val(),
-                            password: $('#password').val(),
+                            password: $('#passsword').val(),
                             lembrar: $('#lembrar').is(':checked')
                         }),
                         success: function(response) {
