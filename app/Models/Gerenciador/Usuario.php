@@ -17,14 +17,14 @@ class Usuario extends Authenticatable
     const DELETED_AT = 'removido_em';
 
 
-
     protected $fillable = [
 
 
         'name',
         'email',
         'password',
-        'perfil_id'
+        'perfil_id',
+        'str_url_foto_perfil',
 
 
 
@@ -54,6 +54,7 @@ class Usuario extends Authenticatable
         string $email,
         string $password,
         ?int $perfil_id = null,
+        ?string $str_url_foto_perfil = null,
 
 
 
@@ -64,6 +65,7 @@ class Usuario extends Authenticatable
         $usuario->email = $email;
         $usuario->password = $password;
         $usuario->perfil_id = $perfil_id;
+        $usuario->str_url_foto_perfil = $str_url_foto_perfil;
 
         return $usuario;
     }

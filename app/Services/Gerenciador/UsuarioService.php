@@ -34,7 +34,8 @@ class UsuarioService implements IUsuarioService
                 name: $dados->name,
                 email: $dados->email,
                 password: $dados->password,
-                perfil_id: $dados->perfil_id
+                perfil_id: $dados->perfil_id,
+                str_url_foto_perfil: '/https://images8.alphacoders.com/838/thumb-1920-838931.jpg'
 
             );
 
@@ -74,7 +75,7 @@ class UsuarioService implements IUsuarioService
     }
 
 
-    public function buscarPorId(int $id): Usuario
+    public function buscarPorId(int $id, bool $exception = false): Usuario
     {
         $usuario = $this->usuario_repositorio->buscarPorId(id: $id);
 

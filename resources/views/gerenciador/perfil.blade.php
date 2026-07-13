@@ -31,7 +31,7 @@
                 {{-- avatar --}}
                 <div
                     class="w-32 h-32 sm:w-40 sm:h-40 bg-[#1C1B26] border border-white/10 flex items-center justify-center flex-shrink-0">
-                    <span class="text-5xl sm:text-6xl font-black text-[#6B5B9E]">G</span>
+                    <img src="{{ $usuario->str_url_foto_perfil }}" alt="foto de perfil">
                 </div>
 
                 {{-- nome + stats --}}

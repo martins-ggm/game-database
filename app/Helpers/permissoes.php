@@ -17,7 +17,7 @@ if (!function_exists('possuiPermissao')) {
             key: 'permissoes_usuario_' . Auth::id(),
             ttl: 3600,
             callback: function (): array {
-                /** @var Usuario $usuario */
+
                 $usuario = Auth::user();
                 return $usuario->perfil?->permissoes->pluck('str_name')->toArray() ?? [];
             },
