@@ -43,7 +43,7 @@
                 Ações rápidas
             </h2>
             <div class="flex flex-col sm:flex-row flex-wrap gap-1">
-                <a href="#"
+                <a href="{{ route('catalogo.jogo.novo') }}"
                     class="px-6 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs hover:bg-[#8674B8] transition">
                     + Novo jogo
                 </a>
