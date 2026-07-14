@@ -15,9 +15,7 @@ class VerificarPermissao
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $rota = $request->route()->getName();
-
-        if (!possuiPermissao(str_rota: $rota)) {
+        if (!ehAdmin()) {
             abort(code: 403, message: 'Você não tem permissão para acessar esta página');
         }
 

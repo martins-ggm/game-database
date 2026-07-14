@@ -25,9 +25,7 @@ class Usuario extends Authenticatable
         'password',
         'perfil_id',
         'str_url_foto_perfil',
-
-
-
+       
 
     ];
 
@@ -35,9 +33,13 @@ class Usuario extends Authenticatable
 
         'password',
         'remember_token'
+
     ];
 
-    protected $casts = ['password' => 'hashed'];
+    protected $casts = [
+        'password' => 'hashed',
+        'admin' => 'boolean',
+    ];
 
 
 
@@ -65,7 +67,7 @@ class Usuario extends Authenticatable
         $usuario->email = $email;
         $usuario->password = $password;
         $usuario->perfil_id = $perfil_id;
-        $usuario->str_url_foto_perfil = $str_url_foto_perfil;
+        $usuario->str_url_foto_perfil;
 
         return $usuario;
     }

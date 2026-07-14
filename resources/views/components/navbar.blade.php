@@ -19,8 +19,11 @@
         </a>
 
         <div class="flex items-center gap-8">
-            <a href="{{ route('gerenciador.admin.visualizar') }}"
+            @if (ehAdmin())
+                   <a href="{{ route('gerenciador.admin.visualizar') }}"
                 class="text-sm font-bold tracking-widest uppercase {{ request()->routeIs('gerenciador.admin.visualizar') ? '' : 'text-white/60' }} hover:text-[#6B5B9E] transition">ADMIN</a>
+            @endif
+         
             <a href="{{ route('gerenciador.usuario.perfil', auth()->id()) }}"
                 class="text-sm font-bold tracking-widest uppercase {{ request()->routeIs('gerenciador.usuario.perfil') ? '' : 'text-white/60' }} hover:text-[#6B5B9E] transition">PERFIL</a>
             @auth
