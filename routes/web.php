@@ -5,6 +5,7 @@ use App\Http\Controllers\Gerenciador\AdminController;
 use App\Http\Controllers\Gerenciador\DashboardController;
 use App\Http\Controllers\Gerenciador\PerfilController;
 use App\Http\Controllers\Gerenciador\UsuarioController;
+use App\Http\Controllers\Catalogo\PlataformaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -43,5 +44,9 @@ Route::middleware('auth')->group(function () {
         // Jogo
 
         Route::get('/jogo/novo', [JogoController::class, 'novo'])->name('catalogo.jogo.novo');
+
+        // plataforma
+
+        Route::get('/plataforma/novo', [PlataformaController::class, 'novo'])->name('catalogo.plataforma.novo');
     });
 });
