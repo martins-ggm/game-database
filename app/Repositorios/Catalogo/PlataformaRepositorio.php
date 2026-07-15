@@ -4,6 +4,7 @@ namespace App\Repositorios\Catalogo;
 
 use App\Models\Catalogo\Plataforma;
 use App\Repositorios\Catalogo\Interfaces\IPlataformaRepositorio;
+use Override;
 
 class PlataformaRepositorio implements IPlataformaRepositorio
 {
@@ -18,5 +19,18 @@ class PlataformaRepositorio implements IPlataformaRepositorio
         $plataforma->save();
 
         return $plataforma;
+    }
+
+
+    public function buscarPorId(int $id): ?Plataforma
+    {
+        return $this->modelo->newQuery()->find($id);
+    }
+
+    public function remover (Plataforma $plataforma): void {
+
+        $plataforma->delete();
+
+
     }
 }

@@ -10,4 +10,6 @@ interface IPlataformaRepositorio
 
 
     public function criarNovo(Plataforma $plataforma): Plataforma;
+    public function buscarPorId(int $id): ?Plataforma;
+    public function remover (Plataforma $plataforma): void;
 }

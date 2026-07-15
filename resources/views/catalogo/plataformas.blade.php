@@ -167,6 +167,13 @@
                     .text(texto);
             }
 
+            function mostrarErroMensagem(texto) {
+                $('#mensagem')
+                    .removeClass('hidden bg-[#6B5B9E]/10 border-[#6B5B9E]/40 text-[#6B5B9E]')
+                    .addClass('bg-red-500/10 border-red-500/30 text-red-300')
+                    .text(texto);
+            }
+
             function mostrarErros(lista) {
                 $('#erros').empty();
                 lista.forEach(function (msg) {
@@ -224,6 +231,42 @@
                         } else {
                             mostrarErros([xhr.responseJSON?.message || 'Erro inesperado.']);
                         }
+                    }
+                });
+            });
+
+            // ---------- remover ----------
+            const urlRemoverBase = "{{ route('catalogo.plataforma.remover', ['id' => 'ID_PLACEHOLDER']) }}";
+
+            $('#tabela-plataformas').on('click', '[data-remover-plataforma]', function () {
+                const id = $(this).attr('data-remover-plataforma');
+                const linha = $(this).closest('tr');
+
+                if (!confirm('Remover esta plataforma?')) {
+                    return;
+                }
+
+                $('#mensagem').addClass('hidden').empty();
+
+                $.ajax({
+                    url: urlRemoverBase.replace('ID_PLACEHOLDER', id),
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    },
+                    success: function (response) {
+                        linha.remove();
+                        if ($('#tabela-plataformas tr').length === 0) {
+                            $('#tabela-plataformas').html(
+                                '<tr id="linha-vazia"><td colspan="2" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhuma plataforma cadastrada</td></tr>'
+                            );
+                        }
+                        mostrarSucesso(response.mensagem);
+                    },
+                    error: function (xhr) {
+                        mostrarErroMensagem(xhr.responseJSON?.message || 'Erro ao remover.');
                     }
                 });
             });

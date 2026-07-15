@@ -32,4 +32,14 @@ class PlataformaController extends Controller
             status: 200
         );
     }
+
+    public function remover(Request $request): JsonResponse{
+
+        $this->plataforma_service->remover(id: (int) $request->id);
+        
+        return response()->json(data: ['mensagem' => 'Removido com sucesso'], status: 200);
+
+
+
+    }
 }

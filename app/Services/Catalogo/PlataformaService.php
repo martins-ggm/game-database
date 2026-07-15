@@ -8,6 +8,7 @@ use App\Repositorios\Catalogo\Interfaces\IPlataformaRepositorio;
 use App\Services\Catalogo\Interfaces\IPlataformaService;
 use Illuminate\Support\Facades\DB;
 
+
 class PlataformaService implements IPlataformaService
 {
 
@@ -27,6 +28,16 @@ class PlataformaService implements IPlataformaService
 
 
             return $this->plataforma_repositorio->criarNovo($plataforma);
+        });
+    }
+
+
+    public function remover(int $id): void
+    {
+        $plataforma = $this->plataforma_repositorio->buscarPorId($id);
+        throw_unless($plataforma, new \Exception('Plataforma não encontrada'));
+        DB::transaction(function () use ($plataforma) {
+            $this->plataforma_repositorio->remover($plataforma);
         });
     }
 }
