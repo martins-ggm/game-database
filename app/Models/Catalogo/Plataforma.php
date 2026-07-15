@@ -22,4 +22,19 @@ class Plataforma extends Model
     {
         return $this->belongsToMany(Jogo::class, 'jogo_plataformas');
     }
+
+
+    public static function criar(
+
+        string $nome,
+
+
+
+    ): self {
+
+        $plataforma = new self();
+        $plataforma->nome = $nome;
+
+        return $plataforma;
+    }
 }

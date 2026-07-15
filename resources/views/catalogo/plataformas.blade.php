@@ -139,28 +139,95 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
-        // -------------------------------------------------------------
-        // Só o toggle visual do modal (abrir/fechar).
-        // A lógica de CRUD (buscar, incluir, alterar, remover via AJAX)
-        // será implementada aqui depois, junto com o controller/rotas.
-        // -------------------------------------------------------------
-        (function () {
-            const modal = document.getElementById('modal-plataforma');
+        $(function () {
+            const modal = $('#modal-plataforma');
 
-            document.getElementById('btn-nova-plataforma').addEventListener('click', function () {
-                document.getElementById('form-plataforma').reset();
-                document.getElementById('plataforma_id').value = '';
-                document.getElementById('modal-titulo').textContent = 'Nova Plataforma';
-                document.getElementById('erros').classList.add('hidden');
-                modal.classList.remove('hidden');
-            });
+            // ---------- helpers ----------
+            function escapar(texto) {
+                return $('<div>').text(texto ?? '').html();
+            }
 
-            document.querySelectorAll('[data-fechar-modal]').forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    modal.classList.add('hidden');
+            function abrirModalNovo() {
+                $('#form-plataforma')[0].reset();
+                $('#plataforma_id').val('');
+                $('#modal-titulo').text('Nova Plataforma');
+                $('#erros').addClass('hidden').empty();
+                modal.removeClass('hidden');
+                $('#nome').trigger('focus');
+            }
+
+            function fecharModal() {
+                modal.addClass('hidden');
+            }
+
+            function mostrarSucesso(texto) {
+                $('#mensagem')
+                    .removeClass('hidden bg-red-500/10 border-red-500/30 text-red-300')
+                    .addClass('bg-[#6B5B9E]/10 border-[#6B5B9E]/40 text-[#6B5B9E]')
+                    .text(texto);
+            }
+
+            function mostrarErros(lista) {
+                $('#erros').empty();
+                lista.forEach(function (msg) {
+                    $('#erros').append('<li>' + escapar(msg) + '</li>');
+                });
+                $('#erros').removeClass('hidden');
+            }
+
+            function adicionarLinha(plataforma) {
+                $('#linha-vazia').remove();
+                const linha = `
+                    <tr class="border-b border-white/5 hover:bg-[#25232F] transition">
+                        <td class="px-5 py-4 font-bold">${escapar(plataforma.nome)}</td>
+                        <td class="px-5 py-4 text-right whitespace-nowrap">
+                            <button type="button" data-editar-plataforma="${plataforma.id}"
+                                class="text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-[#6B5B9E] transition">Editar</button>
+                            <button type="button" data-remover-plataforma="${plataforma.id}"
+                                class="ml-4 text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-red-400 transition">Excluir</button>
+                        </td>
+                    </tr>`;
+                $('#tabela-plataformas').append(linha);
+            }
+
+            // ---------- modal (abrir / fechar) ----------
+            $('#btn-nova-plataforma').on('click', abrirModalNovo);
+            $('[data-fechar-modal]').on('click', fecharModal);
+
+            // ---------- incluir ----------
+            $('#form-plataforma').on('submit', function (e) {
+                e.preventDefault();
+                $('#erros').addClass('hidden').empty();
+                $('#mensagem').addClass('hidden').empty();
+
+                $.ajax({
+                    url: "{{ route('catalogo.plataforma.criar') }}",
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    },
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        id: $('#plataforma_id').val() || null,
+                        nome: $('#nome').val()
+                    }),
+                    success: function (response) {
+                        adicionarLinha(response.plataforma);
+                        fecharModal();
+                        mostrarSucesso(response.mensagem);
+                    },
+                    error: function (xhr) {
+                        if (xhr.status === 422) {
+                            mostrarErros(Object.values(xhr.responseJSON.errors).flat());
+                        } else {
+                            mostrarErros([xhr.responseJSON?.message || 'Erro inesperado.']);
+                        }
+                    }
                 });
             });
-        })();
+        });
     </script>
 
 </body>

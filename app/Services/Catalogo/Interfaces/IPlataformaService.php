@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Plataforma\Interfaces;
+namespace App\Services\Catalogo\Interfaces;
 
 use App\Http\DTO\Catalogo\PlataformaDTO;
 use App\Models\Catalogo\Plataforma;

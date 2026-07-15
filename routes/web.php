@@ -48,5 +48,6 @@ Route::middleware('auth')->group(function () {
         // plataforma
 
         Route::get('/plataforma/novo', [PlataformaController::class, 'novo'])->name('catalogo.plataforma.novo');
+        Route::post('/plataforma/criar', [PlataformaController::class, 'criar'])->name('catalogo.plataforma.criar');
     });
 });
