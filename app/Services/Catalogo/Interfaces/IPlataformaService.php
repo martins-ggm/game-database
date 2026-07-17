@@ -14,4 +14,5 @@ interface IPlataformaService
     public function remover(int $id): void;
     public function editar(PlataformaDTO $dados): Plataforma;
     public function buscarTodas(): Collection;
+    public function contarTodas(): int;
 }

@@ -7,7 +7,8 @@ use App\Models\Catalogo\Plataforma;
 use App\Repositorios\Catalogo\Interfaces\IPlataformaRepositorio;
 use App\Services\Catalogo\Interfaces\IPlataformaService;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Collection;   
+use Illuminate\Database\Eloquent\Collection;
+use Override;
 
 class PlataformaService implements IPlataformaService
 {
@@ -60,5 +61,12 @@ class PlataformaService implements IPlataformaService
     {
 
         return $this->plataforma_repositorio->buscarTodas();
+    }
+
+
+    
+    public function contarTodas(): int
+    {
+        return $this->plataforma_repositorio->contarTodas();
     }
 }

@@ -15,4 +15,5 @@ interface IPlataformaRepositorio
     public function remover (Plataforma $plataforma): void;
     public function editar (Plataforma $plataforma): Plataforma;
     public function buscarTodas(): Collection;
+    public function contarTodas(): int;
 }

@@ -53,4 +53,10 @@ class PlataformaRepositorio implements IPlataformaRepositorio
     {
         return $this->modelo->newQuery()->orderBy('lancamento', 'desc')->get();
     }
+
+
+    public function contarTodas(): int
+    {
+        return $this->modelo->newQuery()->count();
+    }
 }
