@@ -16,6 +16,7 @@ class PlataformaDTO
 
         public ?int $id = null,
         public ?string $nome = null,
+        public ?string $lancamento = null
 
     ) {}
 
@@ -26,7 +27,8 @@ class PlataformaDTO
         $dto = new self(
 
             id: $request->id ? (int) $request->id : null,
-            nome: $request->nome
+            nome: $request->nome,
+            lancamento: $request->lancamento
 
         );
 
@@ -46,9 +48,10 @@ class PlataformaDTO
     public function validarNovo(): void
     {
 
-        Validator::make(['nome' => $this->nome], [
+        Validator::make(['nome' => $this->nome, 'lancamento' => $this->lancamento], [
 
             'nome' => ['required', 'string', 'max:255'],
+            'lancamento' => ['required', 'date']
 
         ],)->validate();
     }
@@ -57,10 +60,11 @@ class PlataformaDTO
     public function validarAlterar(): void
     {
 
-        Validator::make(['nome' => $this->nome, 'id' => $this->id], [
+        Validator::make(['nome' => $this->nome, 'lancamento' => $this->lancamento, 'id' => $this->id], [
 
             'id' => ['required', 'integer'],
-            'nome' => ['required', 'string', 'max:255']
+            'nome' => ['required', 'string', 'max:255'],
+            'lancamento' => ['required', 'date']
 
 
 

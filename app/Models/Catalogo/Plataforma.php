@@ -16,6 +16,11 @@ class Plataforma extends Model
 
     protected $fillable = [
         'nome',
+        'lancamento'
+    ];
+
+    protected $casts = [
+        'lancamento' => 'date'
     ];
 
     public function jogos(): BelongsToMany
@@ -24,19 +29,20 @@ class Plataforma extends Model
     }
 
 
-    public static function criar(string $nome): self
+    public static function criar(string $nome, string $lancamento): self
     {
 
         $plataforma = new self();
         $plataforma->nome = $nome;
-
+        $plataforma->lancamento = $lancamento;
         return $plataforma;
     }
 
-    public function editar(string $nome): self
+    public function editar(string $nome, string $lancamento): self
     {
 
         $this->nome = $nome;
+        $this->lancamento = $lancamento;
 
         return $this;
     }

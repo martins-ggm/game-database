@@ -3,6 +3,7 @@
 namespace App\Repositorios\Catalogo\Interfaces;
 
 use App\Models\Catalogo\Plataforma;
+use Illuminate\Database\Eloquent\Collection; 
 
 interface IPlataformaRepositorio
 {
@@ -13,4 +14,5 @@ interface IPlataformaRepositorio
     public function buscarPorId(int $id): ?Plataforma;
     public function remover (Plataforma $plataforma): void;
     public function editar (Plataforma $plataforma): Plataforma;
+    public function buscarTodas(): Collection;
 }

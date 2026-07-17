@@ -7,7 +7,7 @@ use App\Models\Catalogo\Plataforma;
 use App\Repositorios\Catalogo\Interfaces\IPlataformaRepositorio;
 use App\Services\Catalogo\Interfaces\IPlataformaService;
 use Illuminate\Support\Facades\DB;
-use Override;
+use Illuminate\Database\Eloquent\Collection;   
 
 class PlataformaService implements IPlataformaService
 {
@@ -23,7 +23,7 @@ class PlataformaService implements IPlataformaService
 
         return DB::transaction(function () use ($dados) {
 
-            $plataforma = Plataforma::criar(nome: $dados->nome);
+            $plataforma = Plataforma::criar(nome: $dados->nome, lancamento: $dados->lancamento);
 
 
 
@@ -44,17 +44,21 @@ class PlataformaService implements IPlataformaService
 
     public function editar(PlataformaDTO $dados): Plataforma
     {
-        
-       $plataforma = $this->plataforma_repositorio->buscarPorId($dados->id);
 
-       throw_unless($plataforma, new \Exception('Plataforma não encontrada'));
+        $plataforma = $this->plataforma_repositorio->buscarPorId($dados->id);
 
-       return DB::transaction(function () use ($plataforma, $dados) {
-           $plataforma->editar(nome: $dados->nome);
+        throw_unless($plataforma, new \Exception('Plataforma não encontrada'));
 
-           return $this->plataforma_repositorio->editar($plataforma);
-       });
+        return DB::transaction(function () use ($plataforma, $dados) {
+            $plataforma->editar(nome: $dados->nome, lancamento: $dados->lancamento);
 
+            return $this->plataforma_repositorio->editar($plataforma);
+        });
+    }
 
+    public function buscarTodas(): Collection
+    {
+
+        return $this->plataforma_repositorio->buscarTodas();
     }
 }

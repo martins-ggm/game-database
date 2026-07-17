@@ -53,6 +53,7 @@
                 <thead>
                     <tr class="border-b border-white/10 text-left">
                         <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40">Nome</th>
+                        <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40">Lançamento</th>
                         <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40 text-right">Ações</th>
                     </tr>
                 </thead>
@@ -60,8 +61,10 @@
                     @forelse ($plataformas ?? [] as $plataforma)
                         <tr class="border-b border-white/5 hover:bg-[#25232F] transition">
                             <td class="px-5 py-4 font-bold">{{ $plataforma->nome }}</td>
+                            <td class="px-5 py-4 text-white/70">{{ $plataforma->lancamento?->format('d/m/Y') ?? '—' }}</td>
                             <td class="px-5 py-4 text-right whitespace-nowrap">
                                 <button type="button" data-editar-plataforma="{{ $plataforma->id }}"
+                                    data-lancamento="{{ $plataforma->lancamento?->format('Y-m-d') }}"
                                     class="text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-[#6B5B9E] transition">
                                     Editar
                                 </button>
@@ -73,7 +76,7 @@
                         </tr>
                     @empty
                         <tr id="linha-vazia">
-                            <td colspan="2" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">
+                            <td colspan="3" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">
                                 Nenhuma plataforma cadastrada
                             </td>
                         </tr>
@@ -120,6 +123,12 @@
                     <label for="nome" class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Nome</label>
                     <input type="text" id="nome" name="nome" placeholder="Nome da plataforma"
                         class="w-full px-4 py-3 bg-[#11101A] border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#6B5B9E] transition">
+                </div>
+
+                <div>
+                    <label for="lancamento" class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Data de lançamento</label>
+                    <input type="date" id="lancamento" name="lancamento"
+                        class="w-full px-4 py-3 bg-[#11101A] border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#6B5B9E] transition [color-scheme:dark]">
                 </div>
 
                 {{-- ações do modal --}}
@@ -182,13 +191,20 @@
                 $('#erros').removeClass('hidden');
             }
 
+            function formatarData(iso) {
+                if (!iso) return '—';
+                const [ano, mes, dia] = iso.split('-');
+                return `${dia}/${mes}/${ano}`;
+            }
+
             function adicionarLinha(plataforma) {
                 $('#linha-vazia').remove();
                 const linha = `
                     <tr class="border-b border-white/5 hover:bg-[#25232F] transition">
                         <td class="px-5 py-4 font-bold">${escapar(plataforma.nome)}</td>
+                        <td class="px-5 py-4 text-white/70">${formatarData(plataforma.lancamento)}</td>
                         <td class="px-5 py-4 text-right whitespace-nowrap">
-                            <button type="button" data-editar-plataforma="${plataforma.id}"
+                            <button type="button" data-editar-plataforma="${plataforma.id}" data-lancamento="${plataforma.lancamento || ''}"
                                 class="text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-[#6B5B9E] transition">Editar</button>
                             <button type="button" data-remover-plataforma="${plataforma.id}"
                                 class="ml-4 text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-red-400 transition">Excluir</button>
@@ -197,18 +213,50 @@
                 $('#tabela-plataformas').append(linha);
             }
 
+            function atualizarLinha(plataforma) {
+                const botao = $('#tabela-plataformas').find('[data-editar-plataforma="' + plataforma.id + '"]');
+                const linha = botao.closest('tr');
+                linha.find('td').eq(0).text(plataforma.nome);
+                linha.find('td').eq(1).text(formatarData(plataforma.lancamento));
+                botao.attr('data-lancamento', plataforma.lancamento || '');
+            }
+
             // ---------- modal (abrir / fechar) ----------
             $('#btn-nova-plataforma').on('click', abrirModalNovo);
             $('[data-fechar-modal]').on('click', fecharModal);
 
-            // ---------- incluir ----------
+            // ---------- abrir modal em modo edição ----------
+            $('#tabela-plataformas').on('click', '[data-editar-plataforma]', function () {
+                const id = $(this).attr('data-editar-plataforma');
+                const nome = $(this).closest('tr').find('td').eq(0).text().trim();
+                const dataLancamento = $(this).attr('data-lancamento') || '';
+
+                $('#plataforma_id').val(id);
+                $('#nome').val(nome);
+                $('#lancamento').val(dataLancamento);
+                $('#modal-titulo').text('Editar Plataforma');
+                $('#erros').addClass('hidden').empty();
+                $('#mensagem').addClass('hidden').empty();
+                modal.removeClass('hidden');
+                $('#nome').trigger('focus');
+            });
+
+            // ---------- incluir / editar ----------
+            const urlEditarBase = "{{ route('catalogo.plataforma.editar', ['id' => 'ID_PLACEHOLDER']) }}";
+
             $('#form-plataforma').on('submit', function (e) {
                 e.preventDefault();
                 $('#erros').addClass('hidden').empty();
                 $('#mensagem').addClass('hidden').empty();
 
+                const id = $('#plataforma_id').val();
+
+                const url = id
+                    ? urlEditarBase.replace('ID_PLACEHOLDER', id)     // tem id → editar
+                    : "{{ route('catalogo.plataforma.criar') }}";     // sem id → criar
+
                 $.ajax({
-                    url: "{{ route('catalogo.plataforma.criar') }}",
+                    url: url,
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
@@ -217,11 +265,16 @@
                     },
                     contentType: 'application/json',
                     data: JSON.stringify({
-                        id: $('#plataforma_id').val() || null,
-                        nome: $('#nome').val()
+                        id: id || null,
+                        nome: $('#nome').val(),
+                        lancamento: $('#lancamento').val() || null
                     }),
                     success: function (response) {
-                        adicionarLinha(response.plataforma);
+                        if (id) {
+                            atualizarLinha(response.plataforma);
+                        } else {
+                            adicionarLinha(response.plataforma);
+                        }
                         fecharModal();
                         mostrarSucesso(response.mensagem);
                     },
@@ -260,7 +313,7 @@
                         linha.remove();
                         if ($('#tabela-plataformas tr').length === 0) {
                             $('#tabela-plataformas').html(
-                                '<tr id="linha-vazia"><td colspan="2" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhuma plataforma cadastrada</td></tr>'
+                                '<tr id="linha-vazia"><td colspan="3" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhuma plataforma cadastrada</td></tr>'
                             );
                         }
                         mostrarSucesso(response.mensagem);

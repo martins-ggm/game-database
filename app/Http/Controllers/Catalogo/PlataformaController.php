@@ -18,7 +18,10 @@ class PlataformaController extends Controller
 
     public function novo(): View
     {
-        return View(view: 'catalogo.plataformas');
+
+        $plataformas = $this->plataforma_service->buscarTodas();
+
+        return View(view: 'catalogo.plataformas', data: compact('plataformas'));
     }
 
     public function criar(Request $request): JsonResponse

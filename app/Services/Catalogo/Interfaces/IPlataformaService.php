@@ -4,6 +4,7 @@ namespace App\Services\Catalogo\Interfaces;
 
 use App\Http\DTO\Catalogo\PlataformaDTO;
 use App\Models\Catalogo\Plataforma;
+use Illuminate\Database\Eloquent\Collection;
 
 interface IPlataformaService
 {
@@ -12,4 +13,5 @@ interface IPlataformaService
     public function criar(PlataformaDTO $dados): Plataforma;
     public function remover(int $id): void;
     public function editar(PlataformaDTO $dados): Plataforma;
+    public function buscarTodas(): Collection;
 }
