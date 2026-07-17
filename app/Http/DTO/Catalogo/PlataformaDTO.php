@@ -25,18 +25,17 @@ class PlataformaDTO
 
         $dto = new self(
 
-            id: $request->id,
+            id: $request->id ? (int) $request->id : null,
             nome: $request->nome
-
-
-
 
         );
 
         if ($bool_validar_novo) {
 
-
             $dto->validarNovo();
+        } else {
+
+            $dto->validarAlterar();
         }
 
         return $dto;
@@ -52,5 +51,19 @@ class PlataformaDTO
             'nome' => ['required', 'string', 'max:255'],
 
         ],)->validate();
+    }
+
+
+    public function validarAlterar(): void
+    {
+
+        Validator::make(['nome' => $this->nome, 'id' => $this->id], [
+
+            'id' => ['required', 'integer'],
+            'nome' => ['required', 'string', 'max:255']
+
+
+
+        ])->validate();
     }
 }

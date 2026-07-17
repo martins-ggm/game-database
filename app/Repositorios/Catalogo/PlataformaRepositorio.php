@@ -27,10 +27,23 @@ class PlataformaRepositorio implements IPlataformaRepositorio
         return $this->modelo->newQuery()->find($id);
     }
 
-    public function remover (Plataforma $plataforma): void {
+    public function remover(Plataforma $plataforma): void
+    {
 
         $plataforma->delete();
+    }
 
 
+    public function editar(Plataforma $plataforma): Plataforma
+    {
+
+
+        throw_if(
+            $this->modelo->newQuery()->where('nome', $plataforma->nome)->where('id', '!=', $plataforma->id)->exists(),
+            new \Exception('Já Existe uma Plataforma com o nome informado!')
+        );
+
+        $plataforma->save();
+        return $plataforma;
     }
 }

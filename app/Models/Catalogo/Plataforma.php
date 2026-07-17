@@ -24,17 +24,20 @@ class Plataforma extends Model
     }
 
 
-    public static function criar(
-
-        string $nome,
-
-
-
-    ): self {
+    public static function criar(string $nome): self
+    {
 
         $plataforma = new self();
         $plataforma->nome = $nome;
 
         return $plataforma;
+    }
+
+    public function editar(string $nome): self
+    {
+
+        $this->nome = $nome;
+
+        return $this;
     }
 }

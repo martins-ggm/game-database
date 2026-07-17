@@ -33,13 +33,20 @@ class PlataformaController extends Controller
         );
     }
 
-    public function remover(Request $request): JsonResponse{
+    public function remover(int $id): JsonResponse
+    {
 
-        $this->plataforma_service->remover(id: (int) $request->id);
-        
+        $this->plataforma_service->remover(id: $id);
+
         return response()->json(data: ['mensagem' => 'Removido com sucesso'], status: 200);
+    }
 
+    public function editar(Request $request): JsonResponse
+    {
 
+        $dto = PlataformaDTO::fromRequest(request: $request, bool_validar_novo: false);
+        $plataforma = $this->plataforma_service->editar(dados: $dto);
 
+        return response()->json(data: ['mensagem' => 'Alterado com sucesso!', 'plataforma' => PlataformaResource::criar($plataforma)], status: 200);
     }
 }

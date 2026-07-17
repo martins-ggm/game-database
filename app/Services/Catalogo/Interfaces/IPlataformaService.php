@@ -11,4 +11,5 @@ interface IPlataformaService
 
     public function criar(PlataformaDTO $dados): Plataforma;
     public function remover(int $id): void;
+    public function editar(PlataformaDTO $dados): Plataforma;
 }
