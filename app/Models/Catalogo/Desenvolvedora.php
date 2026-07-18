@@ -22,4 +22,13 @@ class Desenvolvedora extends Model
     {
         return $this->hasMany(Jogo::class);
     }
+
+
+    public static function criar(String $nome): self
+    {
+        $desenvolvedora = new self();
+        $desenvolvedora->nome = $nome;
+
+        return $desenvolvedora;
+    }
 }

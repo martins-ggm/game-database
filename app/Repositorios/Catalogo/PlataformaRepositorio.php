@@ -4,7 +4,6 @@ namespace App\Repositorios\Catalogo;
 
 use App\Models\Catalogo\Plataforma;
 use App\Repositorios\Catalogo\Interfaces\IPlataformaRepositorio;
-use Override;
 use Illuminate\Database\Eloquent\Collection;  
 
 class PlataformaRepositorio implements IPlataformaRepositorio

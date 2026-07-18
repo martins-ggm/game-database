@@ -8,7 +8,6 @@ use App\Repositorios\Catalogo\Interfaces\IPlataformaRepositorio;
 use App\Services\Catalogo\Interfaces\IPlataformaService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Collection;
-use Override;
 
 class PlataformaService implements IPlataformaService
 {

@@ -53,11 +53,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/plataforma/criar', [PlataformaController::class, 'criar'])->name('catalogo.plataforma.criar');
         Route::post('/plataforma/remover/{id}', [PlataformaController::class, 'remover'])->name('catalogo.plataforma.remover');
         Route::post('/plataforma/editar/{id}', [PlataformaController::class, 'editar'])->name('catalogo.plataforma.editar');
-        
+
         // Desenvolvedora
 
         Route::get('/desenvolvedora/novo', [DesenvolvedoraController::class, 'novo'])->name('catalogo.desenvolvedora.novo');
-
-
+        Route::post('/desenvolvedora;criar', [DesenvolvedoraController::class, 'criar'])->name('catalogo.desenvolvedora.criar');
     });
 });

@@ -66,8 +66,6 @@ class PlataformaDTO
             'nome' => ['required', 'string', 'max:255'],
             'lancamento' => ['required', 'date']
 
-
-
         ])->validate();
     }
 }
