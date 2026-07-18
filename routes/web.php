@@ -60,7 +60,5 @@ Route::middleware('auth')->group(function () {
         Route::post('/desenvolvedora/criar', [DesenvolvedoraController::class, 'criar'])->name('catalogo.desenvolvedora.criar');
         Route::post('/desenvolvedora/remover/{id}', [DesenvolvedoraController::class, 'remover'])->name('catalogo.desenvolvedora.remover');
         Route::post('/desenvolvedora/editar/{id}', [DesenvolvedoraController::class, 'editar'])->name('catalogo.desenvolvedora.editar');
-        
-
     });
 });

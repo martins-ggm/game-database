@@ -28,8 +28,9 @@ class DesenvolvedoraDTO
 
         if ($validarNovo) {
 
-         $dto->validarNovo();
-
+            $dto->validarNovo();
+        } else {
+            $dto->validarEditar();
         }
 
         return $dto;
@@ -38,6 +39,18 @@ class DesenvolvedoraDTO
     public function validarNovo(): void
     {
 
-        Validator::make(['nome' => $this->nome], ['nome' => ['required', 'string', 'max:255']])->validate();
+        Validator::make(
+            ['nome' => $this->nome],
+            ['nome' => ['required', 'string', 'max:255']]
+        )->validate();
+    }
+
+    public function validarEditar(): void
+    {
+
+        Validator::make(
+            ['id' => $this->id, 'nome' => $this->nome],
+            ['id' => ['required', 'integer'], 'nome' => ['required', 'string', 'max:255']]
+        );
     }
 }

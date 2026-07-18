@@ -6,7 +6,7 @@ use App\Models\Catalogo\Desenvolvedora;
 use App\Models\Catalogo\Plataforma;
 use App\Repositorios\Catalogo\Interfaces\IDesenvolvedoraRepositorio;
 use Illuminate\Database\Eloquent\Collection;
-
+use Override;
 
 class DesenvolvedoraRepositorio implements IDesenvolvedoraRepositorio
 {
@@ -34,19 +34,26 @@ class DesenvolvedoraRepositorio implements IDesenvolvedoraRepositorio
         return $this->modelo->newQuery()->orderBy('nome', 'desc')->get();
     }
 
-   
+
     public function buscarPorId(int $id): Desenvolvedora
     {
-        
-    return $this->modelo->newQuery()->find($id);
 
+        return $this->modelo->newQuery()->find($id);
     }
 
 
     public function remover(Desenvolvedora $desenvolvedora): void
     {
-        
-        $desenvolvedora->delete();
 
+        $desenvolvedora->delete();
+    }
+
+    public function editar(Desenvolvedora $desenvolvedora): Desenvolvedora
+    {
+
+        throw_if($this->modelo->newQuery()->where('nome', $desenvolvedora->nome)->where('id', '!=', $desenvolvedora->id)->exists(), new \Exception('Já existe uma desenvolvedora com o nome informado'));
+
+        $desenvolvedora->save();
+        return $desenvolvedora;
     }
 }

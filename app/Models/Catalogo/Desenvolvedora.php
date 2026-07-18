@@ -31,4 +31,12 @@ class Desenvolvedora extends Model
 
         return $desenvolvedora;
     }
+
+    public function editar(String $nome): self
+    {
+
+        $this->nome = $nome;
+
+        return $this;
+    }
 }

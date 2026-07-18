@@ -49,4 +49,21 @@ class DesenvolvedoraService implements IDesenvolvedoraService
         });
 
     }
+
+  
+    public function editar(DesenvolvedoraDTO $dados): Desenvolvedora
+    {
+        
+            $desenvolvedora = $this->desenvolvedoraRepositorio->buscarPorId($dados->id);
+            throw_if(!$desenvolvedora, new \Exception('Desenvolvedora não encontrada'));
+
+          return DB::transaction(function () use ($desenvolvedora, $dados) {
+
+            $desenvolvedora->editar(nome: $dados->nome);
+
+            return $this->desenvolvedoraRepositorio->editar($desenvolvedora);
+
+            });
+
+    }
 }

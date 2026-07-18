@@ -146,6 +146,44 @@
         </div>
     </div>
 
+    {{-- ============ MODAL de confirmação de remoção ============ --}}
+    <div id="modal-remover" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+        {{-- backdrop --}}
+        <div class="absolute inset-0 bg-black/70" data-fechar-remocao></div>
+
+        {{-- caixa --}}
+        <div class="relative w-full max-w-sm bg-[#1C1B26] border border-white/10">
+
+            {{-- header --}}
+            <div class="flex items-center justify-between px-6 py-5 border-b border-white/10">
+                <h2 class="text-lg font-black tracking-widest uppercase border-l-4 border-red-400 pl-3">
+                    Remover
+                </h2>
+                <button type="button" data-fechar-remocao
+                    class="text-white/40 hover:text-white text-2xl leading-none">&times;</button>
+            </div>
+
+            {{-- corpo --}}
+            <div class="p-6 space-y-1">
+                <p class="text-sm text-white/70">Tem certeza que deseja remover</p>
+                <p id="nome-remocao" class="text-base font-black tracking-wide text-white break-words"></p>
+                <p class="text-[10px] text-white/40 uppercase tracking-widest pt-3">Esta ação não pode ser desfeita.</p>
+            </div>
+
+            {{-- ações --}}
+            <div class="flex flex-col sm:flex-row gap-3 sm:justify-end px-6 pb-6">
+                <button type="button" data-fechar-remocao
+                    class="px-6 py-3 border border-white/30 text-white font-black tracking-widest uppercase text-xs hover:border-white/60 transition">
+                    Cancelar
+                </button>
+                <button type="button" id="btn-confirmar-remocao"
+                    class="px-6 py-3 bg-red-500 text-black font-black tracking-widest uppercase text-xs hover:bg-red-400 transition">
+                    Remover
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
         $(function () {
@@ -290,16 +328,36 @@
 
             // ---------- remover ----------
             const urlRemoverBase = "{{ route('catalogo.plataforma.remover', ['id' => 'ID_PLACEHOLDER']) }}";
+            const modalRemover = $('#modal-remover');
+            let removerId = null;      // guarda quem está sendo removido
+            let removerLinha = null;   // guarda a <tr> pra apagar depois
 
+            function fecharRemocao() {
+                modalRemover.addClass('hidden');
+                removerId = null;
+                removerLinha = null;
+            }
+
+            // clicar em "Excluir" → abre o modal de confirmação (não remove ainda)
             $('#tabela-plataformas').on('click', '[data-remover-plataforma]', function () {
-                const id = $(this).attr('data-remover-plataforma');
-                const linha = $(this).closest('tr');
+                removerId = $(this).attr('data-remover-plataforma');
+                removerLinha = $(this).closest('tr');
+                const nome = removerLinha.find('td').eq(0).text().trim();
 
-                if (!confirm('Remover esta plataforma?')) {
-                    return;
-                }
-
+                $('#nome-remocao').text(nome);
                 $('#mensagem').addClass('hidden').empty();
+                modalRemover.removeClass('hidden');
+            });
+
+            // cancelar / X / backdrop
+            $('[data-fechar-remocao]').on('click', fecharRemocao);
+
+            // confirmar → aí sim manda o AJAX
+            $('#btn-confirmar-remocao').on('click', function () {
+                if (!removerId) return;
+
+                const id = removerId;         // cópia local, o modal pode fechar antes do AJAX voltar
+                const linha = removerLinha;
 
                 $.ajax({
                     url: urlRemoverBase.replace('ID_PLACEHOLDER', id),
@@ -316,9 +374,11 @@
                                 '<tr id="linha-vazia"><td colspan="3" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhuma plataforma cadastrada</td></tr>'
                             );
                         }
+                        fecharRemocao();
                         mostrarSucesso(response.mensagem);
                     },
                     error: function (xhr) {
+                        fecharRemocao();
                         mostrarErroMensagem(xhr.responseJSON?.message || 'Erro ao remover.');
                     }
                 });

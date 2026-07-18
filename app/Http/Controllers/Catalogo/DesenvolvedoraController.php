@@ -45,4 +45,14 @@ class DesenvolvedoraController extends Controller
 
         return response()->json(['mensagem' => 'Removido com sucesso!'], status: 200);
     }
+
+    public function Editar(Request $request): JsonResponse
+    {
+
+        $dto = DesenvolvedoraDTO::fromRequest($request, false);
+
+        $desenvolvedora = $this->desenvolvedoraService->editar($dto);
+
+        return Response()->json(['mensagem' => 'Desenvolvedora atualizada com sucesso!', 'desenvolvedora' => DesenvolvedoraResource::criar($desenvolvedora)],  status: 200);
+    }
 }

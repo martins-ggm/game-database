@@ -37,7 +37,7 @@ class PlataformaDTO
             $dto->validarNovo();
         } else {
 
-            $dto->validarAlterar();
+            $dto->validarEditar();
         }
 
         return $dto;
@@ -57,7 +57,7 @@ class PlataformaDTO
     }
 
 
-    public function validarAlterar(): void
+    public function validarEditar(): void
     {
 
         Validator::make(['nome' => $this->nome, 'lancamento' => $this->lancamento, 'id' => $this->id], [

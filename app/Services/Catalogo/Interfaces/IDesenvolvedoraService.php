@@ -15,4 +15,7 @@ interface IDesenvolvedoraService
    public function remover(int $id): void;
 
    public function buscarTodas(): Collection;
+
+   public function editar(DesenvolvedoraDTO $dados): Desenvolvedora;
+   
 }
