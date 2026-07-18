@@ -47,7 +47,7 @@
                     class="px-6 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs hover:bg-[#8674B8] transition">
                     + Novo jogo
                 </a>
-                <a href="#"
+                <a href="{{ Route('catalogo.desenvolvedora.novo') }}"
                     class="px-6 py-3 border border-white/30 text-white font-black tracking-widest uppercase text-xs hover:border-[#6B5B9E] hover:text-[#6B5B9E] transition">
                     + Desenvolvedora
                 </a>
