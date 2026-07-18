@@ -62,11 +62,19 @@
                     <div class="flex items-center justify-between mb-2">
                         <label for="password"
                             class="block text-[10px] font-black uppercase tracking-widest text-white/60">Senha</label>
-                        <a href="#"
-                            class="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-[#6B5B9E] transition">Esqueci</a>
+                       
                     </div>
-                    <input type="password" id="password" name="password" placeholder="Sua senha"
-                        class="w-full px-4 py-3 bg-[#11101A] border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#6B5B9E] transition">
+                    <div class="relative">
+                        <input type="password" id="password" name="password" placeholder="Sua senha"
+                            class="w-full px-4 py-3 pr-20 bg-[#11101A] border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#6B5B9E] transition">
+                        <button type="button" id="toggle-senha"
+                            class="absolute inset-y-0 right-0 flex items-center px-4 text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-[#6B5B9E] transition">
+                            Mostrar
+                        </button>
+                      
+                    </div>
+                       <a href="#"
+                            class="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-[#6B5B9E] transition">Esqueci</a>
                 </div>
 
                 <label class="flex items-center gap-2 cursor-pointer select-none">
@@ -108,6 +116,13 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
         $(function() {
+
+            $('#toggle-senha').on('click', function() {
+                const campo = $('#password');
+                const oculto = campo.attr('type') === 'password';
+                campo.attr('type', oculto ? 'text' : 'password');
+                $(this).text(oculto ? 'Ocultar' : 'Mostrar');
+            });
 
             $('#form-login').on('submit', function(e) {
                     e.preventDefault();

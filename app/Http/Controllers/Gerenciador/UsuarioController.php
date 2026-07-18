@@ -41,7 +41,6 @@ class UsuarioController extends Controller
     public function login(): View
     {
 
-
         return view(view: 'auth.login');
     }
 

@@ -16,10 +16,34 @@ class Plataforma extends Model
 
     protected $fillable = [
         'nome',
+        'lancamento'
+    ];
+
+    protected $casts = [
+        'lancamento' => 'date'
     ];
 
     public function jogos(): BelongsToMany
     {
         return $this->belongsToMany(Jogo::class, 'jogo_plataformas');
+    }
+
+
+    public static function criar(string $nome, string $lancamento): self
+    {
+
+        $plataforma = new self();
+        $plataforma->nome = $nome;
+        $plataforma->lancamento = $lancamento;
+        return $plataforma;
+    }
+
+    public function editar(string $nome, string $lancamento): self
+    {
+
+        $this->nome = $nome;
+        $this->lancamento = $lancamento;
+
+        return $this;
     }
 }

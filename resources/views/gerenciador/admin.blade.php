@@ -43,7 +43,7 @@
                 Ações rápidas
             </h2>
             <div class="flex flex-col sm:flex-row flex-wrap gap-1">
-                <a href="#"
+                <a href="{{ route('catalogo.jogo.novo') }}"
                     class="px-6 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs hover:bg-[#8674B8] transition">
                     + Novo jogo
                 </a>
@@ -51,7 +51,7 @@
                     class="px-6 py-3 border border-white/30 text-white font-black tracking-widest uppercase text-xs hover:border-[#6B5B9E] hover:text-[#6B5B9E] transition">
                     + Desenvolvedora
                 </a>
-                <a href="#"
+                <a href="{{ Route('catalogo.plataforma.novo') }}"
                     class="px-6 py-3 border border-white/30 text-white font-black tracking-widest uppercase text-xs hover:border-[#6B5B9E] hover:text-[#6B5B9E] transition">
                     + Plataforma
                 </a>
@@ -74,17 +74,36 @@
 
                     @php
                         $modulos = [
-                            ['titulo' => 'Jogos', 'total' => 42, 'descricao' => 'Cadastre títulos, edite metadados, vincule a plataformas e desenvolvedoras.'],
-                            ['titulo' => 'Desenvolvedoras', 'total' => 12, 'descricao' => 'Mantenha o catálogo de estúdios e suas informações públicas.'],
-                            ['titulo' => 'Plataformas', 'total' => 8, 'descricao' => 'Consoles, PC, handhelds — todos os destinos onde um jogo roda.'],
-                            ['titulo' => 'Gêneros', 'total' => 15, 'descricao' => 'Categorias usadas para filtrar e organizar o catálogo principal.'],
+                            [
+                                'titulo' => 'Jogos',
+                                'total' => 42,
+                                'descricao' =>
+                                    'Cadastre títulos, edite metadados, vincule a plataformas e desenvolvedoras.',
+                            ],
+                            [
+                                'titulo' => 'Desenvolvedoras',
+                                'total' => 12,
+                                'descricao' => 'Mantenha o catálogo de estúdios e suas informações públicas.',
+                            ],
+                            [
+                                'titulo' => 'Plataformas',
+                                'total' => $totalPlataformas,
+                                'descricao' => 'Consoles, PC, handhelds — todos os destinos onde um jogo roda.',
+                            ],
+                            [
+                                'titulo' => 'Gêneros',
+                                'total' => 15,
+                                'descricao' => 'Categorias usadas para filtrar e organizar o catálogo principal.',
+                            ],
                         ];
                     @endphp
 
                     @foreach ($modulos as $modulo)
                         <article class="bg-[#1C1B26] hover:bg-[#25232F] transition flex flex-col">
-                            <div class="aspect-video bg-[#11101A] border-b border-white/5 flex items-center justify-center">
-                                <span class="text-5xl sm:text-6xl font-black text-[#6B5B9E]">{{ $modulo['total'] }}</span>
+                            <div
+                                class="aspect-video bg-[#11101A] border-b border-white/5 flex items-center justify-center">
+                                <span
+                                    class="text-5xl sm:text-6xl font-black text-[#6B5B9E]">{{ $modulo['total'] }}</span>
                             </div>
                             <div class="p-5 flex-1 flex flex-col gap-3">
                                 <h3 class="text-sm font-black tracking-widest uppercase">{{ $modulo['titulo'] }}</h3>
@@ -93,7 +112,8 @@
                                     <a href="#"
                                         class="text-[10px] font-black tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">Gerenciar</a>
                                     <a href="#"
-                                        class="text-[10px] font-black tracking-widest uppercase text-[#6B5B9E] hover:text-[#8674B8] transition">+ Novo</a>
+                                        class="text-[10px] font-black tracking-widest uppercase text-[#6B5B9E] hover:text-[#8674B8] transition">+
+                                        Novo</a>
                                 </div>
                             </div>
                         </article>
@@ -107,7 +127,8 @@
         <section class="border-t border-white/10">
             <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-10">
                 <div class="flex items-center justify-between mb-8">
-                    <h2 class="text-xl sm:text-2xl font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-4">
+                    <h2
+                        class="text-xl sm:text-2xl font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-4">
                         Atividade recente
                     </h2>
                     <a href="#"
@@ -117,17 +138,43 @@
 
                 @php
                     $atividade = [
-                        ['tipo' => 'Jogo', 'nome' => 'Persona 5 Royal', 'acao' => 'cadastrado', 'data' => '2026-05-28 14:32'],
-                        ['tipo' => 'Plataforma', 'nome' => 'Nintendo Switch 2', 'acao' => 'cadastrada', 'data' => '2026-05-27 09:15'],
-                        ['tipo' => 'Desenvolvedora', 'nome' => 'Atlus', 'acao' => 'atualizada', 'data' => '2026-05-26 18:47'],
-                        ['tipo' => 'Jogo', 'nome' => 'Hollow Knight: Silksong', 'acao' => 'cadastrado', 'data' => '2026-05-26 11:03'],
-                        ['tipo' => 'Gênero', 'nome' => 'Metroidvania', 'acao' => 'cadastrado', 'data' => '2026-05-25 22:18'],
+                        [
+                            'tipo' => 'Jogo',
+                            'nome' => 'Persona 5 Royal',
+                            'acao' => 'cadastrado',
+                            'data' => '2026-05-28 14:32',
+                        ],
+                        [
+                            'tipo' => 'Plataforma',
+                            'nome' => 'Nintendo Switch 2',
+                            'acao' => 'cadastrada',
+                            'data' => '2026-05-27 09:15',
+                        ],
+                        [
+                            'tipo' => 'Desenvolvedora',
+                            'nome' => 'Atlus',
+                            'acao' => 'atualizada',
+                            'data' => '2026-05-26 18:47',
+                        ],
+                        [
+                            'tipo' => 'Jogo',
+                            'nome' => 'Hollow Knight: Silksong',
+                            'acao' => 'cadastrado',
+                            'data' => '2026-05-26 11:03',
+                        ],
+                        [
+                            'tipo' => 'Gênero',
+                            'nome' => 'Metroidvania',
+                            'acao' => 'cadastrado',
+                            'data' => '2026-05-25 22:18',
+                        ],
                     ];
                 @endphp
 
                 <div class="bg-[#1C1B26] border border-white/10">
                     @foreach ($atividade as $i => $item)
-                        <div class="flex items-center justify-between gap-4 px-5 py-4 {{ $i > 0 ? 'border-t border-white/5' : '' }}">
+                        <div
+                            class="flex items-center justify-between gap-4 px-5 py-4 {{ $i > 0 ? 'border-t border-white/5' : '' }}">
                             <div class="flex items-center gap-4 min-w-0">
                                 <span
                                     class="flex-shrink-0 inline-block px-2 py-0.5 text-[10px] font-black tracking-widest uppercase bg-[#6B5B9E] text-black">{{ $item['tipo'] }}</span>
