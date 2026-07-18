@@ -31,6 +31,6 @@ class DesenvolvedoraController extends Controller
 
         $desenvolvedora = $this->desenvolderoraservice->criar(dados: $dto);
 
-        return response()->json(data: ['mensagem' => 'Salvo com sucesso.', 'Desenvolvedora' => DesenvolvedoraResource::criar($desenvolvedora)], status: 200);
+        return response()->json(data: ['mensagem' => 'Salvo com sucesso.', 'desenvolvedora' => DesenvolvedoraResource::criar($desenvolvedora)], status: 200);
     }
 }

@@ -57,6 +57,8 @@ Route::middleware('auth')->group(function () {
         // Desenvolvedora
 
         Route::get('/desenvolvedora/novo', [DesenvolvedoraController::class, 'novo'])->name('catalogo.desenvolvedora.novo');
-        Route::post('/desenvolvedora;criar', [DesenvolvedoraController::class, 'criar'])->name('catalogo.desenvolvedora.criar');
+        Route::post('/desenvolvedora/criar', [DesenvolvedoraController::class, 'criar'])->name('catalogo.desenvolvedora.criar');
+        Route::post('/desenvolvedora/remover/{id}', [DesenvolvedoraController::class, 'remover'])->name('catalogo.desenvolvedora.remover');
+        Route::post('/desenvolvedora/editar/{id}', [DesenvolvedoraController::class, 'editar'])->name('catalogo.desenvolvedora.editar');
     });
 });

@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
         );
         $this->app->bind(
             \App\Services\Catalogo\Interfaces\IDesenvolvedoraService::class,
-            \app\Services\Catalogo\DesenvolvedoraService::class
+            \App\Services\Catalogo\DesenvolvedoraService::class
         );
     }
 
