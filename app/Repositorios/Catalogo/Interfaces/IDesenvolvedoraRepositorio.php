@@ -16,6 +16,7 @@ public function buscarPorId(int $id): Desenvolvedora;
 public function buscarTodas(): Collection;
 public function remover(Desenvolvedora $desenvolvedora): void;
 public function editar (Desenvolvedora $desenvolvedora): Desenvolvedora;
+public function contarTodas(): int;
 
 
 

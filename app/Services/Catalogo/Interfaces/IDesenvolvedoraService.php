@@ -18,4 +18,5 @@ interface IDesenvolvedoraService
 
    public function editar(DesenvolvedoraDTO $dados): Desenvolvedora;
    
+   public function contarTodas(): int;
 }

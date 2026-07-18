@@ -70,12 +70,12 @@
                 </h2>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-1">
                     <div class="bg-[#1C1B26] py-8 text-center">
-                        <div class="text-4xl sm:text-5xl font-black text-[#6B5B9E]">{{$totalPlataformas}}</div>
+                        <div class="text-4xl sm:text-5xl font-black text-[#6B5B9E]">{{ $totalPlataformas }}</div>
                         <p class="text-[10px] uppercase tracking-widest text-white/40 mt-2 font-bold">Plataformas
                         </p>
                     </div>
                     <div class="bg-[#1C1B26] py-8 text-center">
-                        <div class="text-4xl sm:text-5xl font-black text-[#6B5B9E]">0</div>
+                        <div class="text-4xl sm:text-5xl font-black text-[#6B5B9E]"> {{ $totalDesenvolvedoras }}</div>
                         <p class="text-[10px] uppercase tracking-widest text-white/40 mt-2 font-bold">Desenvolvedoras
                         </p>
                     </div>

@@ -6,7 +6,7 @@ use App\Models\Catalogo\Desenvolvedora;
 use App\Models\Catalogo\Plataforma;
 use App\Repositorios\Catalogo\Interfaces\IDesenvolvedoraRepositorio;
 use Illuminate\Database\Eloquent\Collection;
-use Override;
+
 
 class DesenvolvedoraRepositorio implements IDesenvolvedoraRepositorio
 {
@@ -55,5 +55,13 @@ class DesenvolvedoraRepositorio implements IDesenvolvedoraRepositorio
 
         $desenvolvedora->save();
         return $desenvolvedora;
+    }
+
+    public function contarTodas(): int
+    {
+
+        return $this->modelo->newQuery()->count();
+
+        
     }
 }

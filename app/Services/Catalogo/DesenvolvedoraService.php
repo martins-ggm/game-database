@@ -66,4 +66,12 @@ class DesenvolvedoraService implements IDesenvolvedoraService
             });
 
     }
+
+    public function contarTodas(): int {
+
+        return $this->desenvolvedoraRepositorio->contarTodas();
+
+
+    }
+
 }
