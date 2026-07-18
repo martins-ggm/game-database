@@ -7,7 +7,7 @@ use App\Models\Catalogo\Desenvolvedora;
 use App\Repositorios\Catalogo\Interfaces\IDesenvolvedoraRepositorio;
 use App\Services\Catalogo\Interfaces\IDesenvolvedoraService;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
 
 class DesenvolvedoraService implements IDesenvolvedoraService
 {

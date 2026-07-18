@@ -15,14 +15,14 @@ use Illuminate\View\View;
 class DesenvolvedoraController extends Controller
 {
 
-    public function __construct(protected IDesenvolvedoraService $desenvolderoraservice) {}
+    public function __construct(protected IDesenvolvedoraService $desenvolvedoraService) {}
 
 
 
     public function novo(): View
     {
 
-        $desenvolvedoras = $this->desenvolderoraservice->buscarTodas();
+        $desenvolvedoras = $this->desenvolvedoraService->buscarTodas();
 
         return View('catalogo.desenvolvedoras', data: compact('desenvolvedoras'));
     }
@@ -32,7 +32,7 @@ class DesenvolvedoraController extends Controller
 
         $dto = DesenvolvedoraDTO::fromRequest(request: $request, validarNovo: true);
 
-        $desenvolvedora = $this->desenvolderoraservice->criar(dados: $dto);
+        $desenvolvedora = $this->desenvolvedoraService->criar(dados: $dto);
 
         return response()->json(data: ['mensagem' => 'Salvo com sucesso.', 'desenvolvedora' => DesenvolvedoraResource::criar($desenvolvedora)], status: 200);
     }

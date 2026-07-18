@@ -4,7 +4,8 @@ namespace App\Services\Catalogo\Interfaces;
 
 use App\Http\DTO\Catalogo\DesenvolvedoraDTO;
 use App\Models\Catalogo\Desenvolvedora;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;   
+
 
 interface IDesenvolvedoraService
 {

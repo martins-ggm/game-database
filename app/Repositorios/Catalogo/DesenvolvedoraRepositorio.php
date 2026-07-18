@@ -4,8 +4,7 @@ namespace App\Repositorios\Catalogo;
 
 use App\Models\Catalogo\Desenvolvedora;
 use App\Repositorios\Catalogo\Interfaces\IDesenvolvedoraRepositorio;
-use Illuminate\Support\Collection;
-
+use Illuminate\Database\Eloquent\Collection;   
 class DesenvolvedoraRepositorio implements IDesenvolvedoraRepositorio
 {
 
