@@ -9,9 +9,12 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface IDesenvolvedoraRepositorio {
 
-public function criarNovo(Desenvolvedora $desenvolvedora): Desenvolvedora;
 
+
+public function criarNovo(Desenvolvedora $desenvolvedora): Desenvolvedora;
+public function buscarPorId(int $id): Desenvolvedora;
 public function buscarTodas(): Collection;
+public function remover(Desenvolvedora $desenvolvedora): void;
 
 
 

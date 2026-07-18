@@ -36,4 +36,13 @@ class DesenvolvedoraController extends Controller
 
         return response()->json(data: ['mensagem' => 'Salvo com sucesso.', 'desenvolvedora' => DesenvolvedoraResource::criar($desenvolvedora)], status: 200);
     }
+
+
+    public function remover(Request $request): JsonResponse
+    {
+
+        $this->desenvolvedoraService->remover(id: $request->id);
+
+        return response()->json(['mensagem' => 'Removido com sucesso!'], status: 200);
+    }
 }

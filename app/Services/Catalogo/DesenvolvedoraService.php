@@ -6,8 +6,10 @@ use App\Http\DTO\Catalogo\DesenvolvedoraDTO;
 use App\Models\Catalogo\Desenvolvedora;
 use App\Repositorios\Catalogo\Interfaces\IDesenvolvedoraRepositorio;
 use App\Services\Catalogo\Interfaces\IDesenvolvedoraService;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Collection;
+use Override;
 
 class DesenvolvedoraService implements IDesenvolvedoraService
 {
@@ -32,5 +34,19 @@ class DesenvolvedoraService implements IDesenvolvedoraService
     public function buscarTodas(): Collection
     {
         return $this->desenvolvedoraRepositorio->buscarTodas();
+    }
+
+    
+    public function remover(int $id): void
+    {
+        $plataforma = $this->desenvolvedoraRepositorio->buscarPorId($id);
+        throw_unless($plataforma, new \Exception('Desenvolvedora não encontrada'));
+
+        DB::transaction(function () use ($plataforma) {
+
+            $this->desenvolvedoraRepositorio->remover($plataforma);
+
+        });
+
     }
 }

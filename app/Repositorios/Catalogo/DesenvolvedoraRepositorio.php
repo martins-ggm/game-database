@@ -3,8 +3,11 @@
 namespace App\Repositorios\Catalogo;
 
 use App\Models\Catalogo\Desenvolvedora;
+use App\Models\Catalogo\Plataforma;
 use App\Repositorios\Catalogo\Interfaces\IDesenvolvedoraRepositorio;
-use Illuminate\Database\Eloquent\Collection;   
+use Illuminate\Database\Eloquent\Collection;
+
+
 class DesenvolvedoraRepositorio implements IDesenvolvedoraRepositorio
 {
 
@@ -29,5 +32,21 @@ class DesenvolvedoraRepositorio implements IDesenvolvedoraRepositorio
     {
 
         return $this->modelo->newQuery()->orderBy('nome', 'desc')->get();
+    }
+
+   
+    public function buscarPorId(int $id): Desenvolvedora
+    {
+        
+    return $this->modelo->newQuery()->find($id);
+
+    }
+
+
+    public function remover(Desenvolvedora $desenvolvedora): void
+    {
+        
+        $desenvolvedora->delete();
+
     }
 }

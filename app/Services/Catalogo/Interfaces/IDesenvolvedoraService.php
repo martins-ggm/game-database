@@ -12,7 +12,7 @@ interface IDesenvolvedoraService
 
     public function criar(DesenvolvedoraDTO $dados): Desenvolvedora;
     // public function editar(DesenvolvedoraDTO $dados): Desenvolvedora;
-   // public function remover(int $id): void;
+   public function remover(int $id): void;
 
    public function buscarTodas(): Collection;
 }
