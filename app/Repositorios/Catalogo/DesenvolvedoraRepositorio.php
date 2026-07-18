@@ -4,7 +4,7 @@ namespace App\Repositorios\Catalogo;
 
 use App\Models\Catalogo\Desenvolvedora;
 use App\Repositorios\Catalogo\Interfaces\IDesenvolvedoraRepositorio;
-
+use Illuminate\Support\Collection;
 
 class DesenvolvedoraRepositorio implements IDesenvolvedoraRepositorio
 {
@@ -22,5 +22,13 @@ class DesenvolvedoraRepositorio implements IDesenvolvedoraRepositorio
         $desenvolvedora->save();
 
         return $desenvolvedora;
+    }
+
+
+
+    public function buscarTodas(): Collection
+    {
+
+        return $this->modelo->newQuery()->orderBy('nome', 'desc')->get();
     }
 }

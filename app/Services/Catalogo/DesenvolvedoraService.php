@@ -7,12 +7,13 @@ use App\Models\Catalogo\Desenvolvedora;
 use App\Repositorios\Catalogo\Interfaces\IDesenvolvedoraRepositorio;
 use App\Services\Catalogo\Interfaces\IDesenvolvedoraService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 
 class DesenvolvedoraService implements IDesenvolvedoraService
 {
 
 
-    public function __construct(protected IDesenvolvedoraRepositorio $desenvolvedoraRepositorio) {}
+    public function __construct(protected IDesenvolvedoraRepositorio $desenvolvedoraRepositorio,) {}
 
 
 
@@ -25,6 +26,11 @@ class DesenvolvedoraService implements IDesenvolvedoraService
 
             return $this->desenvolvedoraRepositorio->criarNovo($desenvolvedora);
         });
-        
+    }
+
+
+    public function buscarTodas(): Collection
+    {
+        return $this->desenvolvedoraRepositorio->buscarTodas();
     }
 }

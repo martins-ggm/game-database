@@ -21,7 +21,10 @@ class DesenvolvedoraController extends Controller
 
     public function novo(): View
     {
-        return View('catalogo.desenvolvedoras');
+
+        $desenvolvedoras = $this->desenvolderoraservice->buscarTodas();
+
+        return View('catalogo.desenvolvedoras', data: compact('desenvolvedoras'));
     }
 
     public function criar(Request $request): JsonResponse
