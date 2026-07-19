@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\Catalogo\DesenvolvedoraController;
 use App\Http\Controllers\Catalogo\JogoController;
 use App\Http\Controllers\Gerenciador\AdminController;
 use App\Http\Controllers\Gerenciador\DashboardController;
 use App\Http\Controllers\Gerenciador\PerfilController;
 use App\Http\Controllers\Gerenciador\UsuarioController;
 use App\Http\Controllers\Catalogo\PlataformaController;
+use App\Models\Catalogo\Desenvolvedora;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -51,5 +53,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/plataforma/criar', [PlataformaController::class, 'criar'])->name('catalogo.plataforma.criar');
         Route::post('/plataforma/remover/{id}', [PlataformaController::class, 'remover'])->name('catalogo.plataforma.remover');
         Route::post('/plataforma/editar/{id}', [PlataformaController::class, 'editar'])->name('catalogo.plataforma.editar');
+
+        // Desenvolvedora
+
+        Route::get('/desenvolvedora/novo', [DesenvolvedoraController::class, 'novo'])->name('catalogo.desenvolvedora.novo');
+        Route::post('/desenvolvedora/criar', [DesenvolvedoraController::class, 'criar'])->name('catalogo.desenvolvedora.criar');
+        Route::post('/desenvolvedora/remover/{id}', [DesenvolvedoraController::class, 'remover'])->name('catalogo.desenvolvedora.remover');
+        Route::post('/desenvolvedora/editar/{id}', [DesenvolvedoraController::class, 'editar'])->name('catalogo.desenvolvedora.editar');
     });
 });

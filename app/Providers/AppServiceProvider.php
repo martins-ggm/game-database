@@ -24,6 +24,14 @@ class AppServiceProvider extends ServiceProvider
             \App\Repositorios\Catalogo\Interfaces\IPlataformaRepositorio::class,
             \App\Repositorios\Catalogo\PlataformaRepositorio::class,
         );
+        $this->app->bind(
+            \App\Repositorios\Catalogo\Interfaces\IDesenvolvedoraRepositorio::class,
+            \App\Repositorios\Catalogo\DesenvolvedoraRepositorio::class
+        );
+        $this->app->bind(
+            \App\Services\Catalogo\Interfaces\IDesenvolvedoraService::class,
+            \App\Services\Catalogo\DesenvolvedoraService::class
+        );
     }
 
     /**

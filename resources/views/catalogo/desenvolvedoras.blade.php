@@ -5,13 +5,16 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plataformas — Game Database</title>
+    <title>Desenvolvedoras — Game Database</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <style>
-        body { font-family: 'Inter', system-ui, sans-serif; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+        }
     </style>
 </head>
 
@@ -36,11 +39,11 @@
         {{-- cabeçalho da página --}}
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             <h1 class="text-2xl sm:text-3xl font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-4">
-                Plataformas
+                Desenvolvedoras
             </h1>
-            <button type="button" id="btn-nova-plataforma"
+            <button type="button" id="btn-nova-desenvolvedora"
                 class="self-start sm:self-auto px-6 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs hover:bg-[#8674B8] transition">
-                + Nova Plataforma
+                + Nova Desenvolvedora
             </button>
         </div>
 
@@ -53,22 +56,20 @@
                 <thead>
                     <tr class="border-b border-white/10 text-left">
                         <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40">Nome</th>
-                        <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40">Lançamento</th>
-                        <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40 text-right">Ações</th>
+                        <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40 text-right">
+                            Ações</th>
                     </tr>
                 </thead>
-                <tbody id="tabela-plataformas">
-                    @forelse ($plataformas ?? [] as $plataforma)
+                <tbody id="tabela-desenvolvedoras">
+                    @forelse ($desenvolvedoras ?? [] as $desenvolvedora)
                         <tr class="border-b border-white/5 hover:bg-[#25232F] transition">
-                            <td class="px-5 py-4 font-bold">{{ $plataforma->nome }}</td>
-                            <td class="px-5 py-4 text-white/70">{{ $plataforma->lancamento?->format('d/m/Y') ?? '—' }}</td>
+                            <td class="px-5 py-4 font-bold">{{ $desenvolvedora->nome }}</td>
                             <td class="px-5 py-4 text-right whitespace-nowrap">
-                                <button type="button" data-editar-plataforma="{{ $plataforma->id }}"
-                                    data-lancamento="{{ $plataforma->lancamento?->format('Y-m-d') }}"
+                                <button type="button" data-editar-desenvolvedora="{{ $desenvolvedora->id }}"
                                     class="text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-[#6B5B9E] transition">
                                     Editar
                                 </button>
-                                <button type="button" data-remover-plataforma="{{ $plataforma->id }}"
+                                <button type="button" data-remover-desenvolvedora="{{ $desenvolvedora->id }}"
                                     class="ml-4 text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-red-400 transition">
                                     Excluir
                                 </button>
@@ -76,8 +77,9 @@
                         </tr>
                     @empty
                         <tr id="linha-vazia">
-                            <td colspan="3" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">
-                                Nenhuma plataforma cadastrada
+                            <td colspan="2"
+                                class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">
+                                Nenhuma desenvolvedora cadastrada
                             </td>
                         </tr>
                     @endforelse
@@ -88,14 +90,16 @@
 
     {{-- footer --}}
     <footer class="border-t border-white/10">
-        <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div
+            class="max-w-[1600px] mx-auto px-6 sm:px-12 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
             <p class="text-[10px] tracking-widest text-white/40 uppercase font-bold">&copy; 2026 Game Database</p>
-            <p class="text-[10px] tracking-widest text-white/40 uppercase font-bold">Built with the SISP architecture</p>
+            <p class="text-[10px] tracking-widest text-white/40 uppercase font-bold">Built with the SISP architecture
+            </p>
         </div>
     </footer>
 
     {{-- ============ MODAL (nova / editar) ============ --}}
-    <div id="modal-plataforma" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div id="modal-desenvolvedora" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
         {{-- backdrop --}}
         <div class="absolute inset-0 bg-black/70" data-fechar-modal></div>
 
@@ -104,8 +108,9 @@
 
             {{-- header do modal --}}
             <div class="flex items-center justify-between px-6 py-5 border-b border-white/10">
-                <h2 id="modal-titulo" class="text-lg font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-3">
-                    Nova Plataforma
+                <h2 id="modal-titulo"
+                    class="text-lg font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-3">
+                    Nova Desenvolvedora
                 </h2>
                 <button type="button" data-fechar-modal
                     class="text-white/40 hover:text-white text-2xl leading-none">&times;</button>
@@ -113,22 +118,18 @@
 
             {{-- erros de validação (jQuery preenche) --}}
             <ul id="erros"
-                class="hidden mx-6 mt-4 p-3 bg-red-500/10 border border-red-500/30 text-sm text-red-300 list-disc list-inside space-y-1"></ul>
+                class="hidden mx-6 mt-4 p-3 bg-red-500/10 border border-red-500/30 text-sm text-red-300 list-disc list-inside space-y-1">
+            </ul>
 
             {{-- form --}}
-            <form id="form-plataforma" class="p-6 space-y-5">
-                <input type="hidden" id="plataforma_id" name="id">
+            <form id="form-desenvolvedora" class="p-6 space-y-5">
+                <input type="hidden" id="desenvolvedora_id" name="id">
 
                 <div>
-                    <label for="nome" class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Nome</label>
-                    <input type="text" id="nome" name="nome" placeholder="Nome da plataforma"
+                    <label for="nome"
+                        class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Nome</label>
+                    <input type="text" id="nome" name="nome" placeholder="Nome da desenvolvedora"
                         class="w-full px-4 py-3 bg-[#11101A] border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#6B5B9E] transition">
-                </div>
-
-                <div>
-                    <label for="lancamento" class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Data de lançamento</label>
-                    <input type="date" id="lancamento" name="lancamento"
-                        class="w-full px-4 py-3 bg-[#11101A] border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#6B5B9E] transition [color-scheme:dark]">
                 </div>
 
                 {{-- ações do modal --}}
@@ -186,8 +187,9 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
-        $(function () {
-            const modal = $('#modal-plataforma');
+        $(function() {
+
+            const modal = $('#modal-desenvolvedora');
 
             // ---------- helpers ----------
             function escapar(texto) {
@@ -195,9 +197,9 @@
             }
 
             function abrirModalNovo() {
-                $('#form-plataforma')[0].reset();
-                $('#plataforma_id').val('');
-                $('#modal-titulo').text('Nova Plataforma');
+                $('#form-desenvolvedora')[0].reset();
+                $('#desenvolvedora_id').val('');
+                $('#modal-titulo').text('Nova Desenvolvedora');
                 $('#erros').addClass('hidden').empty();
                 modal.removeClass('hidden');
                 $('#nome').trigger('focus');
@@ -223,56 +225,46 @@
 
             function mostrarErros(lista) {
                 $('#erros').empty();
-                lista.forEach(function (msg) {
+                lista.forEach(function(msg) {
                     $('#erros').append('<li>' + escapar(msg) + '</li>');
                 });
                 $('#erros').removeClass('hidden');
             }
 
-            function formatarData(iso) {
-                if (!iso) return '—';
-                const [ano, mes, dia] = iso.split('-');
-                return `${dia}/${mes}/${ano}`;
-            }
-
-            function adicionarLinha(plataforma) {
+            function adicionarLinha(desenvolvedora) {
                 $('#linha-vazia').remove();
                 const linha = `
                     <tr class="border-b border-white/5 hover:bg-[#25232F] transition">
-                        <td class="px-5 py-4 font-bold">${escapar(plataforma.nome)}</td>
-                        <td class="px-5 py-4 text-white/70">${formatarData(plataforma.lancamento)}</td>
+                        <td class="px-5 py-4 font-bold">${escapar(desenvolvedora.nome)}</td>
                         <td class="px-5 py-4 text-right whitespace-nowrap">
-                            <button type="button" data-editar-plataforma="${plataforma.id}" data-lancamento="${plataforma.lancamento || ''}"
+                            <button type="button" data-editar-desenvolvedora="${desenvolvedora.id}"
                                 class="text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-[#6B5B9E] transition">Editar</button>
-                            <button type="button" data-remover-plataforma="${plataforma.id}"
+                            <button type="button" data-remover-desenvolvedora="${desenvolvedora.id}"
                                 class="ml-4 text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-red-400 transition">Excluir</button>
                         </td>
                     </tr>`;
-                $('#tabela-plataformas').append(linha);
+                $('#tabela-desenvolvedoras').append(linha);
             }
 
-            function atualizarLinha(plataforma) {
-                const botao = $('#tabela-plataformas').find('[data-editar-plataforma="' + plataforma.id + '"]');
+            function atualizarLinha(desenvolvedora) {
+                const botao = $('#tabela-desenvolvedoras').find('[data-editar-desenvolvedora="' + desenvolvedora
+                    .id + '"]');
                 const linha = botao.closest('tr');
-                linha.find('td').eq(0).text(plataforma.nome);
-                linha.find('td').eq(1).text(formatarData(plataforma.lancamento));
-                botao.attr('data-lancamento', plataforma.lancamento || '');
+                linha.find('td').eq(0).text(desenvolvedora.nome);
             }
 
             // ---------- modal (abrir / fechar) ----------
-            $('#btn-nova-plataforma').on('click', abrirModalNovo);
+            $('#btn-nova-desenvolvedora').on('click', abrirModalNovo);
             $('[data-fechar-modal]').on('click', fecharModal);
 
             // ---------- abrir modal em modo edição ----------
-            $('#tabela-plataformas').on('click', '[data-editar-plataforma]', function () {
-                const id = $(this).attr('data-editar-plataforma');
+            $('#tabela-desenvolvedoras').on('click', '[data-editar-desenvolvedora]', function() {
+                const id = $(this).attr('data-editar-desenvolvedora');
                 const nome = $(this).closest('tr').find('td').eq(0).text().trim();
-                const dataLancamento = $(this).attr('data-lancamento') || '';
 
-                $('#plataforma_id').val(id);
+                $('#desenvolvedora_id').val(id);
                 $('#nome').val(nome);
-                $('#lancamento').val(dataLancamento);
-                $('#modal-titulo').text('Editar Plataforma');
+                $('#modal-titulo').text('Editar Desenvolvedora');
                 $('#erros').addClass('hidden').empty();
                 $('#mensagem').addClass('hidden').empty();
                 modal.removeClass('hidden');
@@ -280,18 +272,19 @@
             });
 
             // ---------- incluir / editar ----------
-            const urlEditarBase = "{{ route('catalogo.plataforma.editar', ['id' => 'ID_PLACEHOLDER']) }}";
+            const urlEditarBase = "{{ route('catalogo.desenvolvedora.editar', ['id' => 'ID_PLACEHOLDER']) }}";
 
-            $('#form-plataforma').on('submit', function (e) {
+            $('#form-desenvolvedora').on('submit', function(e) {
                 e.preventDefault();
                 $('#erros').addClass('hidden').empty();
                 $('#mensagem').addClass('hidden').empty();
 
-                const id = $('#plataforma_id').val();
+                const id = $('#desenvolvedora_id').val();
 
-                const url = id
-                    ? urlEditarBase.replace('ID_PLACEHOLDER', id)     // tem id → editar
-                    : "{{ route('catalogo.plataforma.criar') }}";     // sem id → criar
+                const url = id ?
+                    urlEditarBase.replace('ID_PLACEHOLDER', id) // tem id → editar
+                    :
+                    "{{ route('catalogo.desenvolvedora.criar') }}"; // sem id → criar
 
                 $.ajax({
                     url: url,
@@ -304,19 +297,18 @@
                     contentType: 'application/json',
                     data: JSON.stringify({
                         id: id || null,
-                        nome: $('#nome').val(),
-                        lancamento: $('#lancamento').val() || null
+                        nome: $('#nome').val()
                     }),
-                    success: function (response) {
+                    success: function(response) {
                         if (id) {
-                            atualizarLinha(response.plataforma);
+                            atualizarLinha(response.desenvolvedora);
                         } else {
-                            adicionarLinha(response.plataforma);
+                            adicionarLinha(response.desenvolvedora);
                         }
                         fecharModal();
                         mostrarSucesso(response.mensagem);
                     },
-                    error: function (xhr) {
+                    error: function(xhr) {
                         if (xhr.status === 422) {
                             mostrarErros(Object.values(xhr.responseJSON.errors).flat());
                         } else {
@@ -327,7 +319,7 @@
             });
 
             // ---------- remover ----------
-            const urlRemoverBase = "{{ route('catalogo.plataforma.remover', ['id' => 'ID_PLACEHOLDER']) }}";
+            const urlRemoverBase = "{{ route('catalogo.desenvolvedora.remover', ['id' => 'ID_PLACEHOLDER']) }}";
             const modalRemover = $('#modal-remover');
             let removerId = null;      // guarda quem está sendo removido
             let removerLinha = null;   // guarda a <tr> pra apagar depois
@@ -339,8 +331,8 @@
             }
 
             // clicar em "Excluir" → abre o modal de confirmação (não remove ainda)
-            $('#tabela-plataformas').on('click', '[data-remover-plataforma]', function () {
-                removerId = $(this).attr('data-remover-plataforma');
+            $('#tabela-desenvolvedoras').on('click', '[data-remover-desenvolvedora]', function() {
+                removerId = $(this).attr('data-remover-desenvolvedora');
                 removerLinha = $(this).closest('tr');
                 const nome = removerLinha.find('td').eq(0).text().trim();
 
@@ -353,7 +345,7 @@
             $('[data-fechar-remocao]').on('click', fecharRemocao);
 
             // confirmar → aí sim manda o AJAX
-            $('#btn-confirmar-remocao').on('click', function () {
+            $('#btn-confirmar-remocao').on('click', function() {
                 if (!removerId) return;
 
                 const id = removerId;         // cópia local, o modal pode fechar antes do AJAX voltar
@@ -367,24 +359,30 @@
                         'X-Requested-With': 'XMLHttpRequest',
                         'Accept': 'application/json'
                     },
-                    success: function (response) {
+                    success: function(response) {
                         linha.remove();
-                        if ($('#tabela-plataformas tr').length === 0) {
-                            $('#tabela-plataformas').html(
-                                '<tr id="linha-vazia"><td colspan="3" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhuma plataforma cadastrada</td></tr>'
+                        if ($('#tabela-desenvolvedoras tr').length === 0) {
+                            $('#tabela-desenvolvedoras').html(
+                                '<tr id="linha-vazia"><td colspan="2" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhuma desenvolvedora cadastrada</td></tr>'
                             );
                         }
                         fecharRemocao();
                         mostrarSucesso(response.mensagem);
                     },
-                    error: function (xhr) {
+                    error: function(xhr) {
                         fecharRemocao();
                         mostrarErroMensagem(xhr.responseJSON?.message || 'Erro ao remover.');
                     }
                 });
             });
+
         });
     </script>
+
+
+
+
+
 
 </body>
 

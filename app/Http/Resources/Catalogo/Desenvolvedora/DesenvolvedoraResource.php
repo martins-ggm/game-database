@@ -1,20 +1,19 @@
 <?php
 
-namespace App\Http\Resources\Catalogo\Plataforma;
+namespace App\Http\Resources\Catalogo\Desenvolvedora;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class PlataformaResource extends JsonResource
+class DesenvolvedoraResource extends JsonResource
 {
     public function toArray($request): array
     {
         return [
             'id'        => $this->id,
             'nome'      => $this->nome,
-            'lancamento'=> $this->lancamento,
             'criado_em' => $this->created_at?->format('d/m/Y H:i'),
         ];
     }
