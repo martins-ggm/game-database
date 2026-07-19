@@ -65,5 +65,8 @@ Route::middleware('auth')->group(function () {
 
     // Genero
 
-    Route::post('/genero/novo', [GeneroController::class, 'criar'])->name('catalogo.genero.criar');
+    Route::post('/genero/novo', [GeneroController::class, 'novo'])->name('catalogo.genero.novo');
+    Route::post('/genero/criar', [GeneroController::class, 'criar'])->name('catalogo.genero.criar');
+    Route::post('/genero/remover/{id}', [GeneroController::class, 'remover'])->name('catalogo.genero.remover');
+    Route::post('/genero/editar/{id}', [GeneroController::class, 'editar'])->name('catalogo.genero.editar');
 });
