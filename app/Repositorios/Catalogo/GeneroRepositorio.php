@@ -4,7 +4,7 @@ namespace App\Repositorios\Catalogo;
 
 use App\Models\Catalogo\Genero;
 use App\Repositorios\Catalogo\Interfaces\IGeneroRepositorio;
-use Override;
+
 
 class GeneroRepositorio implements IGeneroRepositorio
 {
@@ -24,7 +24,7 @@ class GeneroRepositorio implements IGeneroRepositorio
         return $genero;
     }
 
-    public function buscarPorId(int $id): Genero
+    public function buscarPorId(int $id): ?Genero
     {
 
         $genero = $this->modelo->newQuery()->find($id);

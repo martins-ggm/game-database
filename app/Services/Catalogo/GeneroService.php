@@ -7,9 +7,7 @@ use App\Http\DTO\Catalogo\GeneroDTO;
 use App\Models\Catalogo\Genero;
 use App\Repositorios\Catalogo\Interfaces\IGeneroRepositorio;
 use App\Services\Catalogo\Interfaces\IGeneroService;
-use Exception;
 use Illuminate\Support\Facades\DB;
-use Override;
 
 class GeneroService implements IGeneroService
 {
