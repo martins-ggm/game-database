@@ -22,8 +22,9 @@ class GeneroController extends Controller
     {
 
         $generos = $this->generoService->buscarTodos();
+       
 
-        return View(view: 'catalogo.generos', data: compact('generos'));
+        return View(view: 'catalogo.generos', data: compact('generos', 'totalGeneros'));
     }
 
 

@@ -15,4 +15,5 @@ interface IGeneroRepositorio
     public function editar(Genero $genero): Genero;
     public function buscarTodos(): Collection;
     public function buscar(?String $nome = null): Collection;
+    public function contarTodos(): int;
 }

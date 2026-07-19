@@ -75,4 +75,12 @@ class GeneroService implements IGeneroService
         return $this->generoRepositorio->buscar($nome);
 
     }
+
+
+    public function contarTodos(): Int
+    {
+
+    return $this->generoRepositorio->contarTodos();
+        
+    }
 }

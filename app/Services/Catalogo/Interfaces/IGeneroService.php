@@ -15,4 +15,5 @@ interface IGeneroService
     public function editar(GeneroDTO $dados): Genero;
     public function buscarTodos(): Collection;
     public function buscar(?String $nome = null): Collection;
+    public function contarTodos(): Int;
 }

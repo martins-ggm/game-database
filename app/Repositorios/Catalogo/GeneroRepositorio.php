@@ -6,7 +6,6 @@ use App\Models\Catalogo\Genero;
 use App\Repositorios\Catalogo\Interfaces\IGeneroRepositorio;
 use Illuminate\Database\Eloquent\Collection;
 
-
 class GeneroRepositorio implements IGeneroRepositorio
 {
 
@@ -61,5 +60,12 @@ class GeneroRepositorio implements IGeneroRepositorio
             ->when($nome, fn($query) => $query->where('nome', 'like', "%{$nome}%"))
             ->orderBy('nome', 'asc')
             ->get();
+    }
+
+
+
+    public function contarTodos(): Int
+    {
+        return $this->modelo->newQuery()->count();
     }
 }
