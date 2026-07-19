@@ -61,12 +61,13 @@ Route::middleware('auth')->group(function () {
         Route::post('/desenvolvedora/criar', [DesenvolvedoraController::class, 'criar'])->name('catalogo.desenvolvedora.criar');
         Route::post('/desenvolvedora/remover/{id}', [DesenvolvedoraController::class, 'remover'])->name('catalogo.desenvolvedora.remover');
         Route::post('/desenvolvedora/editar/{id}', [DesenvolvedoraController::class, 'editar'])->name('catalogo.desenvolvedora.editar');
-        
+
         // Genero
 
         Route::get('/genero/novo', [GeneroController::class, 'novo'])->name('catalogo.genero.novo');
         Route::post('/genero/criar', [GeneroController::class, 'criar'])->name('catalogo.genero.criar');
         Route::post('/genero/remover/{id}', [GeneroController::class, 'remover'])->name('catalogo.genero.remover');
         Route::post('/genero/editar/{id}', [GeneroController::class, 'editar'])->name('catalogo.genero.editar');
+        Route::get('/genero/buscar', [GeneroController::class, 'buscar'])->name('catalogo.genero.buscar');
     });
 });

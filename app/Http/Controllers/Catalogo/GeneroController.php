@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\DTO\Catalogo\GeneroDTO;
 use App\Http\Resources\Catalogo\Genero\GeneroResource;
 use App\Services\Catalogo\Interfaces\IGeneroService;
-
+use Dflydev\DotAccessData\Data;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-
+use Illuminate\View\View;
 
 class GeneroController extends Controller
 {
@@ -17,6 +17,14 @@ class GeneroController extends Controller
     public function __construct(protected IGeneroService $generoService) {}
 
 
+
+    public function novo(): View
+    {
+
+        $generos = $this->generoService->buscarTodos();
+
+        return View(view: 'catalogo.generos', data: compact('generos'));
+    }
 
 
 
@@ -49,5 +57,13 @@ class GeneroController extends Controller
         $genero = $this->generoService->editar($dto);
 
         return response()->json(['mensagem' => 'genero atualizado com sucesso!', 'genero' => GeneroResource::criar($genero)], status: 200);
+    }
+
+
+    public function buscar(Request $request): JsonResponse
+    {
+
+        $generos = $this->generoService->buscar($request->nome);
+        return response()->json(['generos' => GeneroResource::criar($generos)], status: 200);
     }
 }

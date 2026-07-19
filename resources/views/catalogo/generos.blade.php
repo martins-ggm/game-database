@@ -50,6 +50,12 @@
         {{-- feedback --}}
         <div id="mensagem" class="hidden mb-4 p-3 border text-sm font-bold tracking-wide"></div>
 
+        {{-- busca --}}
+        <div class="mb-4">
+            <input type="text" id="busca" placeholder="Buscar por nome..." autocomplete="off"
+                class="w-full sm:max-w-sm px-4 py-3 bg-[#1C1B26] border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#6B5B9E] transition">
+        </div>
+
         {{-- tabela --}}
         <div class="bg-[#1C1B26] border border-white/10 overflow-x-auto">
             <table class="w-full text-sm">
@@ -231,9 +237,9 @@
                 $('#erros').removeClass('hidden');
             }
 
-            function adicionarLinha(genero) {
-                $('#linha-vazia').remove();
-                const linha = `
+            // monta o HTML de uma linha (reaproveitado por incluir e pela busca)
+            function linhaHtml(genero) {
+                return `
                     <tr class="border-b border-white/5 hover:bg-[#25232F] transition">
                         <td class="px-5 py-4 font-bold">${escapar(genero.nome)}</td>
                         <td class="px-5 py-4 text-right whitespace-nowrap">
@@ -243,7 +249,28 @@
                                 class="ml-4 text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-red-400 transition">Excluir</button>
                         </td>
                     </tr>`;
-                $('#tabela-generos').append(linha);
+            }
+
+            function adicionarLinha(genero) {
+                $('#linha-vazia').remove();
+                $('#tabela-generos').append(linhaHtml(genero));
+            }
+
+            // redesenha a tabela inteira a partir de uma lista (usado na busca)
+            function renderizarTabela(generos) {
+                const tbody = $('#tabela-generos');
+                tbody.empty();
+
+                if (generos.length === 0) {
+                    tbody.html(
+                        '<tr id="linha-vazia"><td colspan="2" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhum gênero encontrado</td></tr>'
+                    );
+                    return;
+                }
+
+                generos.forEach(function(genero) {
+                    tbody.append(linhaHtml(genero));
+                });
             }
 
             function atualizarLinha(genero) {
@@ -255,6 +282,38 @@
             // ---------- modal (abrir / fechar) ----------
             $('#btn-novo-genero').on('click', abrirModalNovo);
             $('[data-fechar-modal]').on('click', fecharModal);
+
+            // ---------- busca (com debounce) ----------
+            const urlBuscar = "{{ route('catalogo.genero.buscar') }}";
+            let timerBusca = null;   // segura o disparo até parar de digitar
+            let reqBusca = null;     // guarda a requisição em voo pra poder cancelar
+
+            $('#busca').on('input', function() {
+                const termo = $(this).val();
+
+                clearTimeout(timerBusca);                 // reinicia a contagem a cada tecla
+                timerBusca = setTimeout(function() {
+
+                    if (reqBusca) reqBusca.abort();        // cancela a busca anterior que ainda não voltou
+
+                    reqBusca = $.ajax({
+                        url: urlBuscar,
+                        method: 'GET',
+                        data: { nome: termo },             // vira ?nome=... na URL
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        },
+                        success: function(response) {
+                            renderizarTabela(response.generos);
+                        },
+                        error: function(xhr, status) {
+                            if (status === 'abort') return;   // foi cancelada de propósito, ignora
+                            mostrarErroMensagem(xhr.responseJSON?.message || 'Erro na busca.');
+                        }
+                    });
+                }, 300);
+            });
 
             // ---------- abrir modal em modo edição ----------
             $('#tabela-generos').on('click', '[data-editar-genero]', function() {

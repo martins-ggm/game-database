@@ -32,6 +32,14 @@ class AppServiceProvider extends ServiceProvider
             \App\Services\Catalogo\Interfaces\IDesenvolvedoraService::class,
             \App\Services\Catalogo\DesenvolvedoraService::class
         );
+        $this->app->bind(
+            \App\Services\Catalogo\Interfaces\IGeneroService::class,
+            \App\Services\Catalogo\GeneroService::class
+        );
+        $this->app->bind(
+            \App\Repositorios\Catalogo\Interfaces\IGeneroRepositorio::class,
+            \App\Repositorios\Catalogo\GeneroRepositorio::class
+        );
     }
 
     /**

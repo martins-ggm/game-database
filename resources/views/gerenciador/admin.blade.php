@@ -55,7 +55,7 @@
                     class="px-6 py-3 border border-white/30 text-white font-black tracking-widest uppercase text-xs hover:border-[#6B5B9E] hover:text-[#6B5B9E] transition">
                     + Plataforma
                 </a>
-                <a href="#"
+                <a href="{{ Route('catalogo.genero.novo') }}"
                     class="px-6 py-3 border border-white/30 text-white font-black tracking-widest uppercase text-xs hover:border-[#6B5B9E] hover:text-[#6B5B9E] transition">
                     + Gênero
                 </a>

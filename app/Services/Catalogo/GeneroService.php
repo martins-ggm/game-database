@@ -8,6 +8,8 @@ use App\Models\Catalogo\Genero;
 use App\Repositorios\Catalogo\Interfaces\IGeneroRepositorio;
 use App\Services\Catalogo\Interfaces\IGeneroService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Collection;
+
 
 class GeneroService implements IGeneroService
 {
@@ -54,6 +56,23 @@ class GeneroService implements IGeneroService
             return $this->generoRepositorio->editar($genero);
         });
 
+
+    }
+
+   
+    public function buscarTodos(): Collection
+    {
+        
+        return $this->generoRepositorio->buscarTodos();
+
+
+    }
+
+
+    public function buscar(?String $nome = null): Collection
+    {
+        
+        return $this->generoRepositorio->buscar($nome);
 
     }
 }
