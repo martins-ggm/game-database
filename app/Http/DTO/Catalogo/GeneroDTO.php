@@ -15,7 +15,7 @@ class GeneroDTO
     public function __construct(public ?int $id, public ?string $nome) {}
 
 
-    public function fromRequest(Request $request, Bool $validarNovo): self
+    public static function fromRequest(Request $request, Bool $validarNovo): self
     {
 
         $dto = new Self(

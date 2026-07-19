@@ -22,4 +22,14 @@ class Genero extends Model
     {
         return $this->belongsToMany(Jogo::class, 'jogo_generos');
     }
+
+    public static function criar(String $nome): self
+    {
+
+
+        $genero = new self();
+        $genero->nome = $nome;
+
+        return $genero;
+    }
 }
