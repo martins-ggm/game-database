@@ -6,6 +6,7 @@ use App\Models\Catalogo\Desenvolvedora;
 use App\Models\Catalogo\Plataforma;
 use App\Repositorios\Catalogo\Interfaces\IDesenvolvedoraRepositorio;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\QueryException;
 
 
 class DesenvolvedoraRepositorio implements IDesenvolvedoraRepositorio
@@ -21,7 +22,14 @@ class DesenvolvedoraRepositorio implements IDesenvolvedoraRepositorio
 
         throw_if($this->modelo->newQuery()->where('nome', $desenvolvedora->nome)->exists(), new \Exception('Já existe uma Desenvolvedora com o nome informado!'));
 
-        $desenvolvedora->save();
+        try {
+            $desenvolvedora->save();
+        } catch (QueryException $e) {
+            if ($e->getCode() === '23000') {
+                throw new \Exception('Já existe uma Desenvolvedora com o nome informado!');
+            }
+            throw $e;
+        }
 
         return $desenvolvedora;
     }
@@ -35,7 +43,7 @@ class DesenvolvedoraRepositorio implements IDesenvolvedoraRepositorio
     }
 
 
-    public function buscarPorId(int $id): Desenvolvedora
+    public function buscarPorId(int $id): ?Desenvolvedora
     {
 
         return $this->modelo->newQuery()->find($id);
@@ -53,7 +61,14 @@ class DesenvolvedoraRepositorio implements IDesenvolvedoraRepositorio
 
         throw_if($this->modelo->newQuery()->where('nome', $desenvolvedora->nome)->where('id', '!=', $desenvolvedora->id)->exists(), new \Exception('Já existe uma desenvolvedora com o nome informado'));
 
-        $desenvolvedora->save();
+        try {
+            $desenvolvedora->save();
+        } catch (QueryException $e) {
+            if ($e->getCode() === '23000') {
+                throw new \Exception('Já existe uma desenvolvedora com o nome informado');
+            }
+            throw $e;
+        }
         return $desenvolvedora;
     }
 

@@ -83,7 +83,13 @@ class DesenvolvedoraSeeder extends Seeder
         ];
 
         foreach ($desenvolvedoras as $nome) {
-            Desenvolvedora::firstOrCreate(['nome' => $nome]);
+            $existente = Desenvolvedora::withTrashed()->where('nome', $nome)->first();
+
+            if ($existente && $existente->trashed()) {
+                $existente->restore();
+            } elseif (!$existente) {
+                Desenvolvedora::create(['nome' => $nome]);
+            }
         }
     }
 }

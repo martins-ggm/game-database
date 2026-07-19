@@ -51,6 +51,6 @@ class DesenvolvedoraDTO
         Validator::make(
             ['id' => $this->id, 'nome' => $this->nome],
             ['id' => ['required', 'integer'], 'nome' => ['required', 'string', 'max:255']]
-        );
+        )->validate();
     }
 }

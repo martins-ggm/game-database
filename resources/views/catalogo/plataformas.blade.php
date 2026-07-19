@@ -356,6 +356,11 @@
             $('#btn-confirmar-remocao').on('click', function () {
                 if (!removerId) return;
 
+                const botao = $(this);
+                if (botao.prop('disabled')) return;
+
+                botao.prop('disabled', true);
+
                 const id = removerId;         // cópia local, o modal pode fechar antes do AJAX voltar
                 const linha = removerLinha;
 
@@ -380,6 +385,9 @@
                     error: function (xhr) {
                         fecharRemocao();
                         mostrarErroMensagem(xhr.responseJSON?.message || 'Erro ao remover.');
+                    },
+                    complete: function () {
+                        botao.prop('disabled', false);
                     }
                 });
             });

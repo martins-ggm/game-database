@@ -14,7 +14,7 @@ class PlataformaResource extends JsonResource
         return [
             'id'        => $this->id,
             'nome'      => $this->nome,
-            'lancamento'=> $this->lancamento,
+            'lancamento'=> $this->lancamento?->format('Y-m-d'),
             'criado_em' => $this->created_at?->format('d/m/Y H:i'),
         ];
     }
