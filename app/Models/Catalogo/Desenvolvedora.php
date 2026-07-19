@@ -34,7 +34,6 @@ class Desenvolvedora extends Model
 
     public function editar(String $nome): self
     {
-
         $this->nome = $nome;
 
         return $this;

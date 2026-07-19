@@ -7,10 +7,9 @@ use App\Http\DTO\Catalogo\GeneroDTO;
 use App\Models\Catalogo\Genero;
 use App\Repositorios\Catalogo\Interfaces\IGeneroRepositorio;
 use App\Services\Catalogo\Interfaces\IGeneroService;
+use Exception;
 use Illuminate\Support\Facades\DB;
-
-
-
+use Override;
 
 class GeneroService implements IGeneroService
 {
@@ -26,5 +25,37 @@ class GeneroService implements IGeneroService
             $genero = Genero::criar($dados->nome);
             return $this->generoRepositorio->criarNovo($genero);
         });
+    }
+
+
+
+    public function remover(int $id): void
+    {
+
+        $genero = $this->generoRepositorio->buscarPorId($id);
+        throw_unless($genero, new \Exception('Genero não encontrado'));
+
+
+        db::transaction(function () use ($genero) {
+
+            $this->generoRepositorio->remover($genero);
+        });
+    }
+
+
+    public function editar(GeneroDTO $dados): Genero
+    {
+       
+        $genero = $this->generoRepositorio->buscarPorId($dados->id);
+
+        throw_unless($genero, new \Exception('Genero não encontrado'));
+
+      return DB::transaction(function () use ($genero, $dados) {
+
+            $genero->editar($dados->nome);      
+            return $this->generoRepositorio->editar($genero);
+        });
+
+
     }
 }

@@ -32,4 +32,12 @@ class Genero extends Model
 
         return $genero;
     }
+
+    public function editar(String $nome): self
+    {
+
+        $this->nome = $nome;
+
+        return $this;
+    }
 }

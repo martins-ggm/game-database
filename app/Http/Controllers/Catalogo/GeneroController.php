@@ -30,4 +30,24 @@ class GeneroController extends Controller
 
         return Response()->json(['mensagem' => 'cadastrado com sucesso!', 'genero' => GeneroResource::criar($genero)], status: 200);
     }
+
+
+    public function remover(Request $request): JsonResponse
+    {
+
+
+        $this->generoService->remover(id: $request->id);
+
+        return Response()->json(['mensagem' => 'Removido com sucesso!'], status: 200);
+    }
+
+    public function editar(Request $request): JsonResponse
+    {
+
+
+        $dto = GeneroDTO::fromRequest(request: $request, validarNovo: false);
+        $genero = $this->generoService->editar($dto);
+
+        return response()->json(['mensagem' => 'genero atualizado com sucesso!', 'genero' => GeneroResource::criar($genero)], status: 200);
+    }
 }

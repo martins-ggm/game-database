@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Catalogo\DesenvolvedoraController;
+use App\Http\Controllers\Catalogo\GeneroController;
 use App\Http\Controllers\Catalogo\JogoController;
 use App\Http\Controllers\Gerenciador\AdminController;
 use App\Http\Controllers\Gerenciador\DashboardController;
@@ -61,4 +62,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/desenvolvedora/remover/{id}', [DesenvolvedoraController::class, 'remover'])->name('catalogo.desenvolvedora.remover');
         Route::post('/desenvolvedora/editar/{id}', [DesenvolvedoraController::class, 'editar'])->name('catalogo.desenvolvedora.editar');
     });
+
+    // Genero
+
+    Route::post('/genero/novo', [GeneroController::class, 'criar'])->name('catalogo.genero.criar');
 });
