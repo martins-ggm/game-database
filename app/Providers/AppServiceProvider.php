@@ -40,6 +40,14 @@ class AppServiceProvider extends ServiceProvider
             \App\Repositorios\Catalogo\Interfaces\IGeneroRepositorio::class,
             \App\Repositorios\Catalogo\GeneroRepositorio::class
         );
+        $this->app->bind(
+            \App\Services\Catalogo\Interfaces\IJogoService::class,
+            \App\Services\Catalogo\JogoService::class
+        );
+        $this->app->bind(
+            \App\Repositorios\Catalogo\Interfaces\IJogoRepositorio::class,
+            \App\Repositorios\Catalogo\JogoRepositorio::class
+        );
     }
 
     /**

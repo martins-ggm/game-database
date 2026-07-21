@@ -34,4 +34,14 @@ class Jogo extends Model
     {
         return $this->belongsToMany(Genero::class, 'jogo_generos');
     }
+
+    public static function criar(String $nome, int $desenvolvedora): self
+    {
+
+        $jogo = new self();
+        $jogo->nome = $nome;
+        $jogo->desenvolvedora_id = $desenvolvedora;
+
+        return $jogo;
+    }
 }

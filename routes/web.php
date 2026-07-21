@@ -47,6 +47,9 @@ Route::middleware('auth')->group(function () {
         // Jogo
 
         Route::get('/jogo/novo', [JogoController::class, 'novo'])->name('catalogo.jogo.novo');
+        Route::post('/jogo/criar', [JogoController::class, 'criar'])->name('catalogo.jogo.criar');
+        Route::post('/jogo/remover/{id}', [JogoController::class, 'remover'])->name('catalogo.jogo.remover');
+        Route::post('/jogo/editar/{id}', [JogoController::class, 'editar'])->name('catalogo.jogo.editar');
 
         // plataforma
 

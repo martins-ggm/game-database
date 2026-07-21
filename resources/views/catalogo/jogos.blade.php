@@ -44,7 +44,7 @@
             </button>
         </div>
 
-        {{-- feedback (o jQuery vai usar depois) --}}
+        {{-- feedback --}}
         <div id="mensagem" class="hidden mb-4 p-3 border text-sm font-bold tracking-wide"></div>
 
         {{-- tabela --}}
@@ -68,6 +68,9 @@
                             <td class="px-5 py-4 text-white/70">{{ $jogo->generos->pluck('nome')->implode(', ') ?: '—' }}</td>
                             <td class="px-5 py-4 text-right whitespace-nowrap">
                                 <button type="button" data-editar-jogo="{{ $jogo->id }}"
+                                    data-desenvolvedora="{{ $jogo->desenvolvedora_id }}"
+                                    data-plataformas="{{ $jogo->plataformas->pluck('id')->implode(',') }}"
+                                    data-generos="{{ $jogo->generos->pluck('id')->implode(',') }}"
                                     class="text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-[#6B5B9E] transition">
                                     Editar
                                 </button>
@@ -184,30 +187,281 @@
         </div>
     </div>
 
+    {{-- ============ MODAL de confirmação de remoção ============ --}}
+    <div id="modal-remover" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+        {{-- backdrop --}}
+        <div class="absolute inset-0 bg-black/70" data-fechar-remocao></div>
+
+        {{-- caixa --}}
+        <div class="relative w-full max-w-sm bg-[#1C1B26] border border-white/10">
+
+            {{-- header --}}
+            <div class="flex items-center justify-between px-6 py-5 border-b border-white/10">
+                <h2 class="text-lg font-black tracking-widest uppercase border-l-4 border-red-400 pl-3">
+                    Remover
+                </h2>
+                <button type="button" data-fechar-remocao
+                    class="text-white/40 hover:text-white text-2xl leading-none">&times;</button>
+            </div>
+
+            {{-- corpo --}}
+            <div class="p-6 space-y-1">
+                <p class="text-sm text-white/70">Tem certeza que deseja remover</p>
+                <p id="nome-remocao" class="text-base font-black tracking-wide text-white break-words"></p>
+                <p class="text-[10px] text-white/40 uppercase tracking-widest pt-3">Esta ação não pode ser desfeita.</p>
+            </div>
+
+            {{-- ações --}}
+            <div class="flex flex-col sm:flex-row gap-3 sm:justify-end px-6 pb-6">
+                <button type="button" data-fechar-remocao
+                    class="px-6 py-3 border border-white/30 text-white font-black tracking-widest uppercase text-xs hover:border-white/60 transition">
+                    Cancelar
+                </button>
+                <button type="button" id="btn-confirmar-remocao"
+                    class="px-6 py-3 bg-red-500 text-black font-black tracking-widest uppercase text-xs hover:bg-red-400 transition">
+                    Remover
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
-        // -------------------------------------------------------------
-        // Só o toggle visual do modal (abrir/fechar).
-        // A lógica de CRUD (buscar, incluir, alterar, remover via AJAX)
-        // será implementada aqui depois, junto com o controller/rotas.
-        // -------------------------------------------------------------
-        (function () {
-            const modal = document.getElementById('modal-jogo');
+        $(function() {
 
-            document.getElementById('btn-novo-jogo').addEventListener('click', function () {
-                document.getElementById('form-jogo').reset();
-                document.getElementById('jogo_id').value = '';
-                document.getElementById('modal-titulo').textContent = 'Novo Jogo';
-                document.getElementById('erros').classList.add('hidden');
-                modal.classList.remove('hidden');
+            const modal = $('#modal-jogo');
+
+            // ---------- helpers ----------
+            function escapar(texto) {
+                return $('<div>').text(texto ?? '').html();
+            }
+
+            // coleta os ids marcados de um grupo de checkboxes → [1, 5, 12]
+            function idsMarcados(name) {
+                return $('input[name="' + name + '"]:checked').map(function() {
+                    return parseInt($(this).val(), 10);
+                }).get();
+            }
+
+            function limparCheckboxes() {
+                $('input[name="plataformas[]"], input[name="generos[]"]').prop('checked', false);
+            }
+
+            function abrirModalNovo() {
+                $('#form-jogo')[0].reset();
+                limparCheckboxes();
+                $('#jogo_id').val('');
+                $('#modal-titulo').text('Novo Jogo');
+                $('#erros').addClass('hidden').empty();
+                modal.removeClass('hidden');
+                $('#nome').trigger('focus');
+            }
+
+            function fecharModal() {
+                modal.addClass('hidden');
+            }
+
+            function mostrarSucesso(texto) {
+                $('#mensagem')
+                    .removeClass('hidden bg-red-500/10 border-red-500/30 text-red-300')
+                    .addClass('bg-[#6B5B9E]/10 border-[#6B5B9E]/40 text-[#6B5B9E]')
+                    .text(texto);
+            }
+
+            function mostrarErroMensagem(texto) {
+                $('#mensagem')
+                    .removeClass('hidden bg-[#6B5B9E]/10 border-[#6B5B9E]/40 text-[#6B5B9E]')
+                    .addClass('bg-red-500/10 border-red-500/30 text-red-300')
+                    .text(texto);
+            }
+
+            function mostrarErros(lista) {
+                $('#erros').empty();
+                lista.forEach(function(msg) {
+                    $('#erros').append('<li>' + escapar(msg) + '</li>');
+                });
+                $('#erros').removeClass('hidden');
+            }
+
+            // ---------- render da linha ----------
+            function listaNomes(itens) {
+                if (!itens || itens.length === 0) return '—';
+                return itens.map(function(i) { return escapar(i.nome); }).join(', ');
+            }
+
+            function linhaHtml(jogo) {
+                const dev = jogo.desenvolvedora ? escapar(jogo.desenvolvedora.nome) : '—';
+                const devId = jogo.desenvolvedora ? jogo.desenvolvedora.id : '';
+                const platIds = jogo.plataformas.map(function(p) { return p.id; }).join(',');
+                const genIds = jogo.generos.map(function(g) { return g.id; }).join(',');
+
+                return `
+                    <tr class="border-b border-white/5 hover:bg-[#25232F] transition">
+                        <td class="px-5 py-4 font-bold">${escapar(jogo.nome)}</td>
+                        <td class="px-5 py-4 text-white/70">${dev}</td>
+                        <td class="px-5 py-4 text-white/70">${listaNomes(jogo.plataformas)}</td>
+                        <td class="px-5 py-4 text-white/70">${listaNomes(jogo.generos)}</td>
+                        <td class="px-5 py-4 text-right whitespace-nowrap">
+                            <button type="button" data-editar-jogo="${jogo.id}"
+                                data-desenvolvedora="${devId}" data-plataformas="${platIds}" data-generos="${genIds}"
+                                class="text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-[#6B5B9E] transition">Editar</button>
+                            <button type="button" data-remover-jogo="${jogo.id}"
+                                class="ml-4 text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-red-400 transition">Excluir</button>
+                        </td>
+                    </tr>`;
+            }
+
+            function adicionarLinha(jogo) {
+                $('#linha-vazia').remove();
+                $('#tabela-jogos').append(linhaHtml(jogo));
+            }
+
+            function atualizarLinha(jogo) {
+                $('#tabela-jogos')
+                    .find('[data-editar-jogo="' + jogo.id + '"]')
+                    .closest('tr')
+                    .replaceWith(linhaHtml(jogo));
+            }
+
+            // ---------- modal (abrir / fechar) ----------
+            $('#btn-novo-jogo').on('click', abrirModalNovo);
+            $('[data-fechar-modal]').on('click', fecharModal);
+
+            // ---------- abrir modal em modo edição ----------
+            $('#tabela-jogos').on('click', '[data-editar-jogo]', function() {
+                const botao = $(this);
+                const id = botao.attr('data-editar-jogo');
+                const nome = botao.closest('tr').find('td').eq(0).text().trim();
+                const devId = botao.attr('data-desenvolvedora') || '';
+                const platIds = (botao.attr('data-plataformas') || '').split(',').filter(Boolean);
+                const genIds = (botao.attr('data-generos') || '').split(',').filter(Boolean);
+
+                $('#form-jogo')[0].reset();
+                limparCheckboxes();
+
+                $('#jogo_id').val(id);
+                $('#nome').val(nome);
+                $('#desenvolvedora_id').val(devId);
+                platIds.forEach(function(pid) {
+                    $('input[name="plataformas[]"][value="' + pid + '"]').prop('checked', true);
+                });
+                genIds.forEach(function(gid) {
+                    $('input[name="generos[]"][value="' + gid + '"]').prop('checked', true);
+                });
+
+                $('#modal-titulo').text('Editar Jogo');
+                $('#erros').addClass('hidden').empty();
+                $('#mensagem').addClass('hidden').empty();
+                modal.removeClass('hidden');
+                $('#nome').trigger('focus');
             });
 
-            document.querySelectorAll('[data-fechar-modal]').forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    modal.classList.add('hidden');
+            // ---------- incluir / editar ----------
+            const urlEditarBase = "{{ route('catalogo.jogo.editar', ['id' => 'ID_PLACEHOLDER']) }}";
+
+            $('#form-jogo').on('submit', function(e) {
+                e.preventDefault();
+                $('#erros').addClass('hidden').empty();
+                $('#mensagem').addClass('hidden').empty();
+
+                const id = $('#jogo_id').val();
+
+                const url = id ?
+                    urlEditarBase.replace('ID_PLACEHOLDER', id) // tem id → editar
+                    :
+                    "{{ route('catalogo.jogo.criar') }}"; // sem id → criar
+
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    },
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        id: id || null,
+                        nome: $('#nome').val(),
+                        desenvolvedora: $('#desenvolvedora_id').val() || null,
+                        plataformas: idsMarcados('plataformas[]'),
+                        generos: idsMarcados('generos[]')
+                    }),
+                    success: function(response) {
+                        if (id) {
+                            atualizarLinha(response.jogo);
+                        } else {
+                            adicionarLinha(response.jogo);
+                        }
+                        fecharModal();
+                        mostrarSucesso(response.mensagem);
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 422) {
+                            mostrarErros(Object.values(xhr.responseJSON.errors).flat());
+                        } else {
+                            mostrarErros([xhr.responseJSON?.message || 'Erro inesperado.']);
+                        }
+                    }
                 });
             });
-        })();
+
+            // ---------- remover ----------
+            const urlRemoverBase = "{{ route('catalogo.jogo.remover', ['id' => 'ID_PLACEHOLDER']) }}";
+            const modalRemover = $('#modal-remover');
+            let removerId = null;
+            let removerLinha = null;
+
+            function fecharRemocao() {
+                modalRemover.addClass('hidden');
+                removerId = null;
+                removerLinha = null;
+            }
+
+            $('#tabela-jogos').on('click', '[data-remover-jogo]', function() {
+                removerId = $(this).attr('data-remover-jogo');
+                removerLinha = $(this).closest('tr');
+                const nome = removerLinha.find('td').eq(0).text().trim();
+
+                $('#nome-remocao').text(nome);
+                $('#mensagem').addClass('hidden').empty();
+                modalRemover.removeClass('hidden');
+            });
+
+            $('[data-fechar-remocao]').on('click', fecharRemocao);
+
+            $('#btn-confirmar-remocao').on('click', function() {
+                if (!removerId) return;
+
+                const id = removerId;
+                const linha = removerLinha;
+
+                $.ajax({
+                    url: urlRemoverBase.replace('ID_PLACEHOLDER', id),
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    },
+                    success: function(response) {
+                        linha.remove();
+                        if ($('#tabela-jogos tr').length === 0) {
+                            $('#tabela-jogos').html(
+                                '<tr id="linha-vazia"><td colspan="5" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhum jogo cadastrado</td></tr>'
+                            );
+                        }
+                        fecharRemocao();
+                        mostrarSucesso(response.mensagem);
+                    },
+                    error: function(xhr) {
+                        fecharRemocao();
+                        mostrarErroMensagem(xhr.responseJSON?.message || 'Erro ao remover.');
+                    }
+                });
+            });
+
+        });
     </script>
 
 </body>
