@@ -44,4 +44,14 @@ class Jogo extends Model
 
         return $jogo;
     }
+
+
+    public function editar(String $nome, int $desenvolvedora): self
+    {
+
+        $this->$nome = $nome;
+        $this->desenvolvedora = $desenvolvedora;
+
+        return $this;
+    }
 }

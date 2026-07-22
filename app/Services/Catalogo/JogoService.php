@@ -51,4 +51,17 @@ class JogoService implements IJogoService
 
         $this->jogorepositorio->remover($jogo);
     }
+
+
+    public function editar(JogoDTO $dados): Jogo
+    {
+        $jogo = $this->jogorepositorio->buscarPorID($dados->id);
+        throw_unless($jogo, new \Exception('Jogo não encontrado.'));
+
+        return DB::transaction(function () use ($jogo, $dados) {
+
+            $jogo->editar($dados->nome, $dados->desenvolvedora);
+            return $this->jogorepositorio->editar($jogo, $dados->plataformas, $dados->generos);
+        });
+    }
 }

@@ -59,4 +59,14 @@ class JogoController extends Controller
 
         return response()->json(['mensagem' => 'Jogo removido com sucesso!'], status: 200);
     }
+
+    public function editar(Request $request): JsonResponse
+    {
+
+        $dto = JogoDTO::fromRequest($request, validarNovo: false);
+
+        $jogo = $this->jogoService->editar($dto);
+
+        return response()->json(['mensagem' => 'Jogo atualizado com sucesso!', 'jogo' => JogoResource::criar($jogo)], status: 200);
+    }
 }

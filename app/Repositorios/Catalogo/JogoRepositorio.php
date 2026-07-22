@@ -55,6 +55,20 @@ class JogoRepositorio implements IJogoRepositorio
 
     public function remover(Jogo $jogo): void
     {
-         $jogo->delete();
+        $jogo->delete();
+    }
+
+    public function editar(Jogo $jogo, array $plataformas, array $generos): Jogo
+    {
+        throw_if($this->modelo->newQuery()
+            ->where('nome', $jogo->nome)
+            ->where('id', '!=', $jogo->id)
+            ->exists(), new \Exception('Já existe um jogo com nome informado.'));
+
+        $jogo->plataformas()->sync($plataformas);
+        $jogo->generos()->sync($generos);
+        $jogo->save();
+
+        return $jogo;
     }
 }
