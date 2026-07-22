@@ -50,4 +50,13 @@ class JogoController extends Controller
 
         return response()->json(['mensagem' => 'Jogo Cadastrado com sucesso!', 'jogo' => JogoResource::criar($jogo)], status: 200);
     }
+
+
+    public function remover(Request $request): JsonResponse
+    {
+
+        $this->jogoService->remover($request->id);
+
+        return response()->json(['mensagem' => 'Jogo removido com sucesso!'], status: 200);
+    }
 }

@@ -10,6 +10,8 @@ Interface IJogoRepositorio {
 public function criar(Jogo $jogo, array $plataformas, array $generos): Jogo;
 public function buscarTodos(): Collection;
 public function contarTodos(): int;
+public function buscarPorID(int $id): jogo;
+public function remover(jogo $jogo): void;
 
 
 

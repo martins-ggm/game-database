@@ -46,4 +46,15 @@ class JogoRepositorio implements IJogoRepositorio
     {
         return $this->modelo->newQuery()->count();
     }
+
+    public function buscarPorID(int $id): Jogo
+    {
+
+        return $this->modelo->newQuery()->find($id);
+    }
+
+    public function remover(Jogo $jogo): void
+    {
+         $jogo->delete();
+    }
 }

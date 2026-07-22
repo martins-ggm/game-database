@@ -6,6 +6,7 @@ use app\Http\DTO\Catalogo\JogoDTO;
 use App\Models\Catalogo\Jogo;
 use App\Repositorios\Catalogo\Interfaces\IJogoRepositorio;
 use App\Services\Catalogo\Interfaces\IJogoService;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -29,7 +30,7 @@ class JogoService implements IJogoService
     }
 
 
-  
+
     public function buscarTodos(): Collection
     {
 
@@ -40,7 +41,14 @@ class JogoService implements IJogoService
     public function contarTodos(): int
     {
 
-    return $this->jogorepositorio->contarTodos();
-        
+        return $this->jogorepositorio->contarTodos();
+    }
+
+    public function remover(int $id): void
+    {
+        $jogo = $this->jogorepositorio->buscarPorID($id);
+        throw_unless($jogo, new \Exception('Jogo não encontrado.'));
+
+        $this->jogorepositorio->remover($jogo);
     }
 }
