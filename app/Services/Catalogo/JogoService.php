@@ -2,11 +2,11 @@
 
 namespace App\Services\Catalogo;
 
-use app\Http\DTO\Catalogo\JogoDTO;
+use App\Http\DTO\Catalogo\JogoDTO;
 use App\Models\Catalogo\Jogo;
 use App\Repositorios\Catalogo\Interfaces\IJogoRepositorio;
 use App\Services\Catalogo\Interfaces\IJogoService;
-use Exception;
+
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 

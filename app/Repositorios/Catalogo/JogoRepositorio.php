@@ -47,7 +47,7 @@ class JogoRepositorio implements IJogoRepositorio
         return $this->modelo->newQuery()->count();
     }
 
-    public function buscarPorID(int $id): Jogo
+    public function buscarPorID(int $id): ?Jogo
     {
 
         return $this->modelo->newQuery()->find($id);

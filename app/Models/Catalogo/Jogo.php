@@ -49,8 +49,8 @@ class Jogo extends Model
     public function editar(String $nome, int $desenvolvedora): self
     {
 
-        $this->$nome = $nome;
-        $this->desenvolvedora = $desenvolvedora;
+        $this->nome = $nome;
+        $this->desenvolvedora_id = $desenvolvedora;
 
         return $this;
     }
