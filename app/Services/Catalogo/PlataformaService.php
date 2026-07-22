@@ -6,6 +6,7 @@ use App\Http\DTO\Catalogo\PlataformaDTO;
 use App\Models\Catalogo\Plataforma;
 use App\Repositorios\Catalogo\Interfaces\IPlataformaRepositorio;
 use App\Services\Catalogo\Interfaces\IPlataformaService;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -37,6 +38,7 @@ class PlataformaService implements IPlataformaService
         $plataforma = $this->plataforma_repositorio->buscarPorId($id);
         throw_unless($plataforma, new \Exception('Plataforma não encontrada'));
         DB::transaction(function () use ($plataforma) {
+            throw_if($plataforma->jogos()->exists(), new \Exception('Existem jogos vinculados a plataforma selecionada.'));
             $this->plataforma_repositorio->remover($plataforma);
         });
     }
@@ -63,7 +65,7 @@ class PlataformaService implements IPlataformaService
     }
 
 
-    
+
     public function contarTodas(): int
     {
         return $this->plataforma_repositorio->contarTodas();
