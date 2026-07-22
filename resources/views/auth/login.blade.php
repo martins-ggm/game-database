@@ -144,7 +144,7 @@
                         data: JSON.stringify({
                             email: $('#email').val(),
                             password: $('#password').val(),
-                            lembrar: $('#lembrar').is(':checked')
+                            lembrar: $('#lembrar').val()
                         }),
                         success: function(response) {
                             $('#mensagem')

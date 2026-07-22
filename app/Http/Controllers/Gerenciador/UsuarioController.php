@@ -48,9 +48,10 @@ class UsuarioController extends Controller
     {
 
         $dto = UsuarioLoginDTO::fromRequest(request: $request, bool_validar_login: true);
-        $usuario = $this->usuario_service->autenticar(dados: $dto);
 
         $request->session()->regenerate();
+
+        $usuario = $this->usuario_service->autenticar(dados: $dto);
 
         return response()->json(
             data: [

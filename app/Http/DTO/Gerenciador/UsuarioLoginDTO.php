@@ -50,7 +50,7 @@ class UsuarioLoginDTO
         Validator::make($this->todosAtributos(), [
 
 
-            'email' => ['required', 'email'],
+            'email' => ['required', 'string'],
             'password' => ['required', 'string'],
 
         ], [
