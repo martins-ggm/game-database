@@ -6,8 +6,8 @@ use app\Http\DTO\Catalogo\JogoDTO;
 use App\Models\Catalogo\Jogo;
 use App\Repositorios\Catalogo\Interfaces\IJogoRepositorio;
 use App\Services\Catalogo\Interfaces\IJogoService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
-
 
 
 class JogoService implements IJogoService
@@ -26,5 +26,21 @@ class JogoService implements IJogoService
             $jogo = Jogo::criar($dados->nome, $dados->desenvolvedora);
             return $this->jogorepositorio->criar($jogo, $dados->plataformas, $dados->generos);
         });
+    }
+
+
+  
+    public function buscarTodos(): Collection
+    {
+
+        return $this->jogorepositorio->buscarTodos();
+    }
+
+
+    public function contarTodos(): int
+    {
+
+    return $this->jogorepositorio->contarTodos();
+        
     }
 }

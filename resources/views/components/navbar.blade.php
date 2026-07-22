@@ -1,4 +1,3 @@
-{{-- CSRF token usado pelo AJAX de logout --}}
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 {{-- Topbar sticky compartilhada das telas internas --}}
@@ -12,7 +11,6 @@
             <a href="#"
                 class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">LISTAS</a>
         </div>
-
         <a href="{{ route('gerenciador.dashboard.visualizar') }}"
             class="text-2xl sm:text-3xl font-black tracking-widest">
             GAME<span class="text-[#6B5B9E]">DB</span>
@@ -20,13 +18,12 @@
 
         <div class="flex items-center gap-8">
             @if (ehAdmin())
-                   <a href="{{ route('gerenciador.admin.visualizar') }}"
-                class="text-sm font-bold tracking-widest uppercase {{ request()->routeIs('gerenciador.admin.visualizar') ? '' : 'text-white/60' }} hover:text-[#6B5B9E] transition">ADMIN</a>
+                <a href="{{ route('gerenciador.admin.visualizar') }}"
+                    class="text-sm font-bold tracking-widest uppercase {{ request()->routeIs('gerenciador.admin.visualizar') ? '' : 'text-white/60' }} hover:text-[#6B5B9E] transition">ADMIN</a>
             @endif
-         
-            <a href="{{ route('gerenciador.usuario.perfil', auth()->id()) }}"
-                class="text-sm font-bold tracking-widest uppercase {{ request()->routeIs('gerenciador.usuario.perfil') ? '' : 'text-white/60' }} hover:text-[#6B5B9E] transition">PERFIL</a>
             @auth
+                <a href="{{ route('gerenciador.usuario.perfil', auth()->id()) }}"
+                    class="text-sm font-bold tracking-widest uppercase {{ request()->routeIs('gerenciador.usuario.perfil') ? '' : 'text-white/60' }} hover:text-[#6B5B9E] transition">PERFIL</a>
                 <a href="#" id="navbar-sair"
                     class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition cursor-pointer">SAIR</a>
             @endauth

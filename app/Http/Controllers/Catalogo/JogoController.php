@@ -24,20 +24,21 @@ class JogoController extends Controller
     public function __construct(
         protected IJogoService $jogoService,
         protected IPlataformaService $plataformaService,
-        protected IGeneroService $igeneroService,
-        protected IDesenvolvedoraService $idesenvolvedoraservice
+        protected IGeneroService $generoService,
+        protected IDesenvolvedoraService $desenvolvedoraservice
     ) {}
 
 
 
     public function novo(): View
     {
+        $plataformas = $this->plataformaService->buscarTodas();
+        $generos = $this->generoService->buscarTodos();
+        $desenvolvedoras = $this->desenvolvedoraservice->buscarTodas();
+        $jogos = $this->jogoService->buscarTodos();
 
 
-
-
-
-        return view(view: 'catalogo.jogos');
+        return view(view: 'catalogo.jogos', data: compact('plataformas', 'generos', 'desenvolvedoras', 'jogos'));
     }
 
 

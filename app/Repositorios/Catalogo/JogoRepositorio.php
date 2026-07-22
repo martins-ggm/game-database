@@ -4,6 +4,7 @@ namespace App\Repositorios\Catalogo;
 
 use App\Models\Catalogo\Jogo;
 use App\Repositorios\Catalogo\Interfaces\IJogoRepositorio;
+use Illuminate\Database\Eloquent\Collection;
 
 
 class JogoRepositorio implements IJogoRepositorio
@@ -30,5 +31,19 @@ class JogoRepositorio implements IJogoRepositorio
         $jogo->generos()->sync($generos);
 
         return $jogo;
+    }
+
+
+
+    public function buscarTodos(): Collection
+    {
+
+        return $this->modelo->newQuery()->get();
+    }
+
+
+    public function contarTodos(): int
+    {
+        return $this->modelo->newQuery()->count();
     }
 }

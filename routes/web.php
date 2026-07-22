@@ -12,8 +12,8 @@ use App\Models\Catalogo\Desenvolvedora;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('home');
+})->name('home');
 
 // Rotas gerenciador ----------->>>
 
@@ -28,15 +28,13 @@ Route::post('/usuario/autenticar', [UsuarioController::class, 'autenticar'])->na
 Route::post('/logout', [UsuarioController::class, 'logout'])->middleware(['auth'])->name('gerenciador.usuario.logout');
 
 
-
+Route::get('/dashboard', [DashboardController::class, 'visualizar'])->name('gerenciador.dashboard.visualizar');
 
 // Telas Autenticadas:
 
 Route::middleware('auth')->group(function () {
 
     Route::get('/perfil/{id}', [UsuarioController::class, 'visualizarPerfil'])->name('gerenciador.usuario.perfil');
-    Route::get('/dashboard', [DashboardController::class, 'visualizar'])->name('gerenciador.dashboard.visualizar');
-
 
     // Telas admin:
 

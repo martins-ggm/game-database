@@ -81,7 +81,7 @@ class UsuarioController extends Controller
         $request->session()->regenerateToken();
 
         return response()->json(
-            data: ['mensagem' => 'Até logo!', 'redirect' => route('gerenciador.usuario.login')],
+            data: ['mensagem' => 'Até logo!', 'redirect' => route('home')],
             status: 200
 
         );

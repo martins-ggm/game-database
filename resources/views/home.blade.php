@@ -23,10 +23,8 @@
     <header class="border-b border-white/10">
         <nav class="max-w-[1600px] mx-auto px-6 sm:px-12 py-5 flex items-center justify-between">
             <div class="flex items-center gap-8">
-                <a href="/"
-                    class="text-sm font-bold tracking-widest uppercase hover:text-[#6B5B9E] transition">HOME</a>
-                <a href="#destaques"
-                    class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">GAMES</a>
+                <a href="#novidades"
+                    class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">NEWS</a>
             </div>
 
             <a href="/" class="text-2xl sm:text-3xl font-black tracking-widest">
@@ -34,12 +32,21 @@
             </a>
 
             <div class="flex items-center gap-8">
-                <a href="#novidades"
-                    class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">NEWS</a>
-                <a href="{{ route('gerenciador.usuario.criar') }}"
-                    class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">REGISTER</a>
-                       <a href="{{ route('gerenciador.usuario.login') }}"
-                    class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">LOGIN</a>
+                @auth
+                    <p class="text-sm font-bold tracking-widest uppercase text-white/60 ">
+                        Olá, <a href="{{ route('gerenciador.usuario.perfil', auth()->id()) }}"
+                            class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">{{ auth()->user()->name }}</a>!
+                    </p>
+                    <a href="#" id="sair"
+                        class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition cursor-pointer">SAIR</a>
+                @else
+                    <a href="#novidades"
+                        class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">NEWS</a>
+                    <a href="{{ route('gerenciador.usuario.criar') }}"
+                        class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">REGISTER</a>
+                    <a href="{{ route('gerenciador.usuario.login') }}"
+                        class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">LOGIN</a>
+                @endauth
             </div>
         </nav>
     </header>
@@ -55,14 +62,25 @@
                 Sua biblioteca interativa de jogos. Catalogue, descubra e organize seu universo gamer em um só lugar.
             </p>
             <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                <a href="{{ route('gerenciador.usuario.criar') }}"
-                    class="px-8 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs hover:bg-[#8674B8] transition">
-                    Começar Agora
-                </a>
-                <a href="#novidades"
-                    class="px-8 py-3 border border-white/30 text-white font-black tracking-widest uppercase text-xs hover:border-[#6B5B9E] hover:text-[#6B5B9E] transition">
-                    Explorar
-                </a>
+                @auth
+                    <a href="{{ route('gerenciador.dashboard.visualizar') }}"
+                        class="px-8 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs hover:bg-[#8674B8] transition">
+                        Acessar
+                    </a>
+                    <a href="#novidades"
+                        class="px-8 py-3 border border-white/30 text-white font-black tracking-widest uppercase text-xs hover:border-[#6B5B9E] hover:text-[#6B5B9E] transition">
+                        Novidades!
+                    </a>
+                @else
+                    <a href="{{ route('gerenciador.usuario.criar') }}"
+                        class="px-8 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs hover:bg-[#8674B8] transition">
+                        Começar Agora
+                    </a>
+                    <a href="#novidades"
+                        class="px-8 py-3 border border-white/30 text-white font-black tracking-widest uppercase text-xs hover:border-[#6B5B9E] hover:text-[#6B5B9E] transition">
+                        Novidades!
+                    </a>
+                @endauth
             </div>
         </div>
     </section>
@@ -183,11 +201,38 @@
                     role="img" aria-label="Espurr — mascote"></div>
                 <p class="text-[10px] tracking-widest text-white/40 uppercase font-bold">&copy; 2026 Game Database</p>
             </div>
-            <p class="text-[10px] tracking-widest text-white/40 uppercase font-bold">Built with the SISP architecture
+            <p class="text-[10px] tracking-widest text-white/40 uppercase font-bold">Built with love ;)
             </p>
         </div>
     </footer>
-
 </body>
 
 </html>
+
+@auth
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        $(function() {
+            $('#sair').on('click', function(e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: "{{ route('gerenciador.usuario.logout') }}",
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    },
+                    success: function(response) {
+                        window.location.href = response.redirect;
+                    },
+                    error: function(xhr) {
+                        console.error('Logout failed:', xhr);
+                        window.location.href = "{{ route('gerenciador.usuario.login') }}";
+                    }
+                });
+            });
+        });
+    </script>
+@endauth
