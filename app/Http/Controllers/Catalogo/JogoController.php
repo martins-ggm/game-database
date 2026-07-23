@@ -69,4 +69,11 @@ class JogoController extends Controller
 
         return response()->json(['mensagem' => 'Jogo atualizado com sucesso!', 'jogo' => JogoResource::criar($jogo)], status: 200);
     }
+
+    public function buscar(Request $request): JsonResponse
+    {
+
+        $jogos = $this->jogoService->buscar($request->nome);
+        return response()->json(['jogos' => JogoResource::criar($jogos)], status: 200);
+    }
 }

@@ -6,7 +6,6 @@ use App\Models\Catalogo\Jogo;
 use App\Repositorios\Catalogo\Interfaces\IJogoRepositorio;
 use Illuminate\Database\Eloquent\Collection;
 
-
 class JogoRepositorio implements IJogoRepositorio
 {
 
@@ -70,5 +69,15 @@ class JogoRepositorio implements IJogoRepositorio
         $jogo->save();
 
         return $jogo;
+    }
+
+
+    public function buscar(?String $nome = null): Collection
+    {
+        return $this->modelo->newQuery()
+            ->when($nome, fn($query) => $query
+                ->where('nome', 'ilike', "%{$nome}%"))
+            ->orderBy('nome', 'asc')
+            ->get();
     }
 }

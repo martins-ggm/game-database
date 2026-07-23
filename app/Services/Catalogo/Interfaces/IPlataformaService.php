@@ -15,4 +15,5 @@ interface IPlataformaService
     public function editar(PlataformaDTO $dados): Plataforma;
     public function buscarTodas(): Collection;
     public function contarTodas(): int;
+    public function buscar(?string $nome = null): Collection;
 }

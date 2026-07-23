@@ -4,7 +4,8 @@ namespace App\Repositorios\Catalogo;
 
 use App\Models\Catalogo\Plataforma;
 use App\Repositorios\Catalogo\Interfaces\IPlataformaRepositorio;
-use Illuminate\Database\Eloquent\Collection;  
+use Illuminate\Database\Eloquent\Collection;
+
 
 class PlataformaRepositorio implements IPlataformaRepositorio
 {
@@ -57,5 +58,14 @@ class PlataformaRepositorio implements IPlataformaRepositorio
     public function contarTodas(): int
     {
         return $this->modelo->newQuery()->count();
+    }
+
+    public function buscar(?string $nome = null): Collection
+    {
+        return $this->modelo->newQuery()
+            ->when($nome, fn($query) => $query
+                ->where('nome', 'ilike', "%{$nome}%"))
+            ->orderBy('nome', 'asc')
+            ->get();
     }
 }

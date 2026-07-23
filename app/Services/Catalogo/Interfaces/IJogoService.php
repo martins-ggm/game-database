@@ -15,4 +15,5 @@ interface IJogoService
     public function contarTodos(): int;
     public function remover(int $id): void;
     public function editar(JogoDTO $dados): Jogo;
+    public function buscar(?String $nome = null): Collection;
 }

@@ -47,6 +47,12 @@
         {{-- feedback (o jQuery vai usar depois) --}}
         <div id="mensagem" class="hidden mb-4 p-3 border text-sm font-bold tracking-wide"></div>
 
+        {{-- busca --}}
+        <div class="mb-4">
+            <input type="text" id="busca" placeholder="Buscar por nome..." autocomplete="off"
+                class="w-full sm:max-w-sm px-4 py-3 bg-[#1C1B26] border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#6B5B9E] transition">
+        </div>
+
         {{-- tabela --}}
         <div class="bg-[#1C1B26] border border-white/10 overflow-x-auto">
             <table class="w-full text-sm">
@@ -235,9 +241,8 @@
                 return `${dia}/${mes}/${ano}`;
             }
 
-            function adicionarLinha(plataforma) {
-                $('#linha-vazia').remove();
-                const linha = `
+            function linhaHtml(plataforma) {
+                return `
                     <tr class="border-b border-white/5 hover:bg-[#25232F] transition">
                         <td class="px-5 py-4 font-bold">${escapar(plataforma.nome)}</td>
                         <td class="px-5 py-4 text-white/70">${formatarData(plataforma.lancamento)}</td>
@@ -248,7 +253,27 @@
                                 class="ml-4 text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-red-400 transition">Excluir</button>
                         </td>
                     </tr>`;
-                $('#tabela-plataformas').append(linha);
+            }
+
+            function adicionarLinha(plataforma) {
+                $('#linha-vazia').remove();
+                $('#tabela-plataformas').append(linhaHtml(plataforma));
+            }
+
+            function renderizarTabela(plataformas) {
+                const tbody = $('#tabela-plataformas');
+                tbody.empty();
+
+                if (plataformas.length === 0) {
+                    tbody.html(
+                        '<tr id="linha-vazia"><td colspan="3" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhuma plataforma encontrada</td></tr>'
+                    );
+                    return;
+                }
+
+                plataformas.forEach(function(plataforma) {
+                    tbody.append(linhaHtml(plataforma));
+                });
             }
 
             function atualizarLinha(plataforma) {
@@ -262,6 +287,38 @@
             // ---------- modal (abrir / fechar) ----------
             $('#btn-nova-plataforma').on('click', abrirModalNovo);
             $('[data-fechar-modal]').on('click', fecharModal);
+
+            // ---------- busca (com debounce) ----------
+            const urlBuscar = "{{ route('catalogo.plataforma.buscar') }}";
+            let timerBusca = null;
+            let reqBusca = null;
+
+            $('#busca').on('input', function () {
+                const termo = $(this).val();
+
+                clearTimeout(timerBusca);
+                timerBusca = setTimeout(function () {
+
+                    if (reqBusca) reqBusca.abort();
+
+                    reqBusca = $.ajax({
+                        url: urlBuscar,
+                        method: 'GET',
+                        data: { nome: termo },
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        },
+                        success: function (response) {
+                            renderizarTabela(response.plataformas);
+                        },
+                        error: function (xhr, status) {
+                            if (status === 'abort') return;
+                            mostrarErroMensagem(xhr.responseJSON?.message || 'Erro na busca.');
+                        }
+                    });
+                }, 300);
+            });
 
             // ---------- abrir modal em modo edição ----------
             $('#tabela-plataformas').on('click', '[data-editar-plataforma]', function () {

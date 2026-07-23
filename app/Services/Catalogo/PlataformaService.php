@@ -70,4 +70,14 @@ class PlataformaService implements IPlataformaService
     {
         return $this->plataforma_repositorio->contarTodas();
     }
+
+    public function buscar(?String $nome = null): Collection{
+
+        return $this->plataforma_repositorio->buscar($nome);
+
+
+
+    }
+
+
 }

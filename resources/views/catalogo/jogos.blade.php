@@ -9,9 +9,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <style>
-        body { font-family: 'Inter', system-ui, sans-serif; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+        }
     </style>
 </head>
 
@@ -47,16 +50,26 @@
         {{-- feedback --}}
         <div id="mensagem" class="hidden mb-4 p-3 border text-sm font-bold tracking-wide"></div>
 
+        {{-- busca --}}
+        <div class="mb-4">
+            <input type="text" id="busca" placeholder="Buscar por nome..." autocomplete="off"
+                class="w-full sm:max-w-sm px-4 py-3 bg-[#1C1B26] border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#6B5B9E] transition">
+        </div>
+
         {{-- tabela --}}
         <div class="bg-[#1C1B26] border border-white/10 overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
                     <tr class="border-b border-white/10 text-left">
                         <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40">Nome</th>
-                        <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40">Desenvolvedora</th>
-                        <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40">Plataformas</th>
-                        <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40">Gêneros</th>
-                        <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40 text-right">Ações</th>
+                        <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40">
+                            Desenvolvedora</th>
+                        <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40">Plataformas
+                        </th>
+                        <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40">Gêneros
+                        </th>
+                        <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40 text-right">
+                            Ações</th>
                     </tr>
                 </thead>
                 <tbody id="tabela-jogos">
@@ -64,8 +77,10 @@
                         <tr class="border-b border-white/5 hover:bg-[#25232F] transition">
                             <td class="px-5 py-4 font-bold">{{ $jogo->nome }}</td>
                             <td class="px-5 py-4 text-white/70">{{ $jogo->desenvolvedora?->nome ?? '—' }}</td>
-                            <td class="px-5 py-4 text-white/70">{{ $jogo->plataformas->pluck('nome')->implode(', ') ?: '—' }}</td>
-                            <td class="px-5 py-4 text-white/70">{{ $jogo->generos->pluck('nome')->implode(', ') ?: '—' }}</td>
+                            <td class="px-5 py-4 text-white/70">
+                                {{ $jogo->plataformas->pluck('nome')->implode(', ') ?: '—' }}</td>
+                            <td class="px-5 py-4 text-white/70">
+                                {{ $jogo->generos->pluck('nome')->implode(', ') ?: '—' }}</td>
                             <td class="px-5 py-4 text-right whitespace-nowrap">
                                 <button type="button" data-editar-jogo="{{ $jogo->id }}"
                                     data-desenvolvedora="{{ $jogo->desenvolvedora_id }}"
@@ -82,7 +97,8 @@
                         </tr>
                     @empty
                         <tr id="linha-vazia">
-                            <td colspan="5" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">
+                            <td colspan="5"
+                                class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">
                                 Nenhum jogo cadastrado
                             </td>
                         </tr>
@@ -94,9 +110,11 @@
 
     {{-- footer --}}
     <footer class="border-t border-white/10">
-        <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div
+            class="max-w-[1600px] mx-auto px-6 sm:px-12 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
             <p class="text-[10px] tracking-widest text-white/40 uppercase font-bold">&copy; 2026 Game Database</p>
-            <p class="text-[10px] tracking-widest text-white/40 uppercase font-bold">Built with the SISP architecture</p>
+            <p class="text-[10px] tracking-widest text-white/40 uppercase font-bold">Built with the SISP architecture
+            </p>
         </div>
     </footer>
 
@@ -110,7 +128,8 @@
 
             {{-- header do modal --}}
             <div class="flex items-center justify-between px-6 py-5 border-b border-white/10">
-                <h2 id="modal-titulo" class="text-lg font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-3">
+                <h2 id="modal-titulo"
+                    class="text-lg font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-3">
                     Novo Jogo
                 </h2>
                 <button type="button" data-fechar-modal
@@ -119,20 +138,23 @@
 
             {{-- erros de validação (jQuery preenche) --}}
             <ul id="erros"
-                class="hidden mx-6 mt-4 p-3 bg-red-500/10 border border-red-500/30 text-sm text-red-300 list-disc list-inside space-y-1"></ul>
+                class="hidden mx-6 mt-4 p-3 bg-red-500/10 border border-red-500/30 text-sm text-red-300 list-disc list-inside space-y-1">
+            </ul>
 
             {{-- form --}}
             <form id="form-jogo" class="p-6 space-y-5">
                 <input type="hidden" id="jogo_id" name="id">
 
                 <div>
-                    <label for="nome" class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Nome</label>
+                    <label for="nome"
+                        class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Nome</label>
                     <input type="text" id="nome" name="nome" placeholder="Nome do jogo"
                         class="w-full px-4 py-3 bg-[#11101A] border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#6B5B9E] transition">
                 </div>
 
                 <div>
-                    <label for="desenvolvedora_id" class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Desenvolvedora</label>
+                    <label for="desenvolvedora_id"
+                        class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Desenvolvedora</label>
                     <select id="desenvolvedora_id" name="desenvolvedora_id"
                         class="w-full px-4 py-3 bg-[#11101A] border border-white/10 text-white focus:outline-none focus:border-[#6B5B9E] transition">
                         <option value="">— Nenhuma —</option>
@@ -143,8 +165,10 @@
                 </div>
 
                 <div>
-                    <span class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Plataformas</span>
-                    <div class="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto p-3 bg-[#11101A] border border-white/10">
+                    <span
+                        class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Plataformas</span>
+                    <div
+                        class="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto p-3 bg-[#11101A] border border-white/10">
                         @forelse ($plataformas ?? [] as $plataforma)
                             <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-white/80">
                                 <input type="checkbox" name="plataformas[]" value="{{ $plataforma->id }}"
@@ -152,14 +176,17 @@
                                 {{ $plataforma->nome }}
                             </label>
                         @empty
-                            <span class="col-span-2 text-xs text-white/30 uppercase tracking-widest">Nenhuma plataforma cadastrada</span>
+                            <span class="col-span-2 text-xs text-white/30 uppercase tracking-widest">Nenhuma plataforma
+                                cadastrada</span>
                         @endforelse
                     </div>
                 </div>
 
                 <div>
-                    <span class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Gêneros</span>
-                    <div class="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto p-3 bg-[#11101A] border border-white/10">
+                    <span
+                        class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Gêneros</span>
+                    <div
+                        class="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto p-3 bg-[#11101A] border border-white/10">
                         @forelse ($generos ?? [] as $genero)
                             <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-white/80">
                                 <input type="checkbox" name="generos[]" value="{{ $genero->id }}"
@@ -167,7 +194,8 @@
                                 {{ $genero->nome }}
                             </label>
                         @empty
-                            <span class="col-span-2 text-xs text-white/30 uppercase tracking-widest">Nenhum gênero cadastrado</span>
+                            <span class="col-span-2 text-xs text-white/30 uppercase tracking-widest">Nenhum gênero
+                                cadastrado</span>
                         @endforelse
                     </div>
                 </div>
@@ -208,7 +236,8 @@
             <div class="p-6 space-y-1">
                 <p class="text-sm text-white/70">Tem certeza que deseja remover</p>
                 <p id="nome-remocao" class="text-base font-black tracking-wide text-white break-words"></p>
-                <p class="text-[10px] text-white/40 uppercase tracking-widest pt-3">Esta ação não pode ser desfeita.</p>
+                <p class="text-[10px] text-white/40 uppercase tracking-widest pt-3">Esta ação não pode ser desfeita.
+                </p>
             </div>
 
             {{-- ações --}}
@@ -286,14 +315,20 @@
             // ---------- render da linha ----------
             function listaNomes(itens) {
                 if (!itens || itens.length === 0) return '—';
-                return itens.map(function(i) { return escapar(i.nome); }).join(', ');
+                return itens.map(function(i) {
+                    return escapar(i.nome);
+                }).join(', ');
             }
 
             function linhaHtml(jogo) {
                 const dev = jogo.desenvolvedora ? escapar(jogo.desenvolvedora.nome) : '—';
                 const devId = jogo.desenvolvedora ? jogo.desenvolvedora.id : '';
-                const platIds = jogo.plataformas.map(function(p) { return p.id; }).join(',');
-                const genIds = jogo.generos.map(function(g) { return g.id; }).join(',');
+                const platIds = jogo.plataformas.map(function(p) {
+                    return p.id;
+                }).join(',');
+                const genIds = jogo.generos.map(function(g) {
+                    return g.id;
+                }).join(',');
 
                 return `
                     <tr class="border-b border-white/5 hover:bg-[#25232F] transition">
@@ -323,9 +358,57 @@
                     .replaceWith(linhaHtml(jogo));
             }
 
+            function renderizarTabela(jogos) {
+                const tbody = $('#tabela-jogos');
+                tbody.empty();
+
+                if (jogos.length === 0) {
+                    tbody.html(
+                        '<tr id="linha-vazia"><td colspan="5" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhum jogo encontrado</td></tr>'
+                    );
+                    return;
+                }
+
+                jogos.forEach(function(jogo) {
+                    tbody.append(linhaHtml(jogo));
+                });
+            }
+
             // ---------- modal (abrir / fechar) ----------
             $('#btn-novo-jogo').on('click', abrirModalNovo);
             $('[data-fechar-modal]').on('click', fecharModal);
+
+            // ---------- busca (com debounce) ----------
+            const urlBuscar = "{{ route('catalogo.jogo.buscar') }}";
+            let timerBusca = null;
+            let reqBusca = null;
+
+            $('#busca').on('input', function() {
+                const termo = $(this).val();
+
+                clearTimeout(timerBusca);
+                timerBusca = setTimeout(function() {
+
+                    if (reqBusca) reqBusca.abort();
+
+                    reqBusca = $.ajax({
+                        url: urlBuscar,
+                        method: 'GET',
+                        data: { nome: termo },
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        },
+                        success: function(response) {
+                            renderizarTabela(response.jogos);
+                        },
+                        error: function(xhr, status) {
+                            if (status === 'abort') return;
+                            mostrarErroMensagem(xhr.responseJSON?.message || 'Erro na busca.');
+                        }
+                    });
+                }, 300);
+            });
 
             // ---------- abrir modal em modo edição ----------
             $('#tabela-jogos').on('click', '[data-editar-jogo]', function() {

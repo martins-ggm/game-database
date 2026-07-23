@@ -64,4 +64,9 @@ class JogoService implements IJogoService
             return $this->jogorepositorio->editar($jogo, $dados->plataformas, $dados->generos);
         });
     }
+
+    public function buscar(?String $nome = null): Collection
+    {
+        return $this->jogorepositorio->buscar($nome);
+    }
 }
