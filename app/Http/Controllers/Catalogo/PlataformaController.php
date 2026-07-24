@@ -52,4 +52,13 @@ class PlataformaController extends Controller
 
         return response()->json(data: ['mensagem' => 'Alterado com sucesso!', 'plataforma' => PlataformaResource::criar($plataforma)], status: 200);
     }
+
+
+    public function buscar(Request $request): JsonResponse
+    {
+
+        $plataformas = $this->plataforma_service->buscar($request->nome);
+
+        return response()->json(['plataformas' => PlataformaResource::criar($plataformas)]);
+    }
 }

@@ -55,4 +55,14 @@ class DesenvolvedoraController extends Controller
 
         return Response()->json(['mensagem' => 'Desenvolvedora atualizada com sucesso!', 'desenvolvedora' => DesenvolvedoraResource::criar($desenvolvedora)],  status: 200);
     }
+
+
+
+    public function buscar(Request $request): JsonResponse
+    {
+
+        $desenvolvedoras = $this->desenvolvedoraService->buscar($request->nome);
+
+        return response()->json(['desenvolvedoras' => DesenvolvedoraResource::criar($desenvolvedoras)], status: 200);
+    }
 }

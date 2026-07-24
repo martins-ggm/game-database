@@ -35,42 +35,42 @@ class DesenvolvedoraService implements IDesenvolvedoraService
         return $this->desenvolvedoraRepositorio->buscarTodas();
     }
 
-    
+
     public function remover(int $id): void
     {
         $plataforma = $this->desenvolvedoraRepositorio->buscarPorId($id);
         throw_unless($plataforma, new \Exception('Desenvolvedora não encontrada'));
 
         DB::transaction(function () use ($plataforma) {
+            throw_if($plataforma->jogos()->exists(), new \Exception('Existem jogos vinculados a plataforma selecionada.'));
 
             $this->desenvolvedoraRepositorio->remover($plataforma);
-
         });
-
     }
 
-  
+
     public function editar(DesenvolvedoraDTO $dados): Desenvolvedora
     {
-        
-            $desenvolvedora = $this->desenvolvedoraRepositorio->buscarPorId($dados->id);
-            throw_if(!$desenvolvedora, new \Exception('Desenvolvedora não encontrada'));
 
-          return DB::transaction(function () use ($desenvolvedora, $dados) {
+        $desenvolvedora = $this->desenvolvedoraRepositorio->buscarPorId($dados->id);
+        throw_if(!$desenvolvedora, new \Exception('Desenvolvedora não encontrada'));
+
+        return DB::transaction(function () use ($desenvolvedora, $dados) {
 
             $desenvolvedora->editar(nome: $dados->nome);
 
             return $this->desenvolvedoraRepositorio->editar($desenvolvedora);
-
-            });
-
+        });
     }
 
-    public function contarTodas(): int {
+    public function contarTodas(): int
+    {
 
         return $this->desenvolvedoraRepositorio->contarTodas();
-
-
     }
 
+    public function buscar(?string $nome = null): Collection
+    {
+        return $this->desenvolvedoraRepositorio->buscar($nome);
+    }
 }
