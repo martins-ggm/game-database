@@ -61,6 +61,7 @@
             <table class="w-full text-sm">
                 <thead>
                     <tr class="border-b border-white/10 text-left">
+                        <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40">Capa</th>
                         <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40">Nome</th>
                         <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40">
                             Desenvolvedora</th>
@@ -75,6 +76,14 @@
                 <tbody id="tabela-jogos">
                     @forelse ($jogos ?? [] as $jogo)
                         <tr class="border-b border-white/5 hover:bg-[#25232F] transition">
+                            <td class="px-5 py-4">
+                                @if ($jogo->url_imagem_pequena)
+                                    <img src="{{ asset('storage/' . $jogo->url_imagem_pequena) }}" alt=""
+                                        class="w-12 h-16 object-cover border border-white/10">
+                                @else
+                                    <div class="w-12 h-16 bg-[#11101A] border border-white/10 flex items-center justify-center text-white/20 text-xs">—</div>
+                                @endif
+                            </td>
                             <td class="px-5 py-4 font-bold">{{ $jogo->nome }}</td>
                             <td class="px-5 py-4 text-white/70">{{ $jogo->desenvolvedora?->nome ?? '—' }}</td>
                             <td class="px-5 py-4 text-white/70">
@@ -86,6 +95,7 @@
                                     data-desenvolvedora="{{ $jogo->desenvolvedora_id }}"
                                     data-plataformas="{{ $jogo->plataformas->pluck('id')->implode(',') }}"
                                     data-generos="{{ $jogo->generos->pluck('id')->implode(',') }}"
+                                    data-imagem="{{ $jogo->url_imagem_pequena ? asset('storage/' . $jogo->url_imagem_pequena) : '' }}"
                                     class="text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-[#6B5B9E] transition">
                                     Editar
                                 </button>
@@ -97,7 +107,7 @@
                         </tr>
                     @empty
                         <tr id="linha-vazia">
-                            <td colspan="5"
+                            <td colspan="6"
                                 class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">
                                 Nenhum jogo cadastrado
                             </td>
@@ -200,6 +210,16 @@
                     </div>
                 </div>
 
+                {{-- upload de capa --}}
+                <div>
+                    <label for="imagem"
+                        class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Capa</label>
+                    <input type="file" id="imagem" name="imagem" accept="image/jpeg,image/png,image/webp"
+                        class="w-full text-sm text-white/70 bg-[#11101A] border border-white/10 p-2 file:mr-4 file:py-2 file:px-4 file:border-0 file:bg-[#6B5B9E] file:text-black file:font-black file:uppercase file:text-xs file:tracking-widest file:cursor-pointer hover:file:bg-[#8674B8]">
+                    <img id="preview-imagem" src="" alt=""
+                        class="hidden mt-3 w-36 h-48 object-cover border border-white/10">
+                </div>
+
                 {{-- ações do modal --}}
                 <div class="flex flex-col sm:flex-row gap-3 sm:justify-end pt-2">
                     <button type="button" data-fechar-modal
@@ -276,9 +296,14 @@
                 $('input[name="plataformas[]"], input[name="generos[]"]').prop('checked', false);
             }
 
+            function limparPreview() {
+                $('#preview-imagem').addClass('hidden').attr('src', '');
+            }
+
             function abrirModalNovo() {
                 $('#form-jogo')[0].reset();
                 limparCheckboxes();
+                limparPreview();
                 $('#jogo_id').val('');
                 $('#modal-titulo').text('Novo Jogo');
                 $('#erros').addClass('hidden').empty();
@@ -320,6 +345,12 @@
                 }).join(', ');
             }
 
+            function capaHtml(jogo) {
+                return jogo.imagem_pequena
+                    ? `<img src="${jogo.imagem_pequena}" alt="" class="w-12 h-16 object-cover border border-white/10">`
+                    : `<div class="w-12 h-16 bg-[#11101A] border border-white/10 flex items-center justify-center text-white/20 text-xs">—</div>`;
+            }
+
             function linhaHtml(jogo) {
                 const dev = jogo.desenvolvedora ? escapar(jogo.desenvolvedora.nome) : '—';
                 const devId = jogo.desenvolvedora ? jogo.desenvolvedora.id : '';
@@ -329,9 +360,11 @@
                 const genIds = jogo.generos.map(function(g) {
                     return g.id;
                 }).join(',');
+                const imagem = jogo.imagem_pequena || '';
 
                 return `
                     <tr class="border-b border-white/5 hover:bg-[#25232F] transition">
+                        <td class="px-5 py-4">${capaHtml(jogo)}</td>
                         <td class="px-5 py-4 font-bold">${escapar(jogo.nome)}</td>
                         <td class="px-5 py-4 text-white/70">${dev}</td>
                         <td class="px-5 py-4 text-white/70">${listaNomes(jogo.plataformas)}</td>
@@ -339,6 +372,7 @@
                         <td class="px-5 py-4 text-right whitespace-nowrap">
                             <button type="button" data-editar-jogo="${jogo.id}"
                                 data-desenvolvedora="${devId}" data-plataformas="${platIds}" data-generos="${genIds}"
+                                data-imagem="${imagem}"
                                 class="text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-[#6B5B9E] transition">Editar</button>
                             <button type="button" data-remover-jogo="${jogo.id}"
                                 class="ml-4 text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-red-400 transition">Excluir</button>
@@ -364,7 +398,7 @@
 
                 if (jogos.length === 0) {
                     tbody.html(
-                        '<tr id="linha-vazia"><td colspan="5" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhum jogo encontrado</td></tr>'
+                        '<tr id="linha-vazia"><td colspan="6" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhum jogo encontrado</td></tr>'
                     );
                     return;
                 }
@@ -377,6 +411,14 @@
             // ---------- modal (abrir / fechar) ----------
             $('#btn-novo-jogo').on('click', abrirModalNovo);
             $('[data-fechar-modal]').on('click', fecharModal);
+
+            // ---------- preview ao escolher arquivo ----------
+            $('#imagem').on('change', function() {
+                const arquivo = this.files[0];
+                if (arquivo) {
+                    $('#preview-imagem').attr('src', URL.createObjectURL(arquivo)).removeClass('hidden');
+                }
+            });
 
             // ---------- busca (com debounce) ----------
             const urlBuscar = "{{ route('catalogo.jogo.buscar') }}";
@@ -414,10 +456,11 @@
             $('#tabela-jogos').on('click', '[data-editar-jogo]', function() {
                 const botao = $(this);
                 const id = botao.attr('data-editar-jogo');
-                const nome = botao.closest('tr').find('td').eq(0).text().trim();
+                const nome = botao.closest('tr').find('td').eq(1).text().trim();
                 const devId = botao.attr('data-desenvolvedora') || '';
                 const platIds = (botao.attr('data-plataformas') || '').split(',').filter(Boolean);
                 const genIds = (botao.attr('data-generos') || '').split(',').filter(Boolean);
+                const imagem = botao.attr('data-imagem') || '';
 
                 $('#form-jogo')[0].reset();
                 limparCheckboxes();
@@ -431,6 +474,13 @@
                 genIds.forEach(function(gid) {
                     $('input[name="generos[]"][value="' + gid + '"]').prop('checked', true);
                 });
+
+                // mostra a capa atual (se tiver); o input de arquivo fica vazio
+                if (imagem) {
+                    $('#preview-imagem').attr('src', imagem).removeClass('hidden');
+                } else {
+                    limparPreview();
+                }
 
                 $('#modal-titulo').text('Editar Jogo');
                 $('#erros').addClass('hidden').empty();
@@ -454,22 +504,36 @@
                     :
                     "{{ route('catalogo.jogo.criar') }}"; // sem id → criar
 
+                // FormData (arquivo não vai por JSON)
+                const formData = new FormData();
+                formData.append('nome', $('#nome').val());
+
+                const dev = $('#desenvolvedora_id').val();
+                if (dev) formData.append('desenvolvedora', dev);
+
+                idsMarcados('plataformas[]').forEach(function(pid) {
+                    formData.append('plataformas[]', pid);
+                });
+                idsMarcados('generos[]').forEach(function(gid) {
+                    formData.append('generos[]', gid);
+                });
+
+                const arquivo = $('#imagem')[0].files[0];
+                if (arquivo) formData.append('imagem', arquivo); // só manda se escolheu
+
+                if (id) formData.append('id', id);
+
                 $.ajax({
                     url: url,
                     method: 'POST',
+                    data: formData,
+                    processData: false, // não serializa o FormData
+                    contentType: false, // deixa o browser pôr o boundary do multipart
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                         'X-Requested-With': 'XMLHttpRequest',
                         'Accept': 'application/json'
                     },
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        id: id || null,
-                        nome: $('#nome').val(),
-                        desenvolvedora: $('#desenvolvedora_id').val() || null,
-                        plataformas: idsMarcados('plataformas[]'),
-                        generos: idsMarcados('generos[]')
-                    }),
                     success: function(response) {
                         if (id) {
                             atualizarLinha(response.jogo);
@@ -504,7 +568,7 @@
             $('#tabela-jogos').on('click', '[data-remover-jogo]', function() {
                 removerId = $(this).attr('data-remover-jogo');
                 removerLinha = $(this).closest('tr');
-                const nome = removerLinha.find('td').eq(0).text().trim();
+                const nome = removerLinha.find('td').eq(1).text().trim();
 
                 $('#nome-remocao').text(nome);
                 $('#mensagem').addClass('hidden').empty();
@@ -531,7 +595,7 @@
                         linha.remove();
                         if ($('#tabela-jogos tr').length === 0) {
                             $('#tabela-jogos').html(
-                                '<tr id="linha-vazia"><td colspan="5" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhum jogo cadastrado</td></tr>'
+                                '<tr id="linha-vazia"><td colspan="6" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhum jogo cadastrado</td></tr>'
                             );
                         }
                         fecharRemocao();

@@ -10,7 +10,6 @@ use App\Services\Imagem\Interfaces\IImagemService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
-
 class JogoService implements IJogoService
 {
 
@@ -106,5 +105,12 @@ class JogoService implements IJogoService
     public function buscar(?String $nome = null): Collection
     {
         return $this->jogorepositorio->buscar($nome);
+    }
+
+    public function CadastradosRecentes(): Collection
+    {
+        
+    return $this->jogorepositorio->cadastradosRecentes();
+
     }
 }

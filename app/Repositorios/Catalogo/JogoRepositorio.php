@@ -59,7 +59,7 @@ class JogoRepositorio implements IJogoRepositorio
 
     public function editar(Jogo $jogo, array $plataformas, array $generos): Jogo
     {
-    
+
 
         throw_if($this->modelo->newQuery()
             ->where('nome', $jogo->nome)
@@ -81,5 +81,12 @@ class JogoRepositorio implements IJogoRepositorio
                 ->where('nome', 'ilike', "%{$nome}%"))
             ->orderBy('nome', 'asc')
             ->get();
+    }
+
+
+    public function cadastradosRecentes(): Collection
+    {
+
+        return $this->modelo->newQuery()->latest()->take(10)->get();
     }
 }

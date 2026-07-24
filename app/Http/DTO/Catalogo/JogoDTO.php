@@ -63,7 +63,7 @@ class JogoDTO
                 'plataformas' =>  ['required', 'array'],
                 'plataformas.*' => ['integer'],
 
-                'imagem' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:2048']
+                'imagem' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048']
             ]
         )->validate();
     }
@@ -92,7 +92,7 @@ class JogoDTO
                 'plataformas' =>  ['required', 'array'],
                 'plataformas.*' => ['integer'],
 
-                'imagem' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:2048']
+                'imagem' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048']
             ]
         )->validate();
     }

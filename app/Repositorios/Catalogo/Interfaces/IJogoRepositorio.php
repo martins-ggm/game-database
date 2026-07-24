@@ -14,5 +14,7 @@ public function buscarPorID(int $id): ?jogo;
 public function remover(jogo $jogo): void;
 public function editar(jogo $jogo, array $plataformas, array $generos): jogo;
 public function buscar(?String $nome = null): Collection;
+public function cadastradosRecentes(): Collection;
+
 
 }
