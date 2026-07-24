@@ -2,9 +2,10 @@
 
 namespace App\Http\DTO\Catalogo;
 
+
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
-
+use Illuminate\Http\UploadedFile;
 
 class JogoDTO
 {
@@ -15,7 +16,8 @@ class JogoDTO
         public ?string $nome,
         public ?int $desenvolvedora,
         public ?array $generos,
-        public ?array $plataformas
+        public ?array $plataformas,
+        public ?UploadedFile $imagem
     ) {}
 
     public static function fromRequest(Request $request, bool $validarNovo): self
@@ -26,7 +28,8 @@ class JogoDTO
             nome: $request->nome,
             desenvolvedora: $request->desenvolvedora,
             generos: $request->generos,
-            plataformas: $request->plataformas
+            plataformas: $request->plataformas,
+            imagem: $request->file('imagem')
         );
 
         if ($validarNovo) {
@@ -47,7 +50,8 @@ class JogoDTO
                 'nome' => $this->nome,
                 'desenvolvedora' => $this->desenvolvedora,
                 'generos' => $this->generos,
-                'plataformas' => $this->plataformas
+                'plataformas' => $this->plataformas,
+                'imagem' => $this->imagem
             ],
             [
                 'nome' => ['required', 'string', 'max:255'],
@@ -57,7 +61,9 @@ class JogoDTO
                 'generos.*' => ['integer'],
 
                 'plataformas' =>  ['required', 'array'],
-                'plataformas.*' => ['integer']
+                'plataformas.*' => ['integer'],
+
+                'imagem' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:2048']
             ]
         )->validate();
     }
@@ -72,7 +78,8 @@ class JogoDTO
                 'nome' => $this->nome,
                 'desenvolvedora' => $this->desenvolvedora,
                 'generos' => $this->generos,
-                'plataformas' => $this->plataformas
+                'plataformas' => $this->plataformas,
+                'imagem' => $this->imagem
             ],
             [
                 'id' =>  ['required', 'integer'],
@@ -83,7 +90,9 @@ class JogoDTO
                 'generos.*' => ['integer'],
 
                 'plataformas' =>  ['required', 'array'],
-                'plataformas.*' => ['integer']
+                'plataformas.*' => ['integer'],
+
+                'imagem' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:2048']
             ]
         )->validate();
     }

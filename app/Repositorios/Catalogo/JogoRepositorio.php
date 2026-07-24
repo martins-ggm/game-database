@@ -59,6 +59,8 @@ class JogoRepositorio implements IJogoRepositorio
 
     public function editar(Jogo $jogo, array $plataformas, array $generos): Jogo
     {
+    
+
         throw_if($this->modelo->newQuery()
             ->where('nome', $jogo->nome)
             ->where('id', '!=', $jogo->id)
