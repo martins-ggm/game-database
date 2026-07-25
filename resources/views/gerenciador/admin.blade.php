@@ -76,13 +76,13 @@
                         $modulos = [
                             [
                                 'titulo' => 'Jogos',
-                                'total' => 42,
+                                'total' => $totalJogos,
                                 'descricao' =>
                                     'Cadastre títulos, edite metadados, vincule a plataformas e desenvolvedoras.',
                             ],
                             [
                                 'titulo' => 'Desenvolvedoras',
-                                'total' => 12,
+                                'total' => $totalDesenvolvedoras,
                                 'descricao' => 'Mantenha o catálogo de estúdios e suas informações públicas.',
                             ],
                             [
@@ -92,7 +92,7 @@
                             ],
                             [
                                 'titulo' => 'Gêneros',
-                                'total' => 15,
+                                'total' => $totalGeneros,
                                 'descricao' => 'Categorias usadas para filtrar e organizar o catálogo principal.',
                             ],
                         ];

@@ -60,7 +60,7 @@ class GeneroRepositorio implements IGeneroRepositorio
     public function buscar(?string $nome = null): Collection
     {
         return $this->modelo->newQuery()
-            ->when($nome, fn($query) => $query->where('nome', 'like', "%{$nome}%"))
+            ->when($nome, fn($query) => $query->where('nome', 'ilike', "%{$nome}%"))
             ->orderBy('nome', 'asc')
             ->get();
     }

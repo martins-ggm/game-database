@@ -48,6 +48,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/jogo/criar', [JogoController::class, 'criar'])->name('catalogo.jogo.criar');
         Route::post('/jogo/remover/{id}', [JogoController::class, 'remover'])->name('catalogo.jogo.remover');
         Route::post('/jogo/editar/{id}', [JogoController::class, 'editar'])->name('catalogo.jogo.editar');
+        Route::get('/jogo/buscar', [JogoController::class, 'buscar'])->name('catalogo.jogo.buscar');
 
         // plataforma
 
@@ -55,6 +56,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/plataforma/criar', [PlataformaController::class, 'criar'])->name('catalogo.plataforma.criar');
         Route::post('/plataforma/remover/{id}', [PlataformaController::class, 'remover'])->name('catalogo.plataforma.remover');
         Route::post('/plataforma/editar/{id}', [PlataformaController::class, 'editar'])->name('catalogo.plataforma.editar');
+        Route::get('/plataforma/buscar', [PlataformaController::class, 'buscar'])->name('catalogo.plataforma.buscar');
 
         // Desenvolvedora
 
@@ -62,6 +64,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/desenvolvedora/criar', [DesenvolvedoraController::class, 'criar'])->name('catalogo.desenvolvedora.criar');
         Route::post('/desenvolvedora/remover/{id}', [DesenvolvedoraController::class, 'remover'])->name('catalogo.desenvolvedora.remover');
         Route::post('/desenvolvedora/editar/{id}', [DesenvolvedoraController::class, 'editar'])->name('catalogo.desenvolvedora.editar');
+        Route::get('/desenvolvedora/buscar', [DesenvolvedoraController::class, 'buscar'])->name('catalogo.desenvolvedora.buscar');
 
         // Genero
 

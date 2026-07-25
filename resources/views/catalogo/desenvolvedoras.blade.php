@@ -50,6 +50,12 @@
         {{-- feedback (o jQuery vai usar depois) --}}
         <div id="mensagem" class="hidden mb-4 p-3 border text-sm font-bold tracking-wide"></div>
 
+        {{-- busca --}}
+        <div class="mb-4">
+            <input type="text" id="busca" placeholder="Buscar por nome..." autocomplete="off"
+                class="w-full sm:max-w-sm px-4 py-3 bg-[#1C1B26] border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#6B5B9E] transition">
+        </div>
+
         {{-- tabela --}}
         <div class="bg-[#1C1B26] border border-white/10 overflow-x-auto">
             <table class="w-full text-sm">
@@ -231,9 +237,8 @@
                 $('#erros').removeClass('hidden');
             }
 
-            function adicionarLinha(desenvolvedora) {
-                $('#linha-vazia').remove();
-                const linha = `
+            function linhaHtml(desenvolvedora) {
+                return `
                     <tr class="border-b border-white/5 hover:bg-[#25232F] transition">
                         <td class="px-5 py-4 font-bold">${escapar(desenvolvedora.nome)}</td>
                         <td class="px-5 py-4 text-right whitespace-nowrap">
@@ -243,7 +248,27 @@
                                 class="ml-4 text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-red-400 transition">Excluir</button>
                         </td>
                     </tr>`;
-                $('#tabela-desenvolvedoras').append(linha);
+            }
+
+            function adicionarLinha(desenvolvedora) {
+                $('#linha-vazia').remove();
+                $('#tabela-desenvolvedoras').append(linhaHtml(desenvolvedora));
+            }
+
+            function renderizarTabela(desenvolvedoras) {
+                const tbody = $('#tabela-desenvolvedoras');
+                tbody.empty();
+
+                if (desenvolvedoras.length === 0) {
+                    tbody.html(
+                        '<tr id="linha-vazia"><td colspan="2" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhuma desenvolvedora encontrada</td></tr>'
+                    );
+                    return;
+                }
+
+                desenvolvedoras.forEach(function(desenvolvedora) {
+                    tbody.append(linhaHtml(desenvolvedora));
+                });
             }
 
             function atualizarLinha(desenvolvedora) {
@@ -256,6 +281,38 @@
             // ---------- modal (abrir / fechar) ----------
             $('#btn-nova-desenvolvedora').on('click', abrirModalNovo);
             $('[data-fechar-modal]').on('click', fecharModal);
+
+            // ---------- busca (com debounce) ----------
+            const urlBuscar = "{{ route('catalogo.desenvolvedora.buscar') }}";
+            let timerBusca = null;
+            let reqBusca = null;
+
+            $('#busca').on('input', function () {
+                const termo = $(this).val();
+
+                clearTimeout(timerBusca);
+                timerBusca = setTimeout(function () {
+
+                    if (reqBusca) reqBusca.abort();
+
+                    reqBusca = $.ajax({
+                        url: urlBuscar,
+                        method: 'GET',
+                        data: { nome: termo },
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        },
+                        success: function (response) {
+                            renderizarTabela(response.desenvolvedoras);
+                        },
+                        error: function (xhr, status) {
+                            if (status === 'abort') return;
+                            mostrarErroMensagem(xhr.responseJSON?.message || 'Erro na busca.');
+                        }
+                    });
+                }, 300);
+            });
 
             // ---------- abrir modal em modo edição ----------
             $('#tabela-desenvolvedoras').on('click', '[data-editar-desenvolvedora]', function() {

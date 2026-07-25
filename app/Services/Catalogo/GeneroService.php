@@ -7,6 +7,7 @@ use App\Http\DTO\Catalogo\GeneroDTO;
 use App\Models\Catalogo\Genero;
 use App\Repositorios\Catalogo\Interfaces\IGeneroRepositorio;
 use App\Services\Catalogo\Interfaces\IGeneroService;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -37,7 +38,7 @@ class GeneroService implements IGeneroService
 
 
         db::transaction(function () use ($genero) {
-
+            throw_if($genero->jogos()->exists(), new \Exception('Existem jogos vinculados ao gênero informado.'));
             $this->generoRepositorio->remover($genero);
         });
     }
@@ -45,42 +46,36 @@ class GeneroService implements IGeneroService
 
     public function editar(GeneroDTO $dados): Genero
     {
-       
+
         $genero = $this->generoRepositorio->buscarPorId($dados->id);
 
         throw_unless($genero, new \Exception('Genero não encontrado'));
 
-      return DB::transaction(function () use ($genero, $dados) {
+        return DB::transaction(function () use ($genero, $dados) {
 
-            $genero->editar($dados->nome);      
+            $genero->editar($dados->nome);
             return $this->generoRepositorio->editar($genero);
         });
-
-
     }
 
-   
+
     public function buscarTodos(): Collection
     {
-        
+
         return $this->generoRepositorio->buscarTodos();
-
-
     }
 
 
     public function buscar(?String $nome = null): Collection
     {
-        
-        return $this->generoRepositorio->buscar($nome);
 
+        return $this->generoRepositorio->buscar($nome);
     }
 
 
     public function contarTodos(): Int
     {
 
-    return $this->generoRepositorio->contarTodos();
-        
+        return $this->generoRepositorio->contarTodos();
     }
 }

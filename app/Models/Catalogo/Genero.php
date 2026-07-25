@@ -25,11 +25,8 @@ class Genero extends Model
 
     public static function criar(String $nome): self
     {
-
-
         $genero = new self();
         $genero->nome = $nome;
-
         return $genero;
     }
 

@@ -5,6 +5,7 @@ namespace App\Models\Catalogo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Http\JsonResponse;
 
 class Desenvolvedora extends Model
 {
@@ -38,4 +39,5 @@ class Desenvolvedora extends Model
 
         return $this;
     }
+
 }

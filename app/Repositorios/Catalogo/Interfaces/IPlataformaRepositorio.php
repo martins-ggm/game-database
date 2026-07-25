@@ -16,4 +16,5 @@ interface IPlataformaRepositorio
     public function editar (Plataforma $plataforma): Plataforma;
     public function buscarTodas(): Collection;
     public function contarTodas(): int;
+    public function buscar(?String $nome = null): Collection;
 }

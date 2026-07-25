@@ -3,7 +3,6 @@
 namespace App\Repositorios\Catalogo;
 
 use App\Models\Catalogo\Desenvolvedora;
-use App\Models\Catalogo\Plataforma;
 use App\Repositorios\Catalogo\Interfaces\IDesenvolvedoraRepositorio;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -61,7 +60,15 @@ class DesenvolvedoraRepositorio implements IDesenvolvedoraRepositorio
     {
 
         return $this->modelo->newQuery()->count();
+    }
 
-        
+
+    public function buscar(?string $nome = null): Collection
+    {
+
+        return $this->modelo->newQuery()->when($nome, fn($query) => $query
+            ->where('nome', 'ilike', "%{$nome}%"))
+            ->orderBy('nome', 'desc')
+            ->get();
     }
 }

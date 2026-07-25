@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Storage;
 
 class JogoResource extends JsonResource
 {
@@ -14,20 +15,20 @@ class JogoResource extends JsonResource
         return [
             'id'   => $this->id,
             'nome' => $this->nome,
+            'imagem_grande' => $this->url_imagem_grande ? Storage::url($this->url_imagem_grande) : null,
+            'imagem_pequena' => $this->url_imagem_pequena ? Storage::url($this->url_imagem_pequena) : null,
 
-            // belongsTo → 1 objeto (ou null)
             'desenvolvedora' => $this->desenvolvedora ? [
                 'id'   => $this->desenvolvedora->id,
                 'nome' => $this->desenvolvedora->nome,
             ] : null,
 
-            // N:N → arrays de { id, nome }
-            'plataformas' => $this->plataformas->map(fn ($plataforma) => [
+            'plataformas' => $this->plataformas->map(fn($plataforma) => [
                 'id'   => $plataforma->id,
                 'nome' => $plataforma->nome,
             ])->values(),
 
-            'generos' => $this->generos->map(fn ($genero) => [
+            'generos' => $this->generos->map(fn($genero) => [
                 'id'   => $genero->id,
                 'nome' => $genero->nome,
             ])->values(),
