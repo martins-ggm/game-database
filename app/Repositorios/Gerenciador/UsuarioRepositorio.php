@@ -27,18 +27,30 @@ class UsuarioRepositorio implements IUsuarioRepositorio
             $this->modelo->newQuery()->where('email', $usuario->email)->exists(),
             new \Exception('E-mail já cadastrado')
         );
-
+        throw_if(
+            $this->modelo->newQuery()->where('nome', $usuario->nome)->exists(),
+            new \Exception('Nome de usuário já em uso')
+        );
 
         $usuario->save();
 
         return $usuario;
     }
 
-
-
-
     public function buscarPorId(int $id): ?Usuario
     {
         return $this->modelo->newQuery()->with('perfil')->find($id);
+    }
+
+    public function editar(Usuario $usuario): Usuario
+    {
+
+        throw_if(
+            $this->modelo->newQuery()->where('nome', $usuario->nome)->where('id', '!=', $usuario->id)->exists(),
+            new \Exception('Nome de usuário já em uso')
+        );
+
+        $usuario->save();
+        return $usuario;
     }
 }

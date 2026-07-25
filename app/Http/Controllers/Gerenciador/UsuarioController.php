@@ -9,9 +9,7 @@ use App\Http\DTO\Gerenciador\UsuarioDTO;
 use App\Http\DTO\Gerenciador\UsuarioLoginDTO;
 use App\Http\Resources\Gerenciador\Usuario\UsuarioResource;
 use App\Services\Gerenciador\Interfaces\IUsuarioService;
-use BcMath\Number;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 
 class UsuarioController extends Controller
 {
@@ -47,7 +45,7 @@ class UsuarioController extends Controller
     public function autenticar(Request $request)
     {
 
-        $dto = UsuarioLoginDTO::fromRequest(request: $request, bool_validar_login: true);
+        $dto = UsuarioLoginDTO::fromRequest(request: $request, bool_validar_login: false);
         $usuario = $this->usuario_service->autenticar(dados: $dto);
 
         $request->session()->regenerate();
@@ -85,5 +83,16 @@ class UsuarioController extends Controller
             status: 200
 
         );
+    }
+
+    public function editar(Request $request): JsonResponse
+    {
+
+        $dto = UsuarioDTO::fromRequest($request);
+        abort_unless(auth()->id() === $dto->id, 403, 'Ação não autorizada.');
+
+        $usuario = $this->usuario_service->editar($dto);
+
+        return response()->json(['mensagem' => 'Usuario atualizado com sucesso!', 'usuario' => UsuarioResource::criar($usuario)], status: 200);
     }
 }

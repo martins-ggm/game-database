@@ -52,9 +52,9 @@
 
             <form id="form-criar-usuario" class="space-y-5 bg-[#1C1B26] border border-white/10 p-6 sm:p-8">
                 <div>
-                    <label for="name"
+                    <label for="nome"
                         class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Nome</label>
-                    <input type="text" id="name" name="name" placeholder="Digite seu nome"
+                    <input type="text" id="nome" name="nome" placeholder="Digite seu nome"
                         class="w-full px-4 py-3 bg-[#11101A] border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#6B5B9E] transition">
                 </div>
 
@@ -129,7 +129,7 @@
                     },
                     contentType: 'application/json',
                     data: JSON.stringify({
-                        name: $('#name').val(),
+                        nome: $('#nome').val(),
                         email: $('#email').val(),
                         password: $('#password').val(),
                         password_confirmation: $('#password_confirmation').val()

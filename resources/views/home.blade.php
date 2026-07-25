@@ -35,7 +35,7 @@
                 @auth
                     <p class="text-sm font-bold tracking-widest uppercase text-white/60 ">
                         Olá, <a href="{{ route('gerenciador.usuario.perfil', auth()->id()) }}"
-                            class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">{{ auth()->user()->name }}</a>!
+                            class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">{{ auth()->user()->nome }}</a>!
                     </p>
                     <a href="#" id="sair"
                         class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition cursor-pointer">SAIR</a>
@@ -65,7 +65,7 @@
                 @auth
                     <a href="{{ route('gerenciador.dashboard.visualizar') }}"
                         class="px-8 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs hover:bg-[#8674B8] transition">
-                        Acessar como {{ auth()->user()->name }}.
+                        Acessar como {{ auth()->user()->nome }}.
                     </a>
                     <a href="#" id="trocar-usuario"
                         class="px-8 py-3 border border-white/30 text-white font-black tracking-widest uppercase text-xs hover:border-[#6B5B9E] hover:text-[#6B5B9E] transition">

@@ -21,6 +21,11 @@
 
     <x-navbar />
 
+    @php
+        // dono = tem alguém logado E é o mesmo usuário do perfil aberto.
+        // guest -> auth()->id() é null -> false -> botão/modal nem são renderizados.
+        $ehDono = auth()->check() && auth()->id() === $usuario->id;
+    @endphp
 
     <main class="flex-1">
 
@@ -29,21 +34,36 @@
             <div class="flex flex-col sm:flex-row items-start gap-6 sm:gap-8">
 
                 {{-- avatar --}}
-                <div
-                    class="w-32 h-32 sm:w-40 sm:h-40 bg-[#1C1B26] border border-white/10 flex items-center justify-center flex-shrink-0">
-
-                    <img src="{{ $usuario->str_url_foto_perfil }}" alt="foto de perfil">
-
+                <div id="avatar-container"
+                    class="w-32 h-32 sm:w-40 sm:h-40 bg-[#1C1B26] border border-white/10 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    @if ($usuario->url_imagem_grande)
+                        <img id="avatar-img" src="{{ Storage::url($usuario->url_imagem_grande) }}"
+                            alt="Foto de {{ $usuario->nome }}" class="w-full h-full object-cover">
+                    @else
+                        <span class="text-5xl sm:text-6xl font-black text-[#6B5B9E] uppercase">{{ mb_substr($usuario->nome, 0, 1) }}</span>
+                    @endif
                 </div>
 
                 {{-- nome + stats --}}
                 <div class="flex-1 w-full">
-                    <p class="text-[10px] font-black tracking-widest uppercase text-white/40 mb-2">Jogador</p>
-                    <h1
-                        class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight uppercase leading-[0.95] mb-3">
-                        {{ $usuario->name }}
-                    </h1>
-                    <p class="text-sm text-white/60 mb-6">square.ggm@gmail.com · Membro desde 2026</p>
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <p class="text-[10px] font-black tracking-widest uppercase text-white/40 mb-2">Jogador</p>
+                            <h1 id="perfil-nome"
+                                class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight uppercase leading-[0.95] mb-3">
+                                {{ $usuario->nome }}
+                            </h1>
+                            <p class="text-sm text-white/60 mb-6">{{ $usuario->email }} · Membro desde
+                                {{ $usuario->created_at?->format('Y') }}</p>
+                        </div>
+
+                        @if ($ehDono)
+                            <button id="abrir-editar"
+                                class="flex-shrink-0 px-5 py-2 border border-white/30 text-white font-black tracking-widest uppercase text-[10px] hover:border-[#6B5B9E] hover:text-[#6B5B9E] transition">
+                                Editar perfil
+                            </button>
+                        @endif
+                    </div>
 
                     <div class="grid grid-cols-2 gap-1 max-w-md">
                         <div class="bg-[#1C1B26] py-6 text-center">
@@ -153,6 +173,144 @@
             </p>
         </div>
     </footer>
+
+    @if ($ehDono)
+        {{-- modal de edição do perfil (só o dono recebe esse HTML) --}}
+        <div id="modal-editar" class="hidden fixed inset-0 z-50 bg-black/70 items-center justify-center px-4">
+            <div class="w-full max-w-md bg-[#1C1B26] border border-white/10 p-6 sm:p-8">
+                <h2 class="text-xl font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-4 mb-6">
+                    Editar perfil
+                </h2>
+
+                <ul id="editar-erros"
+                    class="hidden mb-4 p-3 bg-red-500/10 border border-red-500/30 text-sm text-red-300 list-disc list-inside space-y-1">
+                </ul>
+
+                <form id="form-editar-perfil" class="space-y-5">
+                    <div>
+                        <label for="editar-nome"
+                            class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Nome</label>
+                        <input type="text" id="editar-nome" value="{{ $usuario->nome }}"
+                            class="w-full px-4 py-3 bg-[#11101A] border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#6B5B9E] transition">
+                    </div>
+
+                    <div>
+                        <label
+                            class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Foto de perfil</label>
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-24 h-24 flex-shrink-0 bg-[#11101A] border border-white/10 overflow-hidden flex items-center justify-center">
+                                <img id="preview-avatar"
+                                    src="{{ $usuario->url_imagem_grande ? Storage::url($usuario->url_imagem_grande) : '' }}"
+                                    class="w-full h-full object-cover {{ $usuario->url_imagem_grande ? '' : 'hidden' }}">
+                                <span id="preview-avatar-vazio"
+                                    class="text-[10px] text-white/30 uppercase tracking-widest {{ $usuario->url_imagem_grande ? 'hidden' : '' }}">Sem foto</span>
+                            </div>
+                            <input type="file" id="editar-imagem" accept="image/jpeg,image/png,image/webp"
+                                class="text-xs text-white/60 file:mr-3 file:py-2 file:px-4 file:border-0 file:bg-[#6B5B9E] file:text-black file:font-black file:uppercase file:tracking-widest file:text-[10px] file:cursor-pointer">
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3 pt-2">
+                        <button type="button" id="cancelar-editar"
+                            class="flex-1 py-3 border border-white/30 text-white font-black tracking-widest uppercase text-xs hover:border-white/60 transition">
+                            Cancelar
+                        </button>
+                        <button type="submit"
+                            class="flex-1 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs hover:bg-[#8674B8] transition">
+                            Salvar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {{-- jQuery já foi carregado pelo x-navbar (bloco @auth), o dono está sempre autenticado --}}
+        <script>
+            $(function() {
+                const $modal = $('#modal-editar');
+
+                function abrirModal() {
+                    $('#editar-erros').addClass('hidden').empty();
+                    $modal.removeClass('hidden').addClass('flex');
+                }
+
+                function fecharModal() {
+                    $modal.addClass('hidden').removeClass('flex');
+                }
+
+                $('#abrir-editar').on('click', abrirModal);
+                $('#cancelar-editar').on('click', fecharModal);
+
+                // fecha ao clicar fora do painel (no overlay)
+                $modal.on('click', function(e) {
+                    if (e.target === this) fecharModal();
+                });
+
+                // preview local da nova imagem
+                $('#editar-imagem').on('change', function() {
+                    const arquivo = this.files[0];
+                    if (!arquivo) return;
+
+                    $('#preview-avatar').attr('src', URL.createObjectURL(arquivo)).removeClass('hidden');
+                    $('#preview-avatar-vazio').addClass('hidden');
+                });
+
+                $('#form-editar-perfil').on('submit', function(e) {
+                    e.preventDefault();
+                    $('#editar-erros').addClass('hidden').empty();
+
+                    const dados = new FormData();
+                    dados.append('id', '{{ $usuario->id }}');
+                    dados.append('nome', $('#editar-nome').val());
+
+                    const arquivo = $('#editar-imagem')[0].files[0];
+                    if (arquivo) dados.append('imagem', arquivo);
+
+                    $.ajax({
+                        url: "{{ route('gerenciador.usuario.atualizar', $usuario->id) }}",
+                        method: 'POST',
+                        data: dados,
+                        processData: false,
+                        contentType: false,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        },
+                        success: function(response) {
+                            const u = response.usuario;
+
+                            $('#perfil-nome').text(u.nome);
+
+                            if (u.imagem_grande) {
+                                $('#avatar-container').html(
+                                    '<img id="avatar-img" class="w-full h-full object-cover" alt="Foto de perfil" src="' +
+                                    u.imagem_grande + '">'
+                                );
+                            }
+
+                            fecharModal();
+                        },
+                        error: function(xhr) {
+                            if (xhr.status === 422) {
+                                const erros = xhr.responseJSON.errors;
+                                for (const campo in erros) {
+                                    erros[campo].forEach(function(msg) {
+                                        $('#editar-erros').append('<li>' + msg + '</li>');
+                                    });
+                                }
+                            } else {
+                                $('#editar-erros').append('<li>' + (xhr.responseJSON?.message ||
+                                    'Erro inesperado.') + '</li>');
+                            }
+                            $('#editar-erros').removeClass('hidden');
+                        }
+                    });
+                });
+            });
+        </script>
+    @endif
 
 </body>
 

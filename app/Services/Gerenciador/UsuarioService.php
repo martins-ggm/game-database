@@ -12,36 +12,47 @@ use App\Services\Gerenciador\Interfaces\IUsuarioService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\DTO\Gerenciador\UsuarioLoginDTO;
+use App\Services\Imagem\Interfaces\IImagemService;
 use Illuminate\Support\Facades\Cache;
+use Throwable;
 
 class UsuarioService implements IUsuarioService
 {
 
 
     public function __construct(
-        protected IUsuarioRepositorio $usuario_repositorio
+        protected IUsuarioRepositorio $usuario_repositorio,
+        protected IImagemService $imagemService
     ) {}
 
 
 
     public function criar(UsuarioDTO $dados): Usuario
     {
-        return DB::transaction(function () use ($dados) {
 
+        $caminhos = $dados->imagem ? $this->imagemService->salvarPerfil($dados->imagem) : ['grande' => null, 'pequena' => null];
 
-            $usuario = Usuario::criar(
+        try {
+            return DB::transaction(function () use ($dados, $caminhos) {
 
-                name: $dados->name,
-                email: $dados->email,
-                password: $dados->password,
-                perfil_id: $dados->perfil_id,
-                str_url_foto_perfil: '/https://images8.alphacoders.com/838/thumb-1920-838931.jpg'
+                $usuario = Usuario::criar(
 
-            );
+                    nome: $dados->nome,
+                    email: $dados->email,
+                    password: $dados->password,
+                    perfil_id: $dados->perfil_id,
+                    imagemPequena: $caminhos['pequena'],
+                    imagemGrande: $caminhos['grande']
 
+                );
 
-            return $this->usuario_repositorio->criarNovo($usuario);
-        });
+                return $this->usuario_repositorio->criarNovo($usuario);
+            });
+        } catch (Throwable $e) {
+
+            $this->imagemService->remover($caminhos);
+            throw $e;
+        }
     }
 
 
@@ -85,5 +96,41 @@ class UsuarioService implements IUsuarioService
         );
 
         return $usuario;
+    }
+
+    public function editar(UsuarioDTO $dados): Usuario
+    {
+
+        $usuario = $this->usuario_repositorio->buscarPorId($dados->id);
+        throw_unless($usuario, new \Exception('Usuário não encontrado'));
+        $caminhosAntigos = [$usuario->url_imagem_pequena, $usuario->url_imagem_grande];
+        $caminhosNovos = $dados->imagem ? $this->imagemService->salvarPerfil($dados->imagem) : null;
+
+        try {
+
+            $perfilAtualizado = DB::transaction(function () use ($dados, $caminhosNovos, $usuario) {
+
+                $usuario->editar($dados->nome);
+
+                if ($caminhosNovos) {
+                    $usuario->url_imagem_pequena = $caminhosNovos['pequena'];
+                    $usuario->url_imagem_grande = $caminhosNovos['grande'];
+                }
+
+                return $this->usuario_repositorio->editar($usuario);
+            });
+        } catch (\Throwable $e) {
+
+            if ($caminhosNovos) {
+                $this->imagemService->remover($caminhosNovos);
+            }
+
+            throw $e;
+        }
+        if ($caminhosNovos) {
+            $this->imagemService->remover($caminhosAntigos);
+        }
+
+        return $perfilAtualizado;
     }
 }

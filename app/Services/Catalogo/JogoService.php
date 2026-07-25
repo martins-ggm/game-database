@@ -21,7 +21,7 @@ class JogoService implements IJogoService
     public function criar(JogoDTO $dados): Jogo
     {
 
-        $caminhos = $dados->imagem ? $this->imagemService->salvar($dados->imagem) : ['grande' => null, 'pequena' => null];
+        $caminhos = $dados->imagem ? $this->imagemService->salvarJogo($dados->imagem) : ['grande' => null, 'pequena' => null];
 
         try {
             return DB::transaction(function () use ($dados, $caminhos) {

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Storage;
+
 
 class UsuarioResource extends JsonResource
 {
@@ -21,10 +23,12 @@ class UsuarioResource extends JsonResource
             [
 
                 'id' => $this->id,
-                'name' => $this->name,
+                'nome' => $this->nome,
                 'email' => $this->email,
                 'perfil_id' => $this->perfil_id,
-                'criado_em' => $this->created_at?->format('d/m/Y H:i')
+                'criado_em' => $this->created_at?->format('d/m/Y H:i'),
+                'imagem_grande' => $this->url_imagem_grande ? Storage::url($this->url_imagem_grande) : null,
+                'imagem_pequena' => $this->url_imagem_pequena ? Storage::url($this->url_imagem_pequena) : null,
 
             ];
     }
