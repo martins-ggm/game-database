@@ -65,20 +65,21 @@
                 @auth
                     <a href="{{ route('gerenciador.dashboard.visualizar') }}"
                         class="px-8 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs hover:bg-[#8674B8] transition">
-                        Acessar
+                        Acessar como {{ auth()->user()->name }}.
                     </a>
-                    <a href="#novidades"
+                    <a href="#" id="trocar-usuario"
                         class="px-8 py-3 border border-white/30 text-white font-black tracking-widest uppercase text-xs hover:border-[#6B5B9E] hover:text-[#6B5B9E] transition">
-                        Novidades!
+                        Trocar usuário.
                     </a>
                 @else
                     <a href="{{ route('gerenciador.usuario.criar') }}"
                         class="px-8 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs hover:bg-[#8674B8] transition">
                         Começar Agora
                     </a>
-                    <a href="#novidades"
+
+                    <a href="{{ route('gerenciador.dashboard.visualizar') }}"
                         class="px-8 py-3 border border-white/30 text-white font-black tracking-widest uppercase text-xs hover:border-[#6B5B9E] hover:text-[#6B5B9E] transition">
-                        Novidades!
+                        Explorar!
                     </a>
                 @endauth
             </div>
@@ -214,6 +215,28 @@
     <script>
         $(function() {
             $('#sair').on('click', function(e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: "{{ route('gerenciador.usuario.logout') }}",
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    },
+                    success: function(response) {
+                        window.location.href = response.redirect;
+                    },
+                    error: function(xhr) {
+                        console.error('Logout failed:', xhr);
+                        window.location.href = "{{ route('gerenciador.usuario.login') }}";
+                    }
+                });
+            });
+        });
+        $(function() {
+            $('#trocar-usuario').on('click', function(e) {
                 e.preventDefault();
 
                 $.ajax({
