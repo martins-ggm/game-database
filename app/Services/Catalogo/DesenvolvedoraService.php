@@ -42,7 +42,7 @@ class DesenvolvedoraService implements IDesenvolvedoraService
         throw_unless($plataforma, new \Exception('Desenvolvedora não encontrada'));
 
         DB::transaction(function () use ($plataforma) {
-            throw_if($plataforma->jogos()->exists(), new \Exception('Existem jogos vinculados a plataforma selecionada.'));
+            throw_if($plataforma->jogos()->exists(), new \Exception('Existem jogos vinculados a desenvolvedora selecionada.'));
 
             $this->desenvolvedoraRepositorio->remover($plataforma);
         });
