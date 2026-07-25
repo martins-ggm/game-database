@@ -49,10 +49,18 @@
                     <div class="flex items-start justify-between gap-4">
                         <div>
                             <p class="text-[10px] font-black tracking-widest uppercase text-white/40 mb-2">Jogador</p>
-                            <h1 id="perfil-nome"
-                                class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight uppercase leading-[0.95] mb-3">
-                                {{ $usuario->nome }}
-                            </h1>
+                            <div class="flex items-center gap-3 mb-3">
+                                <h1 id="perfil-nome"
+                                    class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight uppercase leading-[0.95]">
+                                    {{ $usuario->nome }}
+                                </h1>
+                                @if ($usuario->admin)
+                                    <span title="Administrador" aria-label="Administrador"
+                                        class="flex-shrink-0 text-[#6B5B9E]">
+                                        <x-icon name="escudo-check" class="w-7 h-7 sm:w-8 sm:h-8" />
+                                    </span>
+                                @endif
+                            </div>
                             <p class="text-sm text-white/60 mb-6">{{ $usuario->email }} · Membro desde
                                 {{ $usuario->created_at?->format('Y') }}</p>
                         </div>

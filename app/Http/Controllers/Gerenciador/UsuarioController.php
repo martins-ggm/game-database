@@ -31,7 +31,7 @@ class UsuarioController extends Controller
         $usuario = $this->usuario_service->criar(dados: $dto);
 
         return response()->json(
-            data: ['mensagem' => 'Salvo com sucesso.', 'usuario' => UsuarioResource::criar($usuario)],
+            data: ['mensagem' => 'Salvo com sucesso.', 'usuario' => UsuarioResource::criar($usuario), 'redirect' => '/login'],
             status: 200
         );
     }
@@ -89,10 +89,14 @@ class UsuarioController extends Controller
     {
 
         $dto = UsuarioDTO::fromRequest($request);
+
         abort_unless(auth()->id() === $dto->id, 403, 'Ação não autorizada.');
 
         $usuario = $this->usuario_service->editar($dto);
 
-        return response()->json(['mensagem' => 'Usuario atualizado com sucesso!', 'usuario' => UsuarioResource::criar($usuario)], status: 200);
+        return response()->json([
+            'mensagem' => 'Usuario atualizado com sucesso!',
+            'usuario' => UsuarioResource::criar($usuario)
+        ], status: 200);
     }
 }
