@@ -18,8 +18,13 @@ class Jogo extends Model
     protected $fillable = [
         'nome',
         'desenvolvedora_id',
+        'lancamento',
         'url_imagem_grande',
         'url_imagem_pequena'
+    ];
+
+    protected $casts = [
+        'lancamento' => 'date',
     ];
 
     public function desenvolvedora(): BelongsTo
@@ -37,22 +42,24 @@ class Jogo extends Model
         return $this->belongsToMany(Genero::class, 'jogo_generos');
     }
 
-    public static function criar(String $nome, int $desenvolvedora, ?string $grande = null, ?string $pequena = null): self
+    public static function criar(String $nome, int $desenvolvedora, ?string $lancamento = null, ?string $grande = null, ?string $pequena = null): self
     {
 
         $jogo = new self();
         $jogo->nome = $nome;
         $jogo->desenvolvedora_id = $desenvolvedora;
+        $jogo->lancamento = $lancamento;
         $jogo->url_imagem_grande = $grande;
         $jogo->url_imagem_pequena = $pequena;
 
         return $jogo;
     }
 
-    public function editar(String $nome, int $desenvolvedora): self
+    public function editar(String $nome, int $desenvolvedora, ?string $lancamento = null): self
     {
         $this->nome = $nome;
         $this->desenvolvedora_id = $desenvolvedora;
+        $this->lancamento = $lancamento;
 
         return $this;
     }

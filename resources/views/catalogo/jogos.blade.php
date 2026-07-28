@@ -64,6 +64,8 @@
                         <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40">Capa</th>
                         <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40">Nome</th>
                         <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40">
+                            Lançamento</th>
+                        <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40">
                             Desenvolvedora</th>
                         <th class="px-5 py-4 text-[10px] font-black uppercase tracking-widest text-white/40">Plataformas
                         </th>
@@ -85,6 +87,7 @@
                                 @endif
                             </td>
                             <td class="px-5 py-4 font-bold">{{ $jogo->nome }}</td>
+                            <td class="px-5 py-4 text-white/70 whitespace-nowrap">{{ $jogo->lancamento?->format('d/m/Y') ?? '—' }}</td>
                             <td class="px-5 py-4 text-white/70">{{ $jogo->desenvolvedora?->nome ?? '—' }}</td>
                             <td class="px-5 py-4 text-white/70">
                                 {{ $jogo->plataformas->pluck('nome')->implode(', ') ?: '—' }}</td>
@@ -93,6 +96,7 @@
                             <td class="px-5 py-4 text-right whitespace-nowrap">
                                 <button type="button" data-editar-jogo="{{ $jogo->id }}"
                                     data-desenvolvedora="{{ $jogo->desenvolvedora_id }}"
+                                    data-lancamento="{{ $jogo->lancamento?->format('Y-m-d') }}"
                                     data-plataformas="{{ $jogo->plataformas->pluck('id')->implode(',') }}"
                                     data-generos="{{ $jogo->generos->pluck('id')->implode(',') }}"
                                     data-imagem="{{ $jogo->url_imagem_pequena ? asset('storage/' . $jogo->url_imagem_pequena) : '' }}"
@@ -107,7 +111,7 @@
                         </tr>
                     @empty
                         <tr id="linha-vazia">
-                            <td colspan="6"
+                            <td colspan="7"
                                 class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">
                                 Nenhum jogo cadastrado
                             </td>
@@ -160,6 +164,13 @@
                         class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Nome</label>
                     <input type="text" id="nome" name="nome" placeholder="Nome do jogo"
                         class="w-full px-4 py-3 bg-[#11101A] border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#6B5B9E] transition">
+                </div>
+
+                <div>
+                    <label for="lancamento"
+                        class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Lançamento</label>
+                    <input type="date" id="lancamento" name="lancamento"
+                        class="w-full px-4 py-3 bg-[#11101A] border border-white/10 text-white [color-scheme:dark] focus:outline-none focus:border-[#6B5B9E] transition">
                 </div>
 
                 <div>
@@ -345,6 +356,13 @@
                 }).join(', ');
             }
 
+            // "2006-11-19" → "19/11/2006" (split simples, sem new Date pra não pegar fuso)
+            function formatarData(iso) {
+                if (!iso) return '—';
+                const [ano, mes, dia] = iso.split('-');
+                return `${dia}/${mes}/${ano}`;
+            }
+
             function capaHtml(jogo) {
                 return jogo.imagem_pequena
                     ? `<img src="${jogo.imagem_pequena}" alt="" class="w-12 h-16 object-cover border border-white/10">`
@@ -366,13 +384,14 @@
                     <tr class="border-b border-white/5 hover:bg-[#25232F] transition">
                         <td class="px-5 py-4">${capaHtml(jogo)}</td>
                         <td class="px-5 py-4 font-bold">${escapar(jogo.nome)}</td>
+                        <td class="px-5 py-4 text-white/70 whitespace-nowrap">${formatarData(jogo.lancamento)}</td>
                         <td class="px-5 py-4 text-white/70">${dev}</td>
                         <td class="px-5 py-4 text-white/70">${listaNomes(jogo.plataformas)}</td>
                         <td class="px-5 py-4 text-white/70">${listaNomes(jogo.generos)}</td>
                         <td class="px-5 py-4 text-right whitespace-nowrap">
                             <button type="button" data-editar-jogo="${jogo.id}"
                                 data-desenvolvedora="${devId}" data-plataformas="${platIds}" data-generos="${genIds}"
-                                data-imagem="${imagem}"
+                                data-imagem="${imagem}" data-lancamento="${jogo.lancamento || ''}"
                                 class="text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-[#6B5B9E] transition">Editar</button>
                             <button type="button" data-remover-jogo="${jogo.id}"
                                 class="ml-4 text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-red-400 transition">Excluir</button>
@@ -398,7 +417,7 @@
 
                 if (jogos.length === 0) {
                     tbody.html(
-                        '<tr id="linha-vazia"><td colspan="6" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhum jogo encontrado</td></tr>'
+                        '<tr id="linha-vazia"><td colspan="7" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhum jogo encontrado</td></tr>'
                     );
                     return;
                 }
@@ -461,12 +480,14 @@
                 const platIds = (botao.attr('data-plataformas') || '').split(',').filter(Boolean);
                 const genIds = (botao.attr('data-generos') || '').split(',').filter(Boolean);
                 const imagem = botao.attr('data-imagem') || '';
+                const lancamento = botao.attr('data-lancamento') || '';
 
                 $('#form-jogo')[0].reset();
                 limparCheckboxes();
 
                 $('#jogo_id').val(id);
                 $('#nome').val(nome);
+                $('#lancamento').val(lancamento);
                 $('#desenvolvedora_id').val(devId);
                 platIds.forEach(function(pid) {
                     $('input[name="plataformas[]"][value="' + pid + '"]').prop('checked', true);
@@ -507,6 +528,9 @@
                 // FormData (arquivo não vai por JSON)
                 const formData = new FormData();
                 formData.append('nome', $('#nome').val());
+
+                const lancamento = $('#lancamento').val();
+                if (lancamento) formData.append('lancamento', lancamento);
 
                 const dev = $('#desenvolvedora_id').val();
                 if (dev) formData.append('desenvolvedora', dev);
@@ -595,7 +619,7 @@
                         linha.remove();
                         if ($('#tabela-jogos tr').length === 0) {
                             $('#tabela-jogos').html(
-                                '<tr id="linha-vazia"><td colspan="6" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhum jogo cadastrado</td></tr>'
+                                '<tr id="linha-vazia"><td colspan="7" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhum jogo cadastrado</td></tr>'
                             );
                         }
                         fecharRemocao();

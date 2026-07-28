@@ -7,9 +7,12 @@ use Illuminate\Http\UploadedFile;
 
 Interface IImagemService{
 
-public function salvar(UploadedFile $arquivo): array;
+public function salvarJogo(UploadedFile $arquivo): array;
 
 public function remover(array $caminhos): void;
+
+public function salvarPerfil(UploadedFile $arquivo): array;
+
 
 
 }

@@ -19,13 +19,12 @@ class Usuario extends Authenticatable
 
     protected $fillable = [
 
-
-        'name',
+        'nome',
         'email',
         'password',
         'perfil_id',
-        'str_url_foto_perfil',
-       
+        'url_imagem_pequena',
+        'url_imagem_grande'
 
     ];
 
@@ -52,23 +51,31 @@ class Usuario extends Authenticatable
 
     public static function criar(
 
-        string $name,
+        string $nome,
         string $email,
         string $password,
         ?int $perfil_id = null,
-        ?string $str_url_foto_perfil = null,
-
-
+        ?string $imagemGrande = null,
+        ?string $imagemPequena = null
 
     ): self {
 
         $usuario = new self();
-        $usuario->name = $name;
+        $usuario->nome = $nome;
         $usuario->email = $email;
         $usuario->password = $password;
         $usuario->perfil_id = $perfil_id;
-        $usuario->str_url_foto_perfil;
+        $usuario->url_imagem_pequena = $imagemPequena;
+        $usuario->url_imagem_grande = $imagemGrande;
 
         return $usuario;
+    }
+
+    public function editar(String $nome): self
+    {
+
+        $this->nome = $nome;
+
+        return $this;
     }
 }

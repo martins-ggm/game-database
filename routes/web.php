@@ -34,7 +34,10 @@ Route::get('/dashboard', [DashboardController::class, 'visualizar'])->name('gere
 
 Route::middleware('auth')->group(function () {
 
+
     Route::get('/perfil/{id}', [UsuarioController::class, 'visualizarPerfil'])->name('gerenciador.usuario.perfil');
+    Route::post('/usuario/atualizar/{id}', [UsuarioController::class, 'editar'])->name('gerenciador.usuario.atualizar');
+
 
     // Telas admin:
 

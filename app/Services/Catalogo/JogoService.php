@@ -21,7 +21,7 @@ class JogoService implements IJogoService
     public function criar(JogoDTO $dados): Jogo
     {
 
-        $caminhos = $dados->imagem ? $this->imagemService->salvar($dados->imagem) : ['grande' => null, 'pequena' => null];
+        $caminhos = $dados->imagem ? $this->imagemService->salvarJogo($dados->imagem) : ['grande' => null, 'pequena' => null];
 
         try {
             return DB::transaction(function () use ($dados, $caminhos) {
@@ -29,6 +29,7 @@ class JogoService implements IJogoService
                 $jogo = Jogo::criar(
                     $dados->nome,
                     $dados->desenvolvedora,
+                    $dados->lancamento,
                     $caminhos['grande'],
                     $caminhos['pequena']
                 );
@@ -74,13 +75,13 @@ class JogoService implements IJogoService
         throw_unless($jogo, new \Exception('Jogo não encontrado.'));
 
         $caminhosAntigos = [$jogo->url_imagem_grande, $jogo->url_imagem_pequena];
-        $caminhosNovos = $dados->imagem ? $this->imagemService->salvar($dados->imagem) : null;
+        $caminhosNovos = $dados->imagem ? $this->imagemService->salvarJogo($dados->imagem) : null;
 
         try {
 
             $jogoAtualizado = DB::transaction(function () use ($jogo, $dados, $caminhosNovos) {
 
-                $jogo->editar($dados->nome, $dados->desenvolvedora);
+                $jogo->editar($dados->nome, $dados->desenvolvedora, $dados->lancamento);
                 if ($caminhosNovos) {
                     $jogo->url_imagem_grande = $caminhosNovos['grande'];
                     $jogo->url_imagem_pequena = $caminhosNovos['pequena'];

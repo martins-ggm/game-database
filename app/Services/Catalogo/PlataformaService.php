@@ -26,8 +26,6 @@ class PlataformaService implements IPlataformaService
 
             $plataforma = Plataforma::criar(nome: $dados->nome, lancamento: $dados->lancamento);
 
-
-
             return $this->plataforma_repositorio->criarNovo($plataforma);
         });
     }
@@ -71,13 +69,9 @@ class PlataformaService implements IPlataformaService
         return $this->plataforma_repositorio->contarTodas();
     }
 
-    public function buscar(?String $nome = null): Collection{
+    public function buscar(?String $nome = null): Collection
+    {
 
         return $this->plataforma_repositorio->buscar($nome);
-
-
-
     }
-
-
 }

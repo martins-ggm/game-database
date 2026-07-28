@@ -52,9 +52,9 @@
 
             <form id="form-criar-usuario" class="space-y-5 bg-[#1C1B26] border border-white/10 p-6 sm:p-8">
                 <div>
-                    <label for="name"
+                    <label for="nome"
                         class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Nome</label>
-                    <input type="text" id="name" name="name" placeholder="Digite seu nome"
+                    <input type="text" id="nome" name="nome" placeholder="Digite seu nome"
                         class="w-full px-4 py-3 bg-[#11101A] border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#6B5B9E] transition">
                 </div>
 
@@ -79,6 +79,22 @@
                     <input type="password" id="password_confirmation" name="password_confirmation"
                         placeholder="Digite a senha novamente"
                         class="w-full px-4 py-3 bg-[#11101A] border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#6B5B9E] transition">
+                </div>
+
+                <div>
+                    <label
+                        class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Foto de perfil
+                        <span class="text-white/30 normal-case tracking-normal">(opcional)</span></label>
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-20 h-20 flex-shrink-0 bg-[#11101A] border border-white/10 overflow-hidden flex items-center justify-center">
+                            <img id="preview-imagem" src="" class="w-full h-full object-cover hidden">
+                            <span id="preview-imagem-vazio"
+                                class="text-[10px] text-white/30 uppercase tracking-widest">Sem foto</span>
+                        </div>
+                        <input type="file" id="imagem" name="imagem" accept="image/jpeg,image/png,image/webp"
+                            class="text-xs text-white/60 file:mr-3 file:py-2 file:px-4 file:border-0 file:bg-[#6B5B9E] file:text-black file:font-black file:uppercase file:tracking-widest file:text-[10px] file:cursor-pointer">
+                    </div>
                 </div>
 
                 <button type="submit"
@@ -113,33 +129,54 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
         $(function() {
+
+            // preview local da foto escolhida
+            $('#imagem').on('change', function() {
+                const arquivo = this.files[0];
+                if (!arquivo) return;
+
+                $('#preview-imagem').attr('src', URL.createObjectURL(arquivo)).removeClass('hidden');
+                $('#preview-imagem-vazio').addClass('hidden');
+            });
+
             $('#form-criar-usuario').on('submit', function(e) {
                 e.preventDefault();
 
                 $('#erros').addClass('hidden').empty();
                 $('#mensagem').addClass('hidden').empty();
 
+                // arquivo não vai por JSON → FormData
+                const dados = new FormData();
+                dados.append('nome', $('#nome').val());
+                dados.append('email', $('#email').val());
+                dados.append('password', $('#password').val());
+                dados.append('password_confirmation', $('#password_confirmation').val());
+
+                const arquivo = $('#imagem')[0].files[0];
+                if (arquivo) dados.append('imagem', arquivo); // só manda se escolheu
+
                 $.ajax({
                     url: "{{ route('gerenciador.usuario.incluir') }}",
                     method: 'POST',
+                    data: dados,
+                    processData: false, // não serializa o FormData
+                    contentType: false, // deixa o browser pôr o boundary do multipart
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                         'X-Requested-With': 'XMLHttpRequest',
                         'Accept': 'application/json'
                     },
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        name: $('#name').val(),
-                        email: $('#email').val(),
-                        password: $('#password').val(),
-                        password_confirmation: $('#password_confirmation').val()
-                    }),
                     success: function(response) {
                         $('#mensagem')
                             .removeClass('hidden bg-red-500/10 border-red-500/30 text-red-300')
                             .addClass('bg-[#6B5B9E]/10 border-[#6B5B9E]/40 text-[#6B5B9E]')
                             .text(response.mensagem);
                         $('#form-criar-usuario')[0].reset();
+
+                        // limpa o preview junto com o form
+                        $('#preview-imagem').addClass('hidden').attr('src', '');
+                        $('#preview-imagem-vazio').removeClass('hidden');
+                          window.location.href = response.redirect;
                     },
                     error: function(xhr) {
                         if (xhr.status === 422) {
