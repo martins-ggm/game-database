@@ -38,7 +38,7 @@ class JogoController extends Controller
         $jogos = $this->jogoService->buscarTodos();
 
 
-        return view(view: 'catalogo.jogos', data: compact('plataformas', 'generos', 'desenvolvedoras', 'jogos'));
+        return view(view: 'catalogo.jogos.jogos', data: compact('plataformas', 'generos', 'desenvolvedoras', 'jogos'));
     }
 
 
@@ -73,7 +73,15 @@ class JogoController extends Controller
     public function buscar(Request $request): JsonResponse
     {
 
-        $jogos = $this->jogoService->buscar($request->nome);
+        $jogos = $this->jogoService->buscarPorNome($request->nome);
         return response()->json(['jogos' => JogoResource::criar($jogos)], status: 200);
+    }
+
+    public function visualizar(Request $request): View
+    {
+
+        $jogo = $this->jogoService->buscarPorId($request->id);
+
+        return View('catalogo.jogos.visualizar', compact('jogo'));
     }
 }

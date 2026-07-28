@@ -49,7 +49,7 @@ class JogoRepositorio implements IJogoRepositorio
     public function buscarPorID(int $id): ?Jogo
     {
 
-        return $this->modelo->newQuery()->find($id);
+        return $this->modelo->newQuery()->with(['desenvolvedora', 'plataformas', 'generos'])->find($id);
     }
 
     public function remover(Jogo $jogo): void
@@ -74,7 +74,7 @@ class JogoRepositorio implements IJogoRepositorio
     }
 
 
-    public function buscar(?String $nome = null): Collection
+    public function buscarPorNome(?String $nome = null): Collection
     {
         return $this->modelo->newQuery()
             ->when($nome, fn($query) => $query

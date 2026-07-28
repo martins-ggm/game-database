@@ -52,6 +52,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/jogo/remover/{id}', [JogoController::class, 'remover'])->name('catalogo.jogo.remover');
         Route::post('/jogo/editar/{id}', [JogoController::class, 'editar'])->name('catalogo.jogo.editar');
         Route::get('/jogo/buscar', [JogoController::class, 'buscar'])->name('catalogo.jogo.buscar');
+        Route::get('/jogo/visualizar/{id}', [JogoController::class, 'visualizar'])->name('catalogo.jogo.visualizar');
 
         // plataforma
 
