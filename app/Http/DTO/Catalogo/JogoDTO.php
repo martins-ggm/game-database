@@ -15,6 +15,7 @@ class JogoDTO
         public ?int $id,
         public ?string $nome,
         public ?int $desenvolvedora,
+        public ?string $lancamento,
         public ?array $generos,
         public ?array $plataformas,
         public ?UploadedFile $imagem
@@ -27,6 +28,7 @@ class JogoDTO
             id: $request->id ? (int) $request->id : null,
             nome: $request->nome,
             desenvolvedora: $request->desenvolvedora,
+            lancamento: $request->lancamento,
             generos: $request->generos,
             plataformas: $request->plataformas,
             imagem: $request->file('imagem')
@@ -49,6 +51,7 @@ class JogoDTO
             [
                 'nome' => $this->nome,
                 'desenvolvedora' => $this->desenvolvedora,
+                'lancamento' => $this->lancamento,
                 'generos' => $this->generos,
                 'plataformas' => $this->plataformas,
                 'imagem' => $this->imagem
@@ -56,6 +59,7 @@ class JogoDTO
             [
                 'nome' => ['required', 'string', 'max:255'],
                 'desenvolvedora' => ['required', 'integer'],
+                'lancamento' => ['nullable', 'date'],
 
                 'generos' => ['required', 'array'],
                 'generos.*' => ['integer'],
@@ -77,6 +81,7 @@ class JogoDTO
                 'id' => $this->id,
                 'nome' => $this->nome,
                 'desenvolvedora' => $this->desenvolvedora,
+                'lancamento' => $this->lancamento,
                 'generos' => $this->generos,
                 'plataformas' => $this->plataformas,
                 'imagem' => $this->imagem
@@ -85,6 +90,7 @@ class JogoDTO
                 'id' =>  ['required', 'integer'],
                 'nome' => ['required', 'string', 'max:255'],
                 'desenvolvedora' => ['required', 'integer'],
+                'lancamento' => ['nullable', 'date'],
 
                 'generos' => ['required', 'array'],
                 'generos.*' => ['integer'],

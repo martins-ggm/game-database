@@ -1,6 +1,5 @@
 <?php
 
-
 declare(strict_types=1);
 
 namespace App\Services\Gerenciador;
@@ -55,9 +54,6 @@ class UsuarioService implements IUsuarioService
         }
     }
 
-
-
-
     public function autenticar(UsuarioLoginDTO $dados): Usuario
     {
         throw_unless(
@@ -69,8 +65,6 @@ class UsuarioService implements IUsuarioService
         $usuario = Auth::user();
         return $usuario;
     }
-
-
 
     public function desautenticar(): void
     {

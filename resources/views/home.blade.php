@@ -24,7 +24,7 @@
         <nav class="max-w-[1600px] mx-auto px-6 sm:px-12 py-5 flex items-center justify-between">
             <div class="flex items-center gap-8">
                 <a href="#novidades"
-                    class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">NEWS</a>
+                    class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">Notícias</a>
             </div>
 
             <a href="/" class="text-2xl sm:text-3xl font-black tracking-widest">
@@ -41,9 +41,9 @@
                         class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition cursor-pointer">SAIR</a>
                 @else
                     <a href="#novidades"
-                        class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">NEWS</a>
+                        class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">Notícias</a>
                     <a href="{{ route('gerenciador.usuario.criar') }}"
-                        class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">REGISTER</a>
+                        class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">Novo aqui?</a>
                     <a href="{{ route('gerenciador.usuario.login') }}"
                         class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">LOGIN</a>
                 @endauth

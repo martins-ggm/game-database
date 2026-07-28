@@ -15,6 +15,7 @@ class JogoResource extends JsonResource
         return [
             'id'   => $this->id,
             'nome' => $this->nome,
+            'lancamento' => $this->lancamento?->format('Y-m-d'),
             'imagem_grande' => $this->url_imagem_grande ? Storage::url($this->url_imagem_grande) : null,
             'imagem_pequena' => $this->url_imagem_pequena ? Storage::url($this->url_imagem_pequena) : null,
 
