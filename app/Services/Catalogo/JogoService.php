@@ -109,10 +109,10 @@ class JogoService implements IJogoService
         return $this->jogorepositorio->buscarPorNome($nome);
     }
 
-    public function CadastradosRecentes(): Collection
+    public function ultimosLancados(int $quantidade): Collection
     {
         
-    return $this->jogorepositorio->cadastradosRecentes();
+    return $this->jogorepositorio->ultimosLancados(quantidade: $quantidade);
 
     }
 

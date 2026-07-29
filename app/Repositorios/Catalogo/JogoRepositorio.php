@@ -84,9 +84,9 @@ class JogoRepositorio implements IJogoRepositorio
     }
 
 
-    public function cadastradosRecentes(): Collection
+    public function ultimosLancados(int $quantidade): Collection
     {
 
-        return $this->modelo->newQuery()->latest()->take(10)->get();
+        return $this->modelo->newQuery()->with(['desenvolvedora', 'generos', 'plataformas'])->whereNotNull('lancamento')->orderBy('lancamento', 'desc')->take($quantidade)->get();
     }
 }

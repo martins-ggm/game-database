@@ -28,8 +28,8 @@ class DashboardController extends Controller
         $totalPlataformas = $this->plataforma_service->contarTodas();
         $totalGeneros = $this->generoService->contarTodos();
         $totalJogos = $this->jogoService->contarTodos();
-        
+        $ultimosLançamentos = $this->jogoService->ultimosLancados(quantidade: 4);
 
-        return view(view: 'gerenciador.dashboard', data: compact('totalPlataformas', 'totalDesenvolvedoras', 'totalGeneros', 'totalJogos'));
+        return view(view: 'gerenciador.dashboard', data: compact('totalPlataformas', 'totalDesenvolvedoras', 'totalGeneros', 'totalJogos', 'ultimosLançamentos'));
     }
 }

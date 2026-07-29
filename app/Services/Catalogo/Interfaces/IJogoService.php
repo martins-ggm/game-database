@@ -16,6 +16,6 @@ interface IJogoService
     public function remover(int $id): void;
     public function editar(JogoDTO $dados): Jogo;
     public function buscarPorNome(?String $nome = null): Collection;
-    public function CadastradosRecentes(): Collection;
+    public function ultimosLancados(int $quantidade): Collection;
     public function buscarPorId(Int $id): ?Jogo;
 }

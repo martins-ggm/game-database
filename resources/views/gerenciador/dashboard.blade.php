@@ -92,10 +92,10 @@
         </section>
 
         {{-- catálogo --}}
-        <section id="catalogo" class="max-w-[1600px] mx-auto px-6 sm:px-12 pt-8 pb-16">
+        <section id="lancamentos" class="max-w-[1600px] mx-auto px-6 sm:px-12 pt-8 pb-16">
             <div class="flex items-center justify-between mb-8">
                 <h2 class="text-xl sm:text-2xl font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-4">
-                    CATÁLOGO
+                    ÚLtimos lançamentos
                 </h2>
                 <a href="#"
                     class="px-5 py-2 border border-white/30 text-white font-black tracking-widest uppercase text-[10px] hover:border-[#6B5B9E] hover:text-[#6B5B9E] transition">VER
@@ -104,23 +104,38 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1">
 
-                @for ($i = 1; $i <= 8; $i++)
-                    <article class="bg-[#1C1B26] hover:bg-[#25232F] transition cursor-pointer flex flex-col">
-                        <div class="aspect-video bg-[#11101A] flex items-center justify-center border-b border-white/5">
-                            <span class="text-white/15 text-xs tracking-widest uppercase">PLACEHOLDER</span>
+                @forelse ($ultimosLançamentos as $jogo)
+                    <a href="{{ route('catalogo.jogo.visualizar', $jogo->id) }}" class="bg-[#1C1B26] hover:bg-[#25232F] transition cursor-pointer flex flex-col">
+                        <div class="aspect-[3/4] bg-[#11101A] border-b border-white/5 overflow-hidden">
+                            @if ($jogo->url_imagem_grande)
+                                <img src="{{ asset('storage/' . $jogo->url_imagem_grande) }}"
+                                    alt="Capa de {{ $jogo->nome }}" class="w-full h-full object-cover">
+                            @else
+                                <div
+                                    class="w-full h-full flex items-center justify-center text-white/15 text-xs tracking-widest uppercase">
+                                    Sem capa
+                                </div>
+                            @endif
                         </div>
                         <div class="p-5 flex-1 flex flex-col">
-                            <span
-                                class="self-start inline-block px-2 py-0.5 mb-3 text-[10px] font-black tracking-widest uppercase bg-[#6B5B9E] text-black">RPG</span>
-                            <h3 class="text-base font-bold leading-snug">Jogo #{{ $i }}</h3>
+                            @if ($jogo->generos->isNotEmpty())
+                                <span
+                                    class="self-start inline-block px-2 py-0.5 mb-3 text-[10px] font-black tracking-widest uppercase bg-[#6B5B9E] text-black">{{ $jogo->generos->first()->nome }}</span>
+                            @endif
+                            <h3 class="text-base font-bold leading-snug">{{ $jogo->nome }}</h3>
                             <div class="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
                                 <span class="text-[10px] font-black tracking-widest uppercase text-white/60">VER
                                     MAIS</span>
-                                <span class="text-[10px] text-white/40">2026</span>
+                                <span class="text-[10px] text-white/40">{{ $jogo->lancamento?->format('Y') ?? '—' }}</span>
                             </div>
                         </div>
-                    </article>
-                @endfor
+                    </a>
+                @empty
+                    <div
+                        class="col-span-full bg-[#1C1B26] py-12 text-center text-white/30 text-xs uppercase tracking-widest">
+                        Nenhum lançamento recente
+                    </div>
+                @endforelse
 
             </div>
         </section>
