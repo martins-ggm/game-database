@@ -18,4 +18,5 @@ interface IJogoService
     public function buscarPorNome(?String $nome = null): Collection;
     public function ultimosLancados(int $quantidade): Collection;
     public function buscarPorId(Int $id): ?Jogo;
+    public function buscaPorNomeSimplificado(String $nome): Collection;
 }

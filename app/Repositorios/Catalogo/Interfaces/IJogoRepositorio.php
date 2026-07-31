@@ -15,5 +15,6 @@ public function remover(jogo $jogo): void;
 public function editar(jogo $jogo, array $plataformas, array $generos): jogo;
 public function buscarPorNome(?String $nome = null): Collection;
 public function ultimosLancados(int $quantidade): Collection;
+public function buscaPorNomeSimplificado(String $nome): collection;
 
 }

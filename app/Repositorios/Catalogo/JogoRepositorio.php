@@ -87,6 +87,21 @@ class JogoRepositorio implements IJogoRepositorio
     public function ultimosLancados(int $quantidade): Collection
     {
 
-        return $this->modelo->newQuery()->with(['desenvolvedora', 'generos', 'plataformas'])->whereNotNull('lancamento')->orderBy('lancamento', 'desc')->take($quantidade)->get();
+        return $this->modelo->newQuery()
+            ->with(['desenvolvedora', 'generos', 'plataformas'])
+            ->whereNotNull('lancamento')
+            ->orderBy('lancamento', 'desc')
+            ->take($quantidade)
+            ->get();
+    }
+
+    public function buscaPorNomeSimplificado(string $nome): Collection
+    {
+        return $this->modelo->newQuery()
+            ->select('id', 'nome', 'url_imagem_pequena', 'lancamento')
+            ->where('nome', 'ilike', "%{$nome}%")
+            ->orderBy('nome')
+            ->limit(10)
+            ->get();
     }
 }

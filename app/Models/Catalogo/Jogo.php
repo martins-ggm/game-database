@@ -20,7 +20,8 @@ class Jogo extends Model
         'desenvolvedora_id',
         'lancamento',
         'url_imagem_grande',
-        'url_imagem_pequena'
+        'url_imagem_pequena',
+        'descricao'
     ];
 
     protected $casts = [
@@ -42,7 +43,7 @@ class Jogo extends Model
         return $this->belongsToMany(Genero::class, 'jogo_generos');
     }
 
-    public static function criar(String $nome, int $desenvolvedora, ?string $lancamento = null, ?string $grande = null, ?string $pequena = null): self
+    public static function criar(String $nome, int $desenvolvedora, ?string $lancamento = null, ?string $grande = null, ?string $pequena = null, ?string $descricao = null): self
     {
 
         $jogo = new self();
@@ -51,15 +52,17 @@ class Jogo extends Model
         $jogo->lancamento = $lancamento;
         $jogo->url_imagem_grande = $grande;
         $jogo->url_imagem_pequena = $pequena;
+        $jogo->descricao = $descricao;
 
         return $jogo;
     }
 
-    public function editar(String $nome, int $desenvolvedora, ?string $lancamento = null): self
+    public function editar(String $nome, int $desenvolvedora, ?string $lancamento = null, ?string $descricao = null): self
     {
         $this->nome = $nome;
         $this->desenvolvedora_id = $desenvolvedora;
         $this->lancamento = $lancamento;
+        $this->descricao = $descricao;
 
         return $this;
     }

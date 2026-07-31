@@ -18,7 +18,8 @@ class JogoDTO
         public ?string $lancamento,
         public ?array $generos,
         public ?array $plataformas,
-        public ?UploadedFile $imagem
+        public ?UploadedFile $imagem,
+        public ?string $descricao
     ) {}
 
     public static function fromRequest(Request $request, bool $validarNovo): self
@@ -31,7 +32,8 @@ class JogoDTO
             lancamento: $request->lancamento,
             generos: $request->generos,
             plataformas: $request->plataformas,
-            imagem: $request->file('imagem')
+            imagem: $request->file('imagem'),
+            descricao: $request->descricao
         );
 
         if ($validarNovo) {
@@ -54,7 +56,8 @@ class JogoDTO
                 'lancamento' => $this->lancamento,
                 'generos' => $this->generos,
                 'plataformas' => $this->plataformas,
-                'imagem' => $this->imagem
+                'imagem' => $this->imagem,
+                'descricao' => $this->descricao
             ],
             [
                 'nome' => ['required', 'string', 'max:255'],
@@ -67,7 +70,9 @@ class JogoDTO
                 'plataformas' =>  ['required', 'array'],
                 'plataformas.*' => ['integer'],
 
-                'imagem' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048']
+                'imagem' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+
+                'descricao' => ['nullable', 'string']
             ]
         )->validate();
     }
@@ -98,7 +103,9 @@ class JogoDTO
                 'plataformas' =>  ['required', 'array'],
                 'plataformas.*' => ['integer'],
 
-                'imagem' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048']
+                'imagem' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+
+                'descricao' => ['nullable', 'string']
             ]
         )->validate();
     }

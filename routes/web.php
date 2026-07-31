@@ -53,6 +53,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/jogo/editar/{id}', [JogoController::class, 'editar'])->name('catalogo.jogo.editar');
         Route::get('/jogo/buscar', [JogoController::class, 'buscar'])->name('catalogo.jogo.buscar');
         Route::get('/jogo/visualizar/{id}', [JogoController::class, 'visualizar'])->name('catalogo.jogo.visualizar');
+        Route::get('/catalogo/jogos/buscaSimples', [JogoController::class, 'buscaSimples'])->name('catalogo.jogo.buscaSimples');
 
         // plataforma
 
@@ -77,5 +78,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/genero/remover/{id}', [GeneroController::class, 'remover'])->name('catalogo.genero.remover');
         Route::post('/genero/editar/{id}', [GeneroController::class, 'editar'])->name('catalogo.genero.editar');
         Route::get('/genero/buscar', [GeneroController::class, 'buscar'])->name('catalogo.genero.buscar');
+
+        // Dashboard
+
+
     });
 });

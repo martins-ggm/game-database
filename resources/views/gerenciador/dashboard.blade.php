@@ -31,32 +31,24 @@
                     Dashboard
                 </h1>
                 <p class="text-sm sm:text-base text-white/60 mb-8 ml-5">
-                    Sua biblioteca interativa de jogos — encontre, filtre e organize.
+                    Sua biblioteca de jogos — busque pelo nome.
                 </p>
 
-                <form class="flex flex-col sm:flex-row gap-1">
-                    <input type="search" name="busca" placeholder="Buscar por título, estúdio, gênero..."
-                        class="flex-1 px-4 py-3 bg-[#1C1B26] border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#6B5B9E] transition">
-                    <button type="submit"
-                        class="px-8 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs hover:bg-[#8674B8] transition">
-                        Buscar
-                    </button>
-                </form>
+                <div id="busca-wrapper" class="relative">
+                    <form id="form-busca" class="flex flex-col sm:flex-row gap-1">
+                        <input type="search" id="busca-jogo" name="busca" autocomplete="off"
+                            placeholder="Buscar pelo nome do jogo..."
+                            class="flex-1 px-4 py-3 bg-[#1C1B26] border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#6B5B9E] transition">
+                        <button type="submit"
+                            class="px-8 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs hover:bg-[#8674B8] transition">
+                            Buscar
+                        </button>
+                    </form>
 
-                <div class="flex flex-wrap gap-1 mt-4">
-                    <button type="button"
-                        class="px-3 py-1 text-[10px] font-black tracking-widest uppercase bg-[#6B5B9E] text-black">TODOS</button>
-                    <button type="button"
-                        class="px-3 py-1 text-[10px] font-black tracking-widest uppercase bg-[#1C1B26] text-white/60 hover:bg-[#25232F] hover:text-white transition">RPG</button>
-                    <button type="button"
-                        class="px-3 py-1 text-[10px] font-black tracking-widest uppercase bg-[#1C1B26] text-white/60 hover:bg-[#25232F] hover:text-white transition">INDIE</button>
-                    <button type="button"
-                        class="px-3 py-1 text-[10px] font-black tracking-widest uppercase bg-[#1C1B26] text-white/60 hover:bg-[#25232F] hover:text-white transition">FPS</button>
-                    <button type="button"
-                        class="px-3 py-1 text-[10px] font-black tracking-widest uppercase bg-[#1C1B26] text-white/60 hover:bg-[#25232F] hover:text-white transition">EM
-                        ANDAMENTO</button>
-                    <button type="button"
-                        class="px-3 py-1 text-[10px] font-black tracking-widest uppercase bg-[#1C1B26] text-white/60 hover:bg-[#25232F] hover:text-white transition">COMPLETOS</button>
+                    {{-- dropdown de resultados (jQuery preenche) --}}
+                    <div id="resultados-busca"
+                        class="hidden absolute z-30 left-0 right-0 mt-1 bg-[#1C1B26] border border-white/10 max-h-96 overflow-y-auto shadow-2xl shadow-black/50">
+                    </div>
                 </div>
             </div>
         </section>
@@ -156,6 +148,100 @@
             </p>
         </div>
     </footer>
+
+    {{-- jQuery: o dashboard é público e o navbar só carrega o jQuery pra quem está logado (@auth).
+         Então garante o jQuery aqui pro visitante também — sem carregar 2x pra quem já tem. --}}
+    <script>window.jQuery || document.write('<script src="https://code.jquery.com/jquery-3.7.1.min.js"><\/script>');</script>
+    <script>
+        $(function() {
+            const urlBusca = "{{ route('catalogo.jogo.buscaSimples') }}";
+            const urlVisualizarBase = "{{ route('catalogo.jogo.visualizar', ['id' => 'ID_PLACEHOLDER']) }}";
+
+            const $input = $('#busca-jogo');
+            const $resultados = $('#resultados-busca');
+            let timer = null;
+            let req = null;
+
+            function escapar(texto) {
+                return $('<div>').text(texto ?? '').html();
+            }
+
+            function esconder() {
+                $resultados.addClass('hidden').empty();
+            }
+
+            function itemHtml(jogo) {
+                const url = urlVisualizarBase.replace('ID_PLACEHOLDER', jogo.id);
+                const capa = jogo.imagem_pequena ?
+                    `<img src="${jogo.imagem_pequena}" alt="" class="w-10 h-14 object-cover border border-white/10 flex-shrink-0">` :
+                    `<div class="w-10 h-14 bg-[#11101A] border border-white/10 flex-shrink-0"></div>`;
+                const ano = jogo.lancamento ? jogo.lancamento.slice(0, 4) : '';
+
+                return `
+                    <a href="${url}"
+                        class="flex items-center gap-3 px-4 py-3 hover:bg-[#25232F] transition border-b border-white/5 last:border-0">
+                        ${capa}
+                        <div class="min-w-0">
+                            <div class="text-sm font-bold text-white truncate">${escapar(jogo.nome)}</div>
+                            ${ano ? `<div class="text-[10px] text-white/40 uppercase tracking-widest">${ano}</div>` : ''}
+                        </div>
+                    </a>`;
+            }
+
+            $input.on('input', function() {
+                const termo = $(this).val().trim();
+                clearTimeout(timer);
+
+                if (termo.length < 2) {
+                    esconder();
+                    return;
+                }
+
+                timer = setTimeout(function() {
+                    if (req) req.abort();
+
+                    req = $.ajax({
+                        url: urlBusca,
+                        method: 'GET',
+                        data: { nome: termo },
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        },
+                        success: function(response) {
+                            const jogos = response.jogos || [];
+
+                            if (jogos.length === 0) {
+                                $resultados.html(
+                                    '<div class="px-4 py-3 text-xs text-white/40 uppercase tracking-widest">Nenhum jogo encontrado</div>'
+                                ).removeClass('hidden');
+                                return;
+                            }
+
+                            $resultados.html(jogos.map(itemHtml).join('')).removeClass('hidden');
+                        },
+                        error: function(xhr, status) {
+                            if (status === 'abort') return;
+                            esconder();
+                        }
+                    });
+                }, 300);
+            });
+
+            // busca é ao vivo — não deixa o form recarregar a página
+            $('#form-busca').on('submit', function(e) {
+                e.preventDefault();
+            });
+
+            // fecha o dropdown ao clicar fora ou apertar Esc
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('#busca-wrapper').length) esconder();
+            });
+            $input.on('keydown', function(e) {
+                if (e.key === 'Escape') esconder();
+            });
+        });
+    </script>
 
 </body>
 

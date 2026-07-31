@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Gerenciador;
 
 use Illuminate\View\View;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Catalogo\Jogo\JogoResource;
 use App\Services\Catalogo\Interfaces\IDesenvolvedoraService;
 use App\Services\Catalogo\Interfaces\IGeneroService;
 use App\Services\Catalogo\Interfaces\IJogoService;
 use App\Services\Catalogo\Interfaces\IPlataformaService;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class DashboardController extends Controller
 {
@@ -32,4 +35,6 @@ class DashboardController extends Controller
 
         return view(view: 'gerenciador.dashboard', data: compact('totalPlataformas', 'totalDesenvolvedoras', 'totalGeneros', 'totalJogos', 'ultimosLançamentos'));
     }
+
+   
 }

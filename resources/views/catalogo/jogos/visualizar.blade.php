@@ -146,16 +146,13 @@
                     </span>
                 </div>
 
-                <div class="max-w-3xl space-y-4 text-white/70 leading-relaxed text-sm sm:text-base">
+                <div class=" space-y-4 text-white/70 leading-relaxed text-sm sm:text-base">
                     <p>
                         {{ $jogo->nome }} é um jogo @if ($jogo->generos->isNotEmpty()) de {{ $jogo->generos->pluck('nome')->take(2)->implode(' e ') }}@endif
                         desenvolvido pela {{ $jogo->desenvolvedora?->nome ?? 'desenvolvedora desconhecida' }}@if ($jogo->lancamento), lançado em {{ $jogo->lancamento->format('Y') }}@endif.
                     </p>
                     <p>
-                        A descrição completa deste jogo será exibida aqui em breve — com sinopse, principais
-                        características e destaques da crítica. Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                        nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                      {{ $jogo->descricao }}
                     </p>
                 </div>
             </div>

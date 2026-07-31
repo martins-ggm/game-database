@@ -84,4 +84,12 @@ class JogoController extends Controller
 
         return View('catalogo.jogos.visualizar', compact('jogo'));
     }
+
+     public function buscaSimples(Request $request): JsonResponse
+    {
+
+        $jogos = $this->jogoService->buscaPorNomeSimplificado($request->nome);
+
+        return response()->json(['jogos' => JogoResource::criar($jogos)], status: 200);
+    }
 }

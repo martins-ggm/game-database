@@ -81,6 +81,7 @@
                             <td class="px-5 py-4">
                                 @if ($jogo->url_imagem_pequena)
                                     <img src="{{ asset('storage/' . $jogo->url_imagem_pequena) }}" alt=""
+                                        loading="lazy" decoding="async"
                                         class="w-12 h-16 object-cover border border-white/10">
                                 @else
                                     <div class="w-12 h-16 bg-[#11101A] border border-white/10 flex items-center justify-center text-white/20 text-xs">—</div>
@@ -100,6 +101,7 @@
                                     data-plataformas="{{ $jogo->plataformas->pluck('id')->implode(',') }}"
                                     data-generos="{{ $jogo->generos->pluck('id')->implode(',') }}"
                                     data-imagem="{{ $jogo->url_imagem_pequena ? asset('storage/' . $jogo->url_imagem_pequena) : '' }}"
+                                    data-descricao="{{ $jogo->descricao }}"
                                     class="text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-[#6B5B9E] transition">
                                     Editar
                                 </button>
@@ -231,6 +233,14 @@
                         class="hidden mt-3 w-36 h-48 object-cover border border-white/10">
                 </div>
 
+                {{-- descrição --}}
+                <div>
+                    <label for="descricao"
+                        class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Descrição</label>
+                    <textarea id="descricao" name="descricao" rows="4" placeholder="Sinopse do jogo..."
+                        class="w-full px-4 py-3 bg-[#11101A] border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#6B5B9E] transition resize-y"></textarea>
+                </div>
+
                 {{-- ações do modal --}}
                 <div class="flex flex-col sm:flex-row gap-3 sm:justify-end pt-2">
                     <button type="button" data-fechar-modal
@@ -293,7 +303,7 @@
 
             // ---------- helpers ----------
             function escapar(texto) {
-                return $('<div>').text(texto ?? '').html();
+                return $('<div>').text(texto ?? '').html().replace(/"/g, '&quot;');
             }
 
             // coleta os ids marcados de um grupo de checkboxes → [1, 5, 12]
@@ -365,7 +375,7 @@
 
             function capaHtml(jogo) {
                 return jogo.imagem_pequena
-                    ? `<img src="${jogo.imagem_pequena}" alt="" class="w-12 h-16 object-cover border border-white/10">`
+                    ? `<img src="${jogo.imagem_pequena}" alt="" loading="lazy" decoding="async" class="w-12 h-16 object-cover border border-white/10">`
                     : `<div class="w-12 h-16 bg-[#11101A] border border-white/10 flex items-center justify-center text-white/20 text-xs">—</div>`;
             }
 
@@ -391,7 +401,7 @@
                         <td class="px-5 py-4 text-right whitespace-nowrap">
                             <button type="button" data-editar-jogo="${jogo.id}"
                                 data-desenvolvedora="${devId}" data-plataformas="${platIds}" data-generos="${genIds}"
-                                data-imagem="${imagem}" data-lancamento="${jogo.lancamento || ''}"
+                                data-imagem="${imagem}" data-lancamento="${jogo.lancamento || ''}" data-descricao="${escapar(jogo.descricao || '')}"
                                 class="text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-[#6B5B9E] transition">Editar</button>
                             <button type="button" data-remover-jogo="${jogo.id}"
                                 class="ml-4 text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-red-400 transition">Excluir</button>
@@ -481,6 +491,7 @@
                 const genIds = (botao.attr('data-generos') || '').split(',').filter(Boolean);
                 const imagem = botao.attr('data-imagem') || '';
                 const lancamento = botao.attr('data-lancamento') || '';
+                const descricao = botao.attr('data-descricao') || '';
 
                 $('#form-jogo')[0].reset();
                 limparCheckboxes();
@@ -488,6 +499,7 @@
                 $('#jogo_id').val(id);
                 $('#nome').val(nome);
                 $('#lancamento').val(lancamento);
+                $('#descricao').val(descricao);
                 $('#desenvolvedora_id').val(devId);
                 platIds.forEach(function(pid) {
                     $('input[name="plataformas[]"][value="' + pid + '"]').prop('checked', true);
@@ -531,6 +543,9 @@
 
                 const lancamento = $('#lancamento').val();
                 if (lancamento) formData.append('lancamento', lancamento);
+
+                const descricao = $('#descricao').val();
+                if (descricao) formData.append('descricao', descricao);
 
                 const dev = $('#desenvolvedora_id').val();
                 if (dev) formData.append('desenvolvedora', dev);

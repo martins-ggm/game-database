@@ -32,7 +32,8 @@ class JogoService implements IJogoService
                     $dados->desenvolvedora,
                     $dados->lancamento,
                     $caminhos['grande'],
-                    $caminhos['pequena']
+                    $caminhos['pequena'],
+                    $dados->descricao
                 );
 
                 return $this->jogorepositorio->criar($jogo, $dados->plataformas, $dados->generos);
@@ -82,12 +83,21 @@ class JogoService implements IJogoService
 
             $jogoAtualizado = DB::transaction(function () use ($jogo, $dados, $caminhosNovos) {
 
-                $jogo->editar($dados->nome, $dados->desenvolvedora, $dados->lancamento);
+                $jogo->editar(
+                    $dados->nome,
+                    $dados->desenvolvedora,
+                    $dados->lancamento,
+                    $dados->descricao
+                );
                 if ($caminhosNovos) {
                     $jogo->url_imagem_grande = $caminhosNovos['grande'];
                     $jogo->url_imagem_pequena = $caminhosNovos['pequena'];
                 }
-                return $this->jogorepositorio->editar($jogo, $dados->plataformas, $dados->generos);
+                return $this->jogorepositorio->editar(
+                    $jogo,
+                    $dados->plataformas,
+                    $dados->generos
+                );
             });
         } catch (\Throwable $e) {
             if ($caminhosNovos) {
@@ -111,18 +121,22 @@ class JogoService implements IJogoService
 
     public function ultimosLancados(int $quantidade): Collection
     {
-        
-    return $this->jogorepositorio->ultimosLancados(quantidade: $quantidade);
 
+        return $this->jogorepositorio->ultimosLancados(quantidade: $quantidade);
     }
 
 
     public function buscarPorId(Int $id): ?Jogo
     {
-        
-        $jogo = $this->jogorepositorio->buscarPorID($id);
-        throw_unless($jogo, New \Exception('Jogo não encontrado.'));
-        return $jogo;
 
+        $jogo = $this->jogorepositorio->buscarPorID($id);
+        throw_unless($jogo, new \Exception('Jogo não encontrado.'));
+        return $jogo;
+    }
+
+
+    public function buscaPorNomeSimplificado(string $nome): Collection
+    {
+        return $this->jogorepositorio->buscaPorNomeSimplificado($nome);
     }
 }

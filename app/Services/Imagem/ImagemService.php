@@ -16,8 +16,8 @@ class ImagemService implements IImagemService
     {
 
         $nome = Str::uuid() . '.webp';
-        $grande = (string) Image::read($arquivo)->scaleDown(width: 600)->toWebp(80);
-        $pequena = (string) Image::read($arquivo)->scaleDown(width: 200)->toWebp(80);
+        $grande = (string) Image::read($arquivo)->scaleDown(width: 600)->toWebp(90);
+        $pequena = (string) Image::read($arquivo)->scaleDown(width: 300)->toWebp(90);
 
         Storage::disk('public')->put("/imagens/jogos/grande/{$nome}", $grande);
         Storage::disk('public')->put("imagens/jogos/pequena/{$nome}", $pequena);
