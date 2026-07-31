@@ -8,6 +8,7 @@ use App\Http\Controllers\Gerenciador\DashboardController;
 use App\Http\Controllers\Gerenciador\PerfilController;
 use App\Http\Controllers\Gerenciador\UsuarioController;
 use App\Http\Controllers\Catalogo\PlataformaController;
+use App\Http\Controllers\Colecao\ColecaoController;
 use App\Models\Catalogo\Desenvolvedora;
 use Illuminate\Support\Facades\Route;
 
@@ -79,7 +80,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/genero/editar/{id}', [GeneroController::class, 'editar'])->name('catalogo.genero.editar');
         Route::get('/genero/buscar', [GeneroController::class, 'buscar'])->name('catalogo.genero.buscar');
 
-        // Dashboard
+        // Coleção
+
+        Route::get('/colecao/visualizar/{id}', [ColecaoController::class, 'visualizar'])->name('colecao.visualizar');
+
 
 
     });

@@ -2,9 +2,11 @@
 
 namespace App\Models\Catalogo;
 
+use App\Models\Gerenciador\Usuario;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Jogo extends Model
@@ -41,6 +43,18 @@ class Jogo extends Model
     public function generos(): BelongsToMany
     {
         return $this->belongsToMany(Genero::class, 'jogo_generos');
+    }
+
+    public function usuarios(): BelongsToMany
+    {
+        return $this->belongsToMany(Usuario::class, 'colecoes', 'jogo_id', 'usuario_id')
+            ->withPivot('situacao_id')
+            ->withTimestamps();
+    }
+
+    public function colecoes(): HasMany
+    {
+        return $this->hasMany(Colecao::class, 'jogo_id');
     }
 
     public static function criar(String $nome, int $desenvolvedora, ?string $lancamento = null, ?string $grande = null, ?string $pequena = null, ?string $descricao = null): self
