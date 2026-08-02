@@ -102,22 +102,37 @@
                 </div>
 
                 <div class="flex gap-1 overflow-x-auto pb-2">
-                    @for ($i = 1; $i <= 10; $i++)
-                        <article
-                            class="flex-shrink-0 w-56 sm:w-64 bg-[#1C1B26] hover:bg-[#25232F] transition cursor-pointer flex flex-col">
-                            <div
-                                class="aspect-video bg-[#11101A] flex items-center justify-center border-b border-white/5">
-                                <span class="text-white/15 text-xs tracking-widest uppercase">PLACEHOLDER</span>
+                    @forelse ($ultimosJogos as $item)
+                        @continue(!$item->jogo)
+                        <a href="{{ route('catalogo.jogo.visualizar', $item->jogo->id) }}"
+                            class="group flex-shrink-0 w-44 sm:w-52 bg-[#1C1B26] hover:bg-[#25232F] transition flex flex-col">
+                            <div class="aspect-[3/4] bg-[#11101A] overflow-hidden border-b border-white/5">
+                                @if ($item->jogo->url_imagem_pequena)
+                                    <img src="{{ Storage::url($item->jogo->url_imagem_pequena) }}"
+                                        alt="Capa de {{ $item->jogo->nome }}" loading="lazy" decoding="async"
+                                        class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center">
+                                        <span class="text-white/15 text-[10px] tracking-widest uppercase">Sem capa</span>
+                                    </div>
+                                @endif
                             </div>
                             <div class="p-4 flex-1 flex flex-col">
-                                <span
-                                    class="self-start inline-block px-2 py-0.5 mb-2 text-[10px] font-black tracking-widest uppercase bg-[#6B5B9E] text-black">RPG</span>
-                                <h3 class="text-sm font-bold leading-snug">Jogo #{{ $i }}</h3>
-                                <span class="text-[10px] text-white/40 mt-auto pt-3">Registrado em
-                                    2026-05-{{ str_pad(28 - ($i - 1), 2, '0', STR_PAD_LEFT) }}</span>
+                                @if ($item->situacao)
+                                    <span
+                                        class="self-start inline-block px-2 py-0.5 mb-2 text-[10px] font-black tracking-widest uppercase bg-[#6B5B9E] text-black">{{ $item->situacao->nome }}</span>
+                                @endif
+                                <h3 class="text-sm font-bold leading-snug line-clamp-2">{{ $item->jogo->nome }}</h3>
+                                <span class="text-[10px] text-white/40 mt-auto pt-3">Adicionado em
+                                    {{ $item->created_at?->format('d/m/Y') }}</span>
                             </div>
-                        </article>
-                    @endfor
+                        </a>
+                    @empty
+                        <div class="w-full py-12 text-center">
+                            <p class="text-white/30 text-sm tracking-widest uppercase font-bold">Nenhum jogo na coleção
+                                ainda</p>
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </section>

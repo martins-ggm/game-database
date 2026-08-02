@@ -3,13 +3,14 @@
 
 namespace App\Services\Colecao;
 
-use App\Models\Catalogo\Colecao;
+use App\Models\Colecao\Colecao;
 
 use App\Repositorios\Catalogo\Interfaces\IJogoRepositorio;
 use App\Repositorios\Colecao\Interfaces\IColecaoRepositorio;
 use App\Repositorios\Gerenciador\Interfaces\IUsuarioRepositorio;
 use App\Services\Colecao\Interfaces\IColecaoService;
 use Illuminate\Database\Eloquent\Collection;
+
 
 class ColecaoService implements IColecaoService
 {
@@ -38,5 +39,17 @@ class ColecaoService implements IColecaoService
         $colecao = Colecao::criar($jogoID, $usuarioID, $situacaoID);
 
         $this->colecaoRepositorio->adicionarNaColecao($colecao);
+    }
+
+    public function ultimosAdicionados(int $usuarioID, int $quantidade): Collection
+    {
+
+        return $this->colecaoRepositorio->ultimosAdicionados($usuarioID, $quantidade);
+    }
+
+    public function buscarSituacao(int $jogoID, int $usuarioID): ?Colecao
+    {
+
+        return $this->colecaoRepositorio->buscarSituacao($jogoID, $usuarioID);
     }
 }

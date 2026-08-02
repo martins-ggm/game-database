@@ -118,16 +118,33 @@
                             </div>
                         </div>
 
-                        {{-- ações (placeholder) --}}
+                        {{-- ações --}}
                         <div class="flex flex-col sm:flex-row gap-3">
                             <button type="button" disabled
                                 class="px-6 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs opacity-50 cursor-not-allowed">
                                 Avaliar
                             </button>
-                            <button type="button" disabled
-                                class="px-6 py-3 border border-white/30 text-white font-black tracking-widest uppercase text-xs opacity-50 cursor-not-allowed">
-                                + Minha lista
-                            </button>
+
+                            @auth
+                                @if ($situacao ?? null)
+                                    {{-- já está na biblioteca: exibe a situação (editar em breve) --}}
+                                    <button type="button" disabled
+                                        class="inline-flex items-center gap-2 px-6 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs cursor-not-allowed">
+                                        {{ $situacao->situacao?->nome }}
+                                        <span class="text-black/50 normal-case text-[10px] font-bold">· editar em breve</span>
+                                    </button>
+                                @else
+                                    <button type="button" id="btn-add-colecao"
+                                        class="px-6 py-3 border border-white/30 text-white font-black tracking-widest uppercase text-xs hover:border-[#6B5B9E] hover:text-[#6B5B9E] transition">
+                                        + Minha lista
+                                    </button>
+                                @endif
+                            @else
+                                <a href="{{ route('gerenciador.usuario.login') }}"
+                                    class="px-6 py-3 border border-white/30 text-white font-black tracking-widest uppercase text-xs hover:border-[#6B5B9E] hover:text-[#6B5B9E] transition text-center">
+                                    + Minha lista
+                                </a>
+                            @endauth
                         </div>
                     </div>
                 </div>
@@ -228,6 +245,87 @@
             <p class="text-[10px] tracking-widest text-white/40 uppercase font-bold">Built with the SISP architecture</p>
         </div>
     </footer>
+
+    @auth
+        @if (!($entrada ?? null))
+            {{-- modal: adicionar à coleção (jQuery já vem do x-navbar no @auth) --}}
+            <div id="modal-colecao" class="hidden fixed inset-0 z-50 bg-black/70 items-center justify-center px-4">
+                <div class="w-full max-w-md bg-[#1C1B26] border border-white/10 p-6 sm:p-8">
+                    <h2 class="text-xl font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-4 mb-4">
+                        Adicionar à coleção
+                    </h2>
+                    <p class="text-sm text-white/60 mb-6">{{ $jogo->nome }}</p>
+
+                    <ul id="colecao-erros"
+                        class="hidden mb-4 p-3 bg-red-500/10 border border-red-500/30 text-sm text-red-300 list-disc list-inside space-y-1">
+                    </ul>
+
+                    <label for="situacao-select"
+                        class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Situação</label>
+                    <select id="situacao-select"
+                        class="w-full px-4 py-3 bg-[#11101A] border border-white/10 text-white focus:outline-none focus:border-[#6B5B9E] transition [color-scheme:dark]">
+                        @forelse (($situacoes ?? collect()) as $situacao)
+                            <option value="{{ $situacao->id }}">{{ $situacao->nome }}</option>
+                        @empty
+                            <option value="" disabled>Nenhuma situação cadastrada</option>
+                        @endforelse
+                    </select>
+
+                    <div class="flex gap-3 pt-6">
+                        <button type="button" id="cancelar-colecao"
+                            class="flex-1 py-3 border border-white/30 text-white font-black tracking-widest uppercase text-xs hover:border-white/60 transition">
+                            Cancelar
+                        </button>
+                        <button type="button" id="salvar-colecao"
+                            class="flex-1 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs hover:bg-[#8674B8] transition">
+                            Adicionar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                $(function () {
+                    const $modal = $('#modal-colecao');
+
+                    function fechar() { $modal.addClass('hidden').removeClass('flex'); }
+
+                    $('#btn-add-colecao').on('click', function () {
+                        $('#colecao-erros').addClass('hidden').empty();
+                        $modal.removeClass('hidden').addClass('flex');
+                    });
+                    $('#cancelar-colecao').on('click', fechar);
+                    $modal.on('click', function (e) { if (e.target === this) fechar(); });
+
+                    $('#salvar-colecao').on('click', function () {
+                        $('#colecao-erros').addClass('hidden').empty();
+
+                        $.ajax({
+                            url: "{{ route('colecao.adicionar') }}",
+                            method: 'POST',
+                            data: {
+                                jogoID: {{ $jogo->id }},
+                                situacaoID: $('#situacao-select').val()
+                            },
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json'
+                            },
+                            success: function () {
+                                // recarrega: o controller renderiza de novo com $entrada preenchido → botão vira a situação
+                                window.location.reload();
+                            },
+                            error: function (xhr) {
+                                const msg = xhr.responseJSON?.message || 'Erro ao adicionar à coleção.';
+                                $('#colecao-erros').append('<li>' + msg + '</li>').removeClass('hidden');
+                            }
+                        });
+                    });
+                });
+            </script>
+        @endif
+    @endauth
 
 </body>
 

@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\DTO\Gerenciador\UsuarioDTO;
 use App\Http\DTO\Gerenciador\UsuarioLoginDTO;
 use App\Http\Resources\Gerenciador\Usuario\UsuarioResource;
+use App\Services\Colecao\Interfaces\IColecaoService;
 use App\Services\Gerenciador\Interfaces\IUsuarioService;
 use Illuminate\Http\JsonResponse;
 
@@ -15,7 +16,10 @@ class UsuarioController extends Controller
 {
 
 
-    public function __construct(protected IUsuarioService $usuario_service) {}
+    public function __construct(
+        protected IUsuarioService $usuario_service,
+        protected IColecaoService $colecaoService,
+    ) {}
 
     public function criar(): View
     {
@@ -63,9 +67,9 @@ class UsuarioController extends Controller
 
     public function visualizarPerfil(int $usuario_id): View
     {
-
+        $ultimosJogos = $this->colecaoService->ultimosAdicionados($usuario_id, 10);
         $usuario = $this->usuario_service->buscarPorId($usuario_id);
-        return view(view: 'gerenciador.perfil', data: compact('usuario'));
+        return view(view: 'gerenciador.perfil', data: compact('usuario', 'ultimosJogos' ));
     }
 
 

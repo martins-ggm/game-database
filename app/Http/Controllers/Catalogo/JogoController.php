@@ -6,12 +6,15 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\DTO\Catalogo\JogoDTO;
 use App\Http\Resources\Catalogo\Jogo\JogoResource;
+use App\Models\Colecao\Situacao;
 use App\Repositorios\Catalogo\Interfaces\IDesenvolvedoraRepositorio;
 use App\Repositorios\Catalogo\Interfaces\IGeneroRepositorio;
 use App\Services\Catalogo\Interfaces\IDesenvolvedoraService;
 use App\Services\Catalogo\Interfaces\IGeneroService;
 use App\Services\Catalogo\Interfaces\IJogoService;
 use App\Services\Catalogo\Interfaces\IPlataformaService;
+use App\Services\Colecao\Interfaces\IColecaoService;
+use App\Services\Colecao\Interfaces\ISituacaoService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 
@@ -25,7 +28,9 @@ class JogoController extends Controller
         protected IJogoService $jogoService,
         protected IPlataformaService $plataformaService,
         protected IGeneroService $generoService,
-        protected IDesenvolvedoraService $desenvolvedoraservice
+        protected IDesenvolvedoraService $desenvolvedoraservice,
+        protected ISituacaoService $situacaoService,
+        protected IColecaoService $colecao
     ) {}
 
 
@@ -79,10 +84,11 @@ class JogoController extends Controller
 
     public function visualizar(Request $request): View
     {
-
+        $situacao = $this->colecao->buscarSituacao($request->id, auth()->id());
+        $situacoes = $this->situacaoService->listarSituacoes();
         $jogo = $this->jogoService->buscarPorId($request->id);
 
-        return View('catalogo.jogos.visualizar', compact('jogo'));
+        return View('catalogo.jogos.visualizar', compact('jogo', 'situacoes', 'situacao'));
     }
 
      public function buscaSimples(Request $request): JsonResponse

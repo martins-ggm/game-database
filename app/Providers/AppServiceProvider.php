@@ -52,8 +52,22 @@ class AppServiceProvider extends ServiceProvider
             \App\Services\Imagem\Interfaces\IImagemService::class,
             \App\Services\Imagem\ImagemService::class
         );
-        $this->app->bind(\App\Services\Colecao\Interfaces\IColecaoService::class, \App\Services\Colecao\ColecaoService::class);
-        $this->app->bind(\App\Repositorios\Colecao\Interfaces\IColecaoRepositorio::class, \App\Repositorios\Colecao\ColecaoRepositorio::class);
+        $this->app->bind(
+            \App\Services\Colecao\Interfaces\IColecaoService::class,
+            \App\Services\Colecao\ColecaoService::class
+        );
+        $this->app->bind(
+            \App\Repositorios\Colecao\Interfaces\IColecaoRepositorio::class,
+            \App\Repositorios\Colecao\ColecaoRepositorio::class
+        );
+        $this->app->bind(
+            \App\Services\Colecao\Interfaces\ISituacaoService::class,
+            \App\Services\Colecao\SituacaoService::class
+        );
+        $this->app->bind(
+            \App\Repositorios\Colecao\Interfaces\ISituacaoRepositorio::class,
+            \App\Repositorios\Colecao\SituacaoRepositorio::class
+        );
     }
 
     /**
