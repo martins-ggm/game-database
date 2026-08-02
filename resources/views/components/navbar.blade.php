@@ -15,7 +15,7 @@
         </a>
 
         <div class="flex items-center gap-8">
-            @if (auth()->user()->admin)
+            @if (auth()->check() && auth()->user()->admin)
                 <a href="{{ route('gerenciador.admin.visualizar') }}"
                     class="text-sm font-bold tracking-widest uppercase {{ request()->routeIs('gerenciador.admin.visualizar') ? '' : 'text-white/60' }} hover:text-[#6B5B9E] transition">ADMIN</a>
             @endif

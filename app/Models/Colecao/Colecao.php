@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Models\Catalogo;
+namespace App\Models\Colecao;
 
+use App\Models\Catalogo\Jogo;
+use App\Models\Colecao\Situacao;
 use App\Models\Gerenciador\Usuario;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

@@ -95,7 +95,10 @@
                         class="text-xl sm:text-2xl font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-4">
                         Últimos jogos
                     </h2>
-                    <span class="text-[10px] font-black tracking-widest uppercase text-white/40">10 mais recentes</span>
+                    <a href="{{ route('colecao.visualizar', $usuario->id) }}"
+                        class="flex-shrink-0 px-5 py-2 border border-white/30 text-white font-black tracking-widest uppercase text-[10px] hover:border-[#6B5B9E] hover:text-[#6B5B9E] transition">
+                        Ver coleção
+                    </a>
                 </div>
 
                 <div class="flex gap-1 overflow-x-auto pb-2">

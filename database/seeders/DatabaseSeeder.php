@@ -26,7 +26,8 @@ class DatabaseSeeder extends Seeder
             PlataformaSeeder::class,
             DesenvolvedoraSeeder::class,
             GeneroSeeder::class,
-            JogoSeeder::class,   
+            JogoSeeder::class,
+            SituacaoSeeder::class,
         ]);
     }
 }
