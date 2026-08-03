@@ -71,4 +71,11 @@ class GeneroRepositorio implements IGeneroRepositorio
     {
         return $this->modelo->newQuery()->count();
     }
+
+
+    public function todosComJogos(): Collection
+    {
+
+        return $this->modelo->newQuery()->with('jogos')->get();
+    }
 }

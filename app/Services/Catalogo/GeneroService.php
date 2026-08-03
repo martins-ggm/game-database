@@ -78,4 +78,10 @@ class GeneroService implements IGeneroService
 
         return $this->generoRepositorio->contarTodos();
     }
+
+    public function todosComJogos(): Collection
+    {
+
+        return $this->generoRepositorio->todosComJogos();
+    }
 }

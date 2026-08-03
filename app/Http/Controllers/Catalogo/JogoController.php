@@ -6,9 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\DTO\Catalogo\JogoDTO;
 use App\Http\Resources\Catalogo\Jogo\JogoResource;
-use App\Models\Colecao\Situacao;
-use App\Repositorios\Catalogo\Interfaces\IDesenvolvedoraRepositorio;
-use App\Repositorios\Catalogo\Interfaces\IGeneroRepositorio;
 use App\Services\Catalogo\Interfaces\IDesenvolvedoraService;
 use App\Services\Catalogo\Interfaces\IGeneroService;
 use App\Services\Catalogo\Interfaces\IJogoService;
@@ -91,11 +88,19 @@ class JogoController extends Controller
         return View('catalogo.jogos.visualizar', compact('jogo', 'situacoes', 'situacao'));
     }
 
-     public function buscaSimples(Request $request): JsonResponse
+    public function buscaSimples(Request $request): JsonResponse
     {
 
         $jogos = $this->jogoService->buscaPorNomeSimplificado($request->nome);
 
         return response()->json(['jogos' => JogoResource::criar($jogos)], status: 200);
+    }
+
+    public function catalogo(): View
+    {
+
+        $generos = $this->generoService->todosComJogos();
+
+        return View('catalogo.jogos.catalogo', compact('generos'));
     }
 }

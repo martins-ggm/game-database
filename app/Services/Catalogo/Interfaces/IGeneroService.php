@@ -16,4 +16,6 @@ interface IGeneroService
     public function buscarTodos(): Collection;
     public function buscar(?String $nome = null): Collection;
     public function contarTodos(): Int;
+    public function todosComJogos(): Collection;
+
 }

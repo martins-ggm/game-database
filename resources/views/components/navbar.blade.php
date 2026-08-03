@@ -4,8 +4,8 @@
 <header class="sticky top-0 z-40 bg-[#11101A] border-b border-white/10">
     <nav class="max-w-[1600px] mx-auto px-6 sm:px-12 py-5 flex items-center justify-between">
         <div class="flex items-center gap-8">
-            <a href="{{ route('gerenciador.dashboard.visualizar') }}#catalogo"
-                class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">CATÁLOGO</a>
+            <a href="{{ route('catalogo.jogos') }}"
+                class="text-sm font-bold tracking-widest uppercase {{ request()->routeIs('catalogo.jogos') ? '' : 'text-white/60' }} hover:text-[#6B5B9E] transition">CATÁLOGO</a>
             <a href="#"
                 class="text-sm font-bold tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">LISTAS</a>
         </div>

@@ -12,6 +12,9 @@ Route::get('/', function () {
 
 Route::get('/dashboard', [DashboardController::class, 'visualizar'])->name('gerenciador.dashboard.visualizar');
 
+// Catálogo público (jogos por categoria)
+Route::get('/catalogo', [JogoController::class, 'catalogo'])->name('catalogo.jogos');
+
 // Visualização pública de jogo
 Route::get('/jogo/visualizar/{id}', [JogoController::class, 'visualizar'])->name('catalogo.jogo.visualizar');
 
