@@ -68,6 +68,18 @@ class AppServiceProvider extends ServiceProvider
             \App\Repositorios\Colecao\Interfaces\ISituacaoRepositorio::class,
             \App\Repositorios\Colecao\SituacaoRepositorio::class
         );
+        $this->app->bind(
+            \App\Repositorios\Review\Interfaces\IReviewRepositorio::class,
+            \App\Repositorios\Review\ReviewRepositorio::class
+        );
+        $this->app->bind(
+            \App\Repositorios\Review\Interfaces\IReviewRepositorio::class,
+            \App\Repositorios\Review\ReviewRepositorio::class
+        );
+        $this->app->bind(
+            \App\Services\Review\Interfaces\IReviewService::class,
+            \App\Services\Review\ReviewService::class
+        );
     }
 
     /**

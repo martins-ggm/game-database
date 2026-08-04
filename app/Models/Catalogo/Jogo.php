@@ -2,7 +2,9 @@
 
 namespace App\Models\Catalogo;
 
+use App\Models\Colecao\Colecao;
 use App\Models\Gerenciador\Usuario;
+use App\Models\Review\Review;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -55,6 +57,11 @@ class Jogo extends Model
     public function colecoes(): HasMany
     {
         return $this->hasMany(Colecao::class, 'jogo_id');
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class, 'jogo_id');
     }
 
     public static function criar(String $nome, int $desenvolvedora, ?string $lancamento = null, ?string $grande = null, ?string $pequena = null, ?string $descricao = null): self

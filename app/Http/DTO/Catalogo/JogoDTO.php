@@ -89,7 +89,9 @@ class JogoDTO
                 'lancamento' => $this->lancamento,
                 'generos' => $this->generos,
                 'plataformas' => $this->plataformas,
-                'imagem' => $this->imagem
+                'imagem' => $this->imagem,
+                'descricao' => $this->descricao
+
             ],
             [
                 'id' =>  ['required', 'integer'],

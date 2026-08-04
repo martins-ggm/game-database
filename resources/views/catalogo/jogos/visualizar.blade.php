@@ -22,17 +22,19 @@
     <x-navbar />
 
     @php
-        // ---- placeholders fixos (o back ainda não tem esses campos) ----
-        $notaMedia = 4.3;
-        $totalAvaliacoes = 128;
-        $avaliacoes = [
-            ['autor' => 'Ryn', 'nota' => 5, 'data' => '2026-05-21', 'texto' => 'Experiência absurda do início ao fim. Level design impecável e uma trilha que não sai da cabeça.'],
-            ['autor' => 'Kaz', 'nota' => 4, 'data' => '2026-05-18', 'texto' => 'Muito bom, mas o ritmo cai um pouco no meio. Ainda assim, recomendo demais.'],
-            ['autor' => 'Mel', 'nota' => 5, 'data' => '2026-05-10', 'texto' => 'Um dos melhores que já joguei. Cada detalhe foi pensado com carinho.'],
-        ];
+        $reviews = $reviews ?? collect();
+        $reviewUsuario = $reviewUsuario ?? null;
+
+        $totalReviews = $reviews->count();
+        $notaMedia = $totalReviews ? round($reviews->avg('nota'), 1) : null;
+
+        // reviews dos outros usuários (a do próprio aparece no bloco "Sua avaliação")
+        $outrasReviews = $reviewUsuario
+            ? $reviews->reject(fn ($r) => $r->id === $reviewUsuario->id)->values()
+            : $reviews;
 
         // estrelas a partir de uma nota (0–5) → "★★★★☆"
-        $estrelas = fn (float $n) => str_repeat('★', (int) round($n)) . str_repeat('☆', 5 - (int) round($n));
+        $estrelas = fn ($n) => str_repeat('★', (int) round((float) $n)) . str_repeat('☆', 5 - (int) round((float) $n));
     @endphp
 
     <main class="flex-1">
@@ -76,17 +78,22 @@
                             {{ $jogo->lancamento?->format('d/m/Y') ?? 'Lançamento desconhecido' }}
                         </p>
 
-                        {{-- média de avaliação (placeholder) --}}
-                        <div class="inline-flex items-center gap-4 bg-[#1C1B26] border border-white/10 px-5 py-4 mb-8">
-                            <div class="text-4xl font-black text-[#6B5B9E] leading-none">{{ number_format($notaMedia, 1) }}</div>
-                            <div>
-                                <div class="text-[#6B5B9E] text-lg tracking-widest leading-none">{{ $estrelas($notaMedia) }}</div>
-                                <p class="text-[10px] uppercase tracking-widest text-white/40 mt-1 font-bold">
-                                    {{ $totalAvaliacoes }} avaliações
-                                    <span class="ml-1 text-[#6B5B9E]/70">· em breve</span>
-                                </p>
+                        {{-- média de avaliação --}}
+                        @if ($notaMedia !== null)
+                            <div class="inline-flex items-center gap-4 bg-[#1C1B26] border border-white/10 px-5 py-4 mb-8">
+                                <div class="text-4xl font-black text-[#6B5B9E] leading-none">{{ number_format($notaMedia, 1) }}</div>
+                                <div>
+                                    <div class="text-[#6B5B9E] text-lg tracking-widest leading-none">{{ $estrelas($notaMedia) }}</div>
+                                    <p class="text-[10px] uppercase tracking-widest text-white/40 mt-1 font-bold">
+                                        {{ $totalReviews }} {{ $totalReviews === 1 ? 'avaliação' : 'avaliações' }}
+                                    </p>
+                                </div>
                             </div>
-                        </div>
+                        @else
+                            <div class="inline-flex items-center bg-[#1C1B26] border border-white/10 px-5 py-4 mb-8">
+                                <span class="text-white/30 text-xs uppercase tracking-widest font-bold">Sem avaliações ainda</span>
+                            </div>
+                        @endif
 
                         {{-- plataformas --}}
                         <div class="mb-5">
@@ -120,10 +127,17 @@
 
                         {{-- ações --}}
                         <div class="flex flex-col sm:flex-row gap-3">
-                            <button type="button" disabled
-                                class="px-6 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs opacity-50 cursor-not-allowed">
-                                Avaliar
-                            </button>
+                            @auth
+                                <button type="button"
+                                    class="js-abrir-review px-6 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs hover:bg-[#8674B8] transition">
+                                    {{ $reviewUsuario ? 'Editar avaliação' : 'Avaliar' }}
+                                </button>
+                            @else
+                                <a href="{{ route('gerenciador.usuario.login') }}"
+                                    class="px-6 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs hover:bg-[#8674B8] transition text-center">
+                                    Avaliar
+                                </a>
+                            @endauth
 
                             @auth
                                 @if ($situacao ?? null)
@@ -151,56 +165,89 @@
             </div>
         </section>
 
-        {{-- ============ SOBRE (descrição — placeholder) ============ --}}
+        {{-- ============ SOBRE (descrição) ============ --}}
         <section class="border-b border-white/10">
             <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-10">
                 <div class="flex items-center gap-3 mb-6">
                     <h2 class="text-xl sm:text-2xl font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-4">
                         Sobre o jogo
                     </h2>
-                    <span class="px-2 py-0.5 text-[9px] font-black uppercase tracking-widest bg-[#6B5B9E]/15 text-[#6B5B9E] border border-[#6B5B9E]/30">
-                        Em breve
-                    </span>
                 </div>
 
-                <div class=" space-y-4 text-white/70 leading-relaxed text-sm sm:text-base">
+                <div class="space-y-4 text-white/70 leading-relaxed text-sm sm:text-base">
                     <p>
                         {{ $jogo->nome }} é um jogo @if ($jogo->generos->isNotEmpty()) de {{ $jogo->generos->pluck('nome')->take(2)->implode(' e ') }}@endif
                         desenvolvido pela {{ $jogo->desenvolvedora?->nome ?? 'desenvolvedora desconhecida' }}@if ($jogo->lancamento), lançado em {{ $jogo->lancamento->format('Y') }}@endif.
                     </p>
                     <p>
-                      {{ $jogo->descricao }}
+                        {{ $jogo->descricao }}
                     </p>
                 </div>
             </div>
         </section>
 
-        {{-- ============ AVALIAÇÕES (placeholder) ============ --}}
+        {{-- ============ AVALIAÇÕES ============ --}}
         <section>
             <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-10">
-                <div class="flex items-center gap-3 mb-8">
+                <div class="flex items-center justify-between gap-3 mb-8">
                     <h2 class="text-xl sm:text-2xl font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-4">
                         Avaliações
                     </h2>
-                    <span class="px-2 py-0.5 text-[9px] font-black uppercase tracking-widest bg-[#6B5B9E]/15 text-[#6B5B9E] border border-[#6B5B9E]/30">
-                        Em breve
+                    <span class="text-[10px] font-black tracking-widest uppercase text-white/40">
+                        {{ $totalReviews }} {{ $totalReviews === 1 ? 'avaliação' : 'avaliações' }}
                     </span>
                 </div>
 
-                {{-- caixa "deixe sua avaliação" --}}
+                {{-- sua avaliação / CTA --}}
                 @auth
-                    <div class="bg-[#1C1B26] border border-white/10 p-5 sm:p-6 mb-8">
-                        <p class="text-[10px] font-black tracking-widest uppercase text-white/60 mb-3">Sua avaliação</p>
-                        <div class="text-2xl text-white/20 tracking-widest mb-3 select-none">☆☆☆☆☆</div>
-                        <textarea rows="3" disabled placeholder="Conte o que achou do jogo... (em breve)"
-                            class="w-full px-4 py-3 bg-[#11101A] border border-white/10 text-white placeholder-white/30 text-sm resize-none opacity-60 cursor-not-allowed"></textarea>
-                        <div class="flex justify-end mt-3">
-                            <button type="button" disabled
-                                class="px-6 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs opacity-50 cursor-not-allowed">
-                                Enviar avaliação
+                    @if ($reviewUsuario)
+                        <div class="bg-[#1C1B26] border border-[#6B5B9E]/40 p-5 sm:p-6 mb-8">
+                            <div class="flex items-start justify-between gap-3 mb-3">
+                                <div class="flex gap-4 min-w-0">
+                                    <div
+                                        class="w-12 h-12 flex-shrink-0 bg-[#11101A] border border-white/10 overflow-hidden flex items-center justify-center text-[#6B5B9E] font-black text-lg uppercase">
+                                        @if (auth()->user()->url_imagem_pequena)
+                                            <img src="{{ Storage::url(auth()->user()->url_imagem_pequena) }}"
+                                                alt="{{ auth()->user()->nome }}" class="w-full h-full object-cover">
+                                        @else
+                                            {{ mb_substr(auth()->user()->nome, 0, 1) }}
+                                        @endif
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <span class="font-bold text-sm tracking-wide truncate">{{ auth()->user()->nome }}</span>
+                                            <span class="flex-shrink-0 text-[9px] font-black tracking-widest uppercase bg-[#6B5B9E] text-black px-1.5 py-0.5">Você</span>
+                                        </div>
+                                        <div class="text-[#6B5B9E] text-lg tracking-widest leading-none">
+                                            {{ $estrelas($reviewUsuario->nota) }}
+                                            <span class="text-white/40 text-xs font-bold ml-1">{{ number_format((float) $reviewUsuario->nota, 1) }}/5</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 flex-shrink-0">
+                                    <button type="button"
+                                        class="js-abrir-review px-4 py-2 border border-white/30 text-white font-black tracking-widest uppercase text-[10px] hover:border-[#6B5B9E] hover:text-[#6B5B9E] transition">
+                                        Editar
+                                    </button>
+                                    <button type="button" id="btn-remover-review"
+                                        class="px-4 py-2 border border-red-500/40 text-red-300 font-black tracking-widest uppercase text-[10px] hover:bg-red-500/10 transition">
+                                        Remover
+                                    </button>
+                                </div>
+                            </div>
+                            @if ($reviewUsuario->review)
+                                <p class="text-sm text-white/70 leading-relaxed">{{ $reviewUsuario->review }}</p>
+                            @endif
+                        </div>
+                    @else
+                        <div class="bg-[#1C1B26] border border-white/10 p-5 sm:p-6 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <p class="text-sm text-white/60">Você ainda não avaliou este jogo.</p>
+                            <button type="button"
+                                class="js-abrir-review self-start sm:self-auto px-6 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs hover:bg-[#8674B8] transition">
+                                Avaliar agora
                             </button>
                         </div>
-                    </div>
+                    @endif
                 @else
                     <div class="bg-[#1C1B26] border border-white/10 p-5 sm:p-6 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <p class="text-sm text-white/60">Entre na sua conta para avaliar este jogo.</p>
@@ -211,26 +258,37 @@
                     </div>
                 @endauth
 
-                {{-- lista de avaliações (placeholder) --}}
+                {{-- lista de avaliações --}}
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-1">
-                    @foreach ($avaliacoes as $avaliacao)
+                    @forelse ($outrasReviews as $review)
                         <article class="bg-[#1C1B26] p-5 flex gap-4">
                             <div
-                                class="w-12 h-12 flex-shrink-0 bg-[#11101A] border border-white/10 flex items-center justify-center text-[#6B5B9E] font-black text-lg uppercase">
-                                {{ mb_substr($avaliacao['autor'], 0, 1) }}
+                                class="w-12 h-12 flex-shrink-0 bg-[#11101A] border border-white/10 overflow-hidden flex items-center justify-center text-[#6B5B9E] font-black text-lg uppercase">
+                                @if ($review->usuario?->url_imagem_pequena)
+                                    <img src="{{ Storage::url($review->usuario->url_imagem_pequena) }}"
+                                        alt="{{ $review->usuario->nome }}" class="w-full h-full object-cover">
+                                @else
+                                    {{ mb_substr($review->usuario?->nome ?? '?', 0, 1) }}
+                                @endif
                             </div>
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center justify-between gap-3 mb-1">
-                                    <span class="font-bold text-sm tracking-wide">{{ $avaliacao['autor'] }}</span>
-                                    <span class="text-[10px] text-white/40 flex-shrink-0">
-                                        {{ \Illuminate\Support\Carbon::parse($avaliacao['data'])->format('d/m/Y') }}
-                                    </span>
+                                    <span class="font-bold text-sm tracking-wide truncate">{{ $review->usuario?->nome ?? 'Usuário' }}</span>
+                                    <span class="text-[10px] text-white/40 flex-shrink-0">{{ $review->created_at?->format('d/m/Y') }}</span>
                                 </div>
-                                <div class="text-[#6B5B9E] text-sm tracking-widest mb-2">{{ $estrelas($avaliacao['nota']) }}</div>
-                                <p class="text-sm text-white/60 leading-relaxed">{{ $avaliacao['texto'] }}</p>
+                                <div class="text-[#6B5B9E] text-sm tracking-widest mb-2">{{ $estrelas($review->nota) }}</div>
+                                @if ($review->review)
+                                    <p class="text-sm text-white/60 leading-relaxed">{{ $review->review }}</p>
+                                @endif
                             </div>
                         </article>
-                    @endforeach
+                    @empty
+                        <div class="lg:col-span-2 py-12 text-center">
+                            <p class="text-white/30 text-sm tracking-widest uppercase font-bold">
+                                @if ($reviewUsuario) Ninguém mais avaliou este jogo @else Nenhuma avaliação ainda @endif
+                            </p>
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </section>
@@ -246,9 +304,142 @@
         </div>
     </footer>
 
+    {{-- ===== modal de avaliação (adicionar / editar) ===== --}}
     @auth
-        @if (!($entrada ?? null))
-            {{-- modal: adicionar à coleção (jQuery já vem do x-navbar no @auth) --}}
+        <div id="modal-review" class="hidden fixed inset-0 z-50 bg-black/70 items-center justify-center px-4">
+            <div class="w-full max-w-md bg-[#1C1B26] border border-white/10 p-6 sm:p-8">
+                <h2 class="text-xl font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-4 mb-4">
+                    {{ $reviewUsuario ? 'Editar avaliação' : 'Avaliar' }}
+                </h2>
+                <p class="text-sm text-white/60 mb-6">{{ $jogo->nome }}</p>
+
+                <ul id="review-erros"
+                    class="hidden mb-4 p-3 bg-red-500/10 border border-red-500/30 text-sm text-red-300 list-disc list-inside space-y-1">
+                </ul>
+
+                <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Sua nota</label>
+                <div id="estrelas-input" class="flex gap-1 text-3xl text-white/20 cursor-pointer select-none mb-5">
+                    @for ($i = 1; $i <= 5; $i++)
+                        <span data-valor="{{ $i }}" class="transition">★</span>
+                    @endfor
+                </div>
+                <input type="hidden" id="nota-input" value="{{ $reviewUsuario->nota ?? '' }}">
+
+                <label for="review-texto"
+                    class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">
+                    Comentário <span class="text-white/30 normal-case">(opcional)</span>
+                </label>
+                <textarea id="review-texto" rows="4" placeholder="Conte o que achou do jogo..."
+                    class="w-full px-4 py-3 bg-[#11101A] border border-white/10 text-white placeholder-white/30 text-sm resize-none focus:outline-none focus:border-[#6B5B9E] transition">{{ $reviewUsuario->review ?? '' }}</textarea>
+
+                <div class="flex gap-3 pt-6">
+                    <button type="button" id="cancelar-review"
+                        class="flex-1 py-3 border border-white/30 text-white font-black tracking-widest uppercase text-xs hover:border-white/60 transition">
+                        Cancelar
+                    </button>
+                    <button type="button" id="salvar-review"
+                        class="flex-1 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs hover:bg-[#8674B8] transition">
+                        {{ $reviewUsuario ? 'Salvar' : 'Enviar' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(function () {
+                const $modal = $('#modal-review');
+                const $estrelas = $('#estrelas-input span');
+                let nota = parseInt($('#nota-input').val()) || 0;
+
+                function pintar(n) {
+                    $estrelas.each(function () {
+                        const v = parseInt($(this).data('valor'));
+                        $(this).toggleClass('text-[#6B5B9E]', v <= n);
+                        $(this).toggleClass('text-white/20', v > n);
+                    });
+                }
+                pintar(nota);
+
+                $estrelas
+                    .on('mouseenter', function () { pintar(parseInt($(this).data('valor'))); })
+                    .on('mouseleave', function () { pintar(nota); })
+                    .on('click', function () {
+                        nota = parseInt($(this).data('valor'));
+                        $('#nota-input').val(nota);
+                        pintar(nota);
+                    });
+
+                function fechar() { $modal.addClass('hidden').removeClass('flex'); }
+                $('.js-abrir-review').on('click', function () {
+                    $('#review-erros').addClass('hidden').empty();
+                    $modal.removeClass('hidden').addClass('flex');
+                });
+                $('#cancelar-review').on('click', fechar);
+                $modal.on('click', function (e) { if (e.target === this) fechar(); });
+
+                $('#salvar-review').on('click', function () {
+                    $('#review-erros').addClass('hidden').empty();
+                    if (!nota) {
+                        $('#review-erros').append('<li>Escolha uma nota de 1 a 5.</li>').removeClass('hidden');
+                        return;
+                    }
+
+                    const dados = {
+                        jogo_id: {{ $jogo->id }},
+                        usuario_id: {{ auth()->id() }},
+                        nota: nota,
+                        review: $('#review-texto').val()
+                    };
+                    @if ($reviewUsuario)
+                        dados.id = {{ $reviewUsuario->id }};
+                    @endif
+
+                    $.ajax({
+                        url: @if ($reviewUsuario) "{{ route('review.editar', $reviewUsuario->id) }}" @else "{{ route('review.criar') }}" @endif,
+                        method: 'POST',
+                        data: dados,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        },
+                        success: function () { window.location.reload(); },
+                        error: function (xhr) {
+                            if (xhr.status === 422 && xhr.responseJSON?.errors) {
+                                Object.values(xhr.responseJSON.errors).flat().forEach(function (m) {
+                                    $('#review-erros').append('<li>' + m + '</li>');
+                                });
+                            } else {
+                                $('#review-erros').append('<li>' + (xhr.responseJSON?.message || 'Erro ao enviar avaliação.') + '</li>');
+                            }
+                            $('#review-erros').removeClass('hidden');
+                        }
+                    });
+                });
+
+                @if ($reviewUsuario)
+                    $('#btn-remover-review').on('click', function () {
+                        if (!confirm('Remover sua avaliação?')) return;
+                        $.ajax({
+                            url: "{{ route('review.remover', $reviewUsuario->id) }}",
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json'
+                            },
+                            success: function () { window.location.reload(); },
+                            error: function (xhr) { alert(xhr.responseJSON?.message || 'Erro ao remover.'); }
+                        });
+                    });
+                @endif
+            });
+        </script>
+    @endauth
+
+    {{-- ===== modal: adicionar à coleção ===== --}}
+    @auth
+        @if (!($situacao ?? null))
             <div id="modal-colecao" class="hidden fixed inset-0 z-50 bg-black/70 items-center justify-center px-4">
                 <div class="w-full max-w-md bg-[#1C1B26] border border-white/10 p-6 sm:p-8">
                     <h2 class="text-xl font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-4 mb-4">
@@ -264,8 +455,8 @@
                         class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Situação</label>
                     <select id="situacao-select"
                         class="w-full px-4 py-3 bg-[#11101A] border border-white/10 text-white focus:outline-none focus:border-[#6B5B9E] transition [color-scheme:dark]">
-                        @forelse (($situacoes ?? collect()) as $situacao)
-                            <option value="{{ $situacao->id }}">{{ $situacao->nome }}</option>
+                        @forelse (($situacoes ?? collect()) as $sit)
+                            <option value="{{ $sit->id }}">{{ $sit->nome }}</option>
                         @empty
                             <option value="" disabled>Nenhuma situação cadastrada</option>
                         @endforelse
@@ -312,10 +503,7 @@
                                 'X-Requested-With': 'XMLHttpRequest',
                                 'Accept': 'application/json'
                             },
-                            success: function () {
-                                // recarrega: o controller renderiza de novo com $entrada preenchido → botão vira a situação
-                                window.location.reload();
-                            },
+                            success: function () { window.location.reload(); },
                             error: function (xhr) {
                                 const msg = xhr.responseJSON?.message || 'Erro ao adicionar à coleção.';
                                 $('#colecao-erros').append('<li>' + msg + '</li>').removeClass('hidden');

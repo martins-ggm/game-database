@@ -12,6 +12,7 @@ use App\Services\Catalogo\Interfaces\IJogoService;
 use App\Services\Catalogo\Interfaces\IPlataformaService;
 use App\Services\Colecao\Interfaces\IColecaoService;
 use App\Services\Colecao\Interfaces\ISituacaoService;
+use App\Services\Review\Interfaces\IReviewService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 
@@ -27,7 +28,8 @@ class JogoController extends Controller
         protected IGeneroService $generoService,
         protected IDesenvolvedoraService $desenvolvedoraservice,
         protected ISituacaoService $situacaoService,
-        protected IColecaoService $colecao
+        protected IColecaoService $colecao,
+        protected IReviewService $reviewService
     ) {}
 
 
@@ -81,11 +83,14 @@ class JogoController extends Controller
 
     public function visualizar(Request $request): View
     {
-        $situacao = $this->colecao->buscarSituacao($request->id, auth()->id());
+
+        $reviewUsuario = auth()->check() ? $this->reviewService->buscarReviewUsuario($request->id, auth()->id()) : null;
+        $reviews =  $this->reviewService->buscarReviews($request->id);
+        $situacao =  auth()->check() ? $this->colecao->buscarSituacao($request->id, auth()->id()) : null;
         $situacoes = $this->situacaoService->listarSituacoes();
         $jogo = $this->jogoService->buscarPorId($request->id);
 
-        return View('catalogo.jogos.visualizar', compact('jogo', 'situacoes', 'situacao'));
+        return View('catalogo.jogos.visualizar', compact('jogo', 'situacoes', 'situacao', 'reviewUsuario', 'reviews'));
     }
 
     public function buscaSimples(Request $request): JsonResponse
