@@ -7,6 +7,7 @@ use App\Http\Controllers\Catalogo\PlataformaController;
 use App\Http\Controllers\Colecao\ColecaoController;
 use App\Http\Controllers\Gerenciador\AdminController;
 use App\Http\Controllers\Gerenciador\DashboardController;
+use App\Http\Controllers\Gerenciador\HomeController;
 use App\Http\Controllers\Gerenciador\UsuarioController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,9 +17,7 @@ use Illuminate\Support\Facades\Route;
  */
 
 // ===== Públicas =====
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/dashboard', [DashboardController::class, 'visualizar'])->name('gerenciador.dashboard.visualizar');
 Route::get('/catalogo', [JogoController::class, 'catalogo'])->name('catalogo.jogos');

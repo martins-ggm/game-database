@@ -192,6 +192,66 @@
         </div>
     </section>
 
+    {{-- patch notes --}}
+    @php
+        // estilo de cada tag por tipo de mudança (só apresentação — os dados vêm do controller)
+        $tags = [
+            'novo' => ['rotulo' => 'Novo', 'classe' => 'bg-[#6B5B9E] text-black'],
+            'melhoria' => ['rotulo' => 'Melhoria', 'classe' => 'border border-[#6B5B9E] text-[#8B7BB8]'],
+            'correcao' => ['rotulo' => 'Correção', 'classe' => 'border border-white/25 text-white/50'],
+        ];
+    @endphp
+
+    <section id="patch-notes" class="border-t border-white/10">
+        <div class="max-w-[1600px] mx-auto px-6 sm:px-12 pt-12 pb-16">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-xl sm:text-2xl font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-4">
+                    PATCH NOTES</h2>
+                @if ($patchNotes->isNotEmpty())
+                    <span class="text-[10px] font-black tracking-widest uppercase text-white/40">
+                        Versão atual v{{ $patchNotes->first()->versao }}
+                    </span>
+                @endif
+            </div>
+
+            <div class="grid grid-cols-1 gap-1">
+                @forelse ($patchNotes as $nota)
+                    <article class="bg-[#1C1B26] p-5 sm:p-6 flex flex-col sm:flex-row gap-5">
+                        {{-- coluna da versão --}}
+                        <div class="sm:w-48 flex-shrink-0 flex sm:flex-col items-baseline sm:items-start gap-3 sm:gap-1">
+                            <span
+                                class="inline-block px-2 py-0.5 text-[10px] font-black tracking-widest uppercase bg-[#6B5B9E] text-black">
+                                v{{ $nota->versao }}
+                            </span>
+                            <h3 class="text-base font-bold leading-snug">{{ $nota->titulo }}</h3>
+                            <span class="text-[10px] text-white/40 sm:mt-1">{{ $nota->lancado_em->format('d/m/Y') }}</span>
+                        </div>
+
+                        {{-- lista de mudanças --}}
+                        <ul class="flex-1 flex flex-col gap-2 sm:border-l border-white/10 sm:pl-6">
+                            @foreach ($nota->mudancas as $mudanca)
+                                @php($tag = $tags[$mudanca['tipo']] ?? ['rotulo' => ucfirst($mudanca['tipo']), 'classe' => 'border border-white/25 text-white/50'])
+                                <li class="flex items-start gap-3">
+                                    <span
+                                        class="mt-0.5 flex-shrink-0 inline-block px-2 py-0.5 text-[9px] font-black tracking-widest uppercase {{ $tag['classe'] }}">
+                                        {{ $tag['rotulo'] }}
+                                    </span>
+                                    <span class="text-sm text-white/70 leading-relaxed">{{ $mudanca['texto'] }}</span>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </article>
+                @empty
+                    <article class="bg-[#1C1B26] p-8 text-center">
+                        <p class="text-white/30 text-sm tracking-widest uppercase font-bold">
+                            Nenhuma atualização registrada ainda
+                        </p>
+                    </article>
+                @endforelse
+            </div>
+        </div>
+    </section>
+
     {{-- footer --}}
     <footer class="border-t border-white/10">
         <div

@@ -80,6 +80,14 @@ class AppServiceProvider extends ServiceProvider
             \App\Services\Review\Interfaces\IReviewService::class,
             \App\Services\Review\ReviewService::class
         );
+        $this->app->bind(
+            \App\Repositorios\Gerenciador\Interfaces\IPatchNoteRepositorio::class,
+            \App\Repositorios\Gerenciador\PatchNoteRepositorio::class
+        );
+        $this->app->bind(
+            \App\Services\Gerenciador\Interfaces\IPatchNoteService::class,
+            \App\Services\Gerenciador\PatchNoteService::class
+        );
     }
 
     /**

@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             GeneroSeeder::class,
             JogoSeeder::class,
             SituacaoSeeder::class,
+            PatchNoteSeeder::class,
         ]);
     }
 }
