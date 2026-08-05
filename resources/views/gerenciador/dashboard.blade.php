@@ -87,7 +87,7 @@
         <section id="lancamentos" class="max-w-[1600px] mx-auto px-6 sm:px-12 pt-8 pb-16">
             <div class="flex items-center justify-between mb-8">
                 <h2 class="text-xl sm:text-2xl font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-4">
-                    ÚLtimos lançamentos
+                    Em alta
                 </h2>
                 <a href="#"
                     class="px-5 py-2 border border-white/30 text-white font-black tracking-widest uppercase text-[10px] hover:border-[#6B5B9E] hover:text-[#6B5B9E] transition">VER
@@ -96,7 +96,7 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1">
 
-                @forelse ($ultimosLançamentos as $jogo)
+                @forelse ($emAlta as $jogo)
                     <a href="{{ route('catalogo.jogo.visualizar', $jogo->id) }}" class="bg-[#1C1B26] hover:bg-[#25232F] transition cursor-pointer flex flex-col">
                         <div class="aspect-[3/4] bg-[#11101A] border-b border-white/5 overflow-hidden">
                             @if ($jogo->url_imagem_grande)

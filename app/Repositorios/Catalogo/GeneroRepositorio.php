@@ -78,4 +78,21 @@ class GeneroRepositorio implements IGeneroRepositorio
 
         return $this->modelo->newQuery()->with('jogos')->get();
     }
+
+    public function generosComMaisJogosComReviews(int $quantidade, int $dias): Collection
+    {
+
+        $desde = now()->subDays($dias);
+
+        $temReviewRecente = fn($query) => $query
+            ->whereHas('reviews', fn($review) => $review->where('created_at', '>=', $desde));
+
+        return $this->modelo->newQuery()
+            ->withCount(['jogos as jogos_com_reviews_count' => $temReviewRecente])
+            ->whereHas('jogos', $temReviewRecente)
+            ->with('jogos', $temReviewRecente)
+            ->orderByDesc('jogos_com_reviews_count')
+            ->take($quantidade)
+            ->get();
+    }
 }

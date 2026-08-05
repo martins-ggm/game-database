@@ -104,4 +104,18 @@ class JogoRepositorio implements IJogoRepositorio
             ->limit(10)
             ->get();
     }
+
+    public function emAlta(int $quantidade, int $dias): Collection
+    {
+
+        $desde = now()->subDays($dias);
+
+        return $this->modelo->newQuery()
+            ->withCount(['reviews' => fn($query) => $query->where('created_at', '>=', $desde)])
+            ->whereHas('reviews', fn($query) => $query->where('created_at', '>=', $desde))
+            ->with(['desenvolvedora', 'generos', 'plataformas'])
+            ->orderByDesc('reviews_count')
+            ->take($quantidade)
+            ->get();
+    }
 }

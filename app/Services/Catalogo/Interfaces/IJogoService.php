@@ -19,4 +19,5 @@ interface IJogoService
     public function ultimosLancados(int $quantidade): Collection;
     public function buscarPorId(Int $id): ?Jogo;
     public function buscaPorNomeSimplificado(String $nome): Collection;
+    public function emAlta(int $quantidade, int $dias): Collection;
 }

@@ -104,8 +104,9 @@ class JogoController extends Controller
     public function catalogo(): View
     {
 
+        $generosEmAlta = $this->generoService->generosComMaisJogosComReviews(quantidade: 10, dias: 30);
         $generos = $this->generoService->todosComJogos();
 
-        return View('catalogo.jogos.catalogo', compact('generos'));
+        return View('catalogo.jogos.catalogo', compact('generos', 'generosEmAlta'));
     }
 }

@@ -10,7 +10,6 @@ use App\Services\Imagem\Interfaces\IImagemService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
-
 class JogoService implements IJogoService
 {
 
@@ -138,5 +137,11 @@ class JogoService implements IJogoService
     public function buscaPorNomeSimplificado(string $nome): Collection
     {
         return $this->jogorepositorio->buscaPorNomeSimplificado($nome);
+    }
+
+    public function emAlta(int $quantidade, int $dias): Collection
+    {
+
+        return $this->jogorepositorio->emAlta($quantidade, $dias);
     }
 }

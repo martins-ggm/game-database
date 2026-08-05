@@ -84,4 +84,10 @@ class GeneroService implements IGeneroService
 
         return $this->generoRepositorio->todosComJogos();
     }
+
+    public function generosComMaisJogosComReviews(int $quantidade, int $dias): Collection
+    {
+
+        return $this->generoRepositorio->generosComMaisJogosComReviews($quantidade, $dias);
+    }
 }

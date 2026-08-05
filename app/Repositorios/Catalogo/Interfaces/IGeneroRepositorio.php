@@ -17,4 +17,5 @@ interface IGeneroRepositorio
     public function buscar(?String $nome = null): Collection;
     public function contarTodos(): int;
     public function todosComJogos(): Collection;
+    public function generosComMaisJogosComReviews(int $quantidade, int $dias): Collection;
 }
