@@ -136,10 +136,10 @@ class JogoService implements IJogoService
         return $this->jogorepositorio->buscaPorNomeSimplificado($nome);
     }
 
-    public function emAlta(int $quantidade, int $dias): Collection
+    public function emAlta(?int $quantidade = null, int $dias = 30, ?int $porPagina = null): Collection|LengthAwarePaginator
     {
 
-        return $this->jogorepositorio->emAlta($quantidade, $dias);
+        return $this->jogorepositorio->emAlta($quantidade, $dias, $porPagina);
     }
 
     public function buscarPaginado(?string $nome = null, int $porPagina = 15): LengthAwarePaginator

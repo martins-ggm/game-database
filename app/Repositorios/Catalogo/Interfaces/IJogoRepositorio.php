@@ -18,6 +18,6 @@ interface IJogoRepositorio
     public function editar(jogo $jogo, array $plataformas, array $generos): jogo;
     public function ultimosLancados(int $quantidade): Collection;
     public function buscaPorNomeSimplificado(String $nome): collection;
-    public function emAlta(int $quantidade, int $dias): Collection;
+    public function emAlta(?int $quantidade = null, int $dias = 30, ?int $porPagina = null): Collection|LengthAwarePaginator;
     public function buscarPaginado(?string $nome, int $porPagina): LengthAwarePaginator;
 }

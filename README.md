@@ -6,7 +6,7 @@ Catálogo interativo de jogos — uma **biblioteca onde o usuário cataloga, des
 
 ---
 
-## 🧱 Arquitetura SISP
+## 🧱 Arquitetura
 
 O coração do projeto. Cada requisição atravessa uma pilha de camadas com responsabilidades bem separadas, e a comunicação entre elas é feita por **interfaces** (nunca por classes concretas), resolvidas por **injeção de dependência**.
 

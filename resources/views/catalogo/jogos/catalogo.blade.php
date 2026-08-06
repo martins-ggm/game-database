@@ -24,22 +24,22 @@
     <main class="flex-1">
 
         {{-- cabeçalho --}}
-        <section class="max-w-[1600px] mx-auto w-full px-6 sm:px-12 pt-12 pb-8">
+        <section class="w-full px-6 sm:px-12 pt-12 pb-8">
             <p class="text-[10px] font-black tracking-widest uppercase text-[#8B7BB8] mb-3">🔥 Em alta</p>
             <h1 class="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight uppercase leading-[0.9]">
                 Catálogo
             </h1>
             <p class="text-sm text-white/50 mt-4">
-                Os gêneros e jogos mais avaliados no momento.
+                Todos os jogos, ordenados pelos mais avaliados.
                 <span class="text-white/30">·</span>
-                {{ $generosEmAlta->count() }} {{ $generosEmAlta->count() === 1 ? 'gênero em alta' : 'gêneros em alta' }}
+                {{ $jogos->total() }} {{ $jogos->total() === 1 ? 'jogo' : 'jogos' }}
             </p>
         </section>
 
         {{-- filtro de gêneros (só front por enquanto — o backend do filtro é implementado depois) --}}
         @if ($generos->isNotEmpty())
             <div class="border-y border-white/10">
-                <div class="max-w-[1600px] mx-auto w-full px-6 sm:px-12 py-4 flex items-center gap-4 flex-wrap">
+                <div class="w-full px-6 sm:px-12 py-4 flex items-center gap-4 flex-wrap">
                     <span class="text-[10px] font-black tracking-widest uppercase text-white/40">Filtrar por gênero</span>
 
                     <form method="GET" action="{{ route('catalogo.jogos') }}" class="relative" id="form-filtro">
@@ -87,50 +87,38 @@
             </div>
         @endif
 
-        {{-- uma linha (scroll horizontal) por gênero em alta --}}
-        @forelse ($generosEmAlta as $genero)
-            <section class="border-b border-white/10">
-                <div class="max-w-[1600px] mx-auto w-full px-6 sm:px-12 py-10">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2
-                            class="text-xl sm:text-2xl font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-4">
-                            {{ $genero->nome }}
-                        </h2>
-                        <span class="text-[10px] font-black tracking-widest uppercase text-white/40">
-                            {{ $genero->jogos_com_reviews_count }}
-                            {{ $genero->jogos_com_reviews_count === 1 ? 'jogo em alta' : 'jogos em alta' }}
-                        </span>
-                    </div>
-
-                    <div class="flex gap-1 overflow-x-auto pb-2">
-                        @foreach ($genero->jogos as $jogo)
-                            <a href="{{ route('catalogo.jogo.visualizar', $jogo->id) }}"
-                                class="group flex-shrink-0 w-40 sm:w-44 bg-[#1C1B26] hover:bg-[#25232F] transition flex flex-col">
-                                <div class="aspect-[3/4] bg-[#11101A] overflow-hidden border-b border-white/5">
-                                    @if ($jogo->url_imagem_pequena)
-                                        <img src="{{ Storage::url($jogo->url_imagem_pequena) }}"
-                                            alt="Capa de {{ $jogo->nome }}" loading="lazy" decoding="async"
-                                            class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                                    @else
-                                        <div class="w-full h-full flex items-center justify-center">
-                                            <span class="text-white/15 text-[10px] tracking-widest uppercase">Sem capa</span>
-                                        </div>
-                                    @endif
-                                </div>
-                                <div class="p-3 flex-1 flex flex-col">
-                                    <h3 class="text-sm font-bold leading-snug line-clamp-2">{{ $jogo->nome }}</h3>
-                                    <span class="text-[10px] text-white/40 mt-auto pt-2">
-                                        {{ $jogo->lancamento?->format('Y') ?? '—' }}
-                                    </span>
-                                </div>
-                            </a>
-                        @endforeach
-                    </div>
+        {{-- grade de jogos (página 1 no servidor; próximas páginas via AJAX) --}}
+        <section class="w-full px-6 sm:px-12 py-10">
+            @if ($jogos->total() > 0)
+                <div id="grid-jogos" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-1">
+                    @foreach ($jogos as $jogo)
+                        <a href="{{ route('catalogo.jogo.visualizar', $jogo->id) }}"
+                            class="group bg-[#1C1B26] hover:bg-[#25232F] transition flex flex-col">
+                            <div class="aspect-[3/4] bg-[#11101A] overflow-hidden border-b border-white/5">
+                                @if ($jogo->url_imagem_pequena)
+                                    <img src="{{ Storage::url($jogo->url_imagem_pequena) }}"
+                                        alt="Capa de {{ $jogo->nome }}" loading="lazy" decoding="async"
+                                        class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center">
+                                        <span class="text-white/15 text-[10px] tracking-widest uppercase">Sem capa</span>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="p-2 flex-1 flex flex-col">
+                                <h3 class="text-xs font-bold leading-snug line-clamp-2">{{ $jogo->nome }}</h3>
+                                <span class="text-[10px] text-white/40 mt-auto pt-1.5">
+                                    {{ $jogo->lancamento?->format('Y') ?? '—' }}
+                                </span>
+                            </div>
+                        </a>
+                    @endforeach
                 </div>
-            </section>
-        @empty
-            <section class="border-t border-white/10">
-                <div class="max-w-[1600px] mx-auto w-full px-6 sm:px-12 py-24 text-center">
+
+                {{-- controles de paginação (renderizados pelo JS a partir do meta inicial) --}}
+                <div id="paginacao" class="flex items-center justify-center gap-4 mt-10"></div>
+            @else
+                <div class="py-24 text-center">
                     <p class="text-white/30 text-sm tracking-widest uppercase font-bold">
                         Nenhum jogo em alta no período
                     </p>
@@ -138,8 +126,8 @@
                         Ainda não há reviews recentes o suficiente pra montar o ranking.
                     </p>
                 </div>
-            </section>
-        @endforelse
+            @endif
+        </section>
 
     </main>
 
@@ -168,32 +156,114 @@
                 }
             }
 
-            // abre/fecha o painel
             btn.addEventListener('click', function (e) {
                 e.stopPropagation();
                 painel.classList.toggle('hidden');
             });
 
-            // cliques dentro do painel não fecham
             painel.addEventListener('click', e => e.stopPropagation());
+            document.addEventListener('click', () => painel.classList.add('hidden'));
 
-            // clique fora fecha
-            document.addEventListener('click', function () {
-                painel.classList.add('hidden');
-            });
-
-            // limpar seleção
             limpar.addEventListener('click', function () {
                 checks().forEach(c => c.checked = false);
                 atualizarContador();
             });
 
-            // mantém o contador em dia
             document.addEventListener('change', function (e) {
                 if (e.target.matches('input[name="generos[]"]')) atualizarContador();
             });
 
             atualizarContador(); // reflete o que já veio marcado da request
+        })();
+    </script>
+
+    {{-- paginação AJAX da grade de jogos --}}
+    <script>
+        (function () {
+            const grid = document.getElementById('grid-jogos');
+            const paginacao = document.getElementById('paginacao');
+            if (!grid || !paginacao) return; // catálogo vazio: sem grade pra paginar
+
+            @php
+                $rotaVisualizar = route('catalogo.jogo.visualizar', ['id' => '__ID__']);
+                $metaInicial = [
+                    'current_page' => $jogos->currentPage(),
+                    'last_page'    => $jogos->lastPage(),
+                    'total'        => $jogos->total(),
+                ];
+            @endphp
+
+            const urlBase = @json(route('catalogo.jogos'));
+            const rotaVisualizar = @json($rotaVisualizar);
+
+            // meta da página 1, já renderizada pelo servidor
+            const metaInicial = @json($metaInicial);
+
+            function escapar(texto) {
+                const div = document.createElement('div');
+                div.textContent = texto ?? '';
+                return div.innerHTML;
+            }
+
+            function cardHtml(jogo) {
+                const ano = jogo.lancamento ? jogo.lancamento.slice(0, 4) : '—';
+                const href = rotaVisualizar.replace('__ID__', jogo.id);
+                const capa = jogo.imagem_pequena
+                    ? `<img src="${jogo.imagem_pequena}" alt="Capa de ${escapar(jogo.nome)}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">`
+                    : `<div class="w-full h-full flex items-center justify-center"><span class="text-white/15 text-[10px] tracking-widest uppercase">Sem capa</span></div>`;
+
+                return `<a href="${href}" class="group bg-[#1C1B26] hover:bg-[#25232F] transition flex flex-col">
+                    <div class="aspect-[3/4] bg-[#11101A] overflow-hidden border-b border-white/5">${capa}</div>
+                    <div class="p-2 flex-1 flex flex-col">
+                        <h3 class="text-xs font-bold leading-snug line-clamp-2">${escapar(jogo.nome)}</h3>
+                        <span class="text-[10px] text-white/40 mt-auto pt-1.5">${ano}</span>
+                    </div>
+                </a>`;
+            }
+
+            function botao(pagina, rotulo) {
+                return `<button type="button" data-pagina="${pagina}" class="px-4 py-2 text-[11px] font-black tracking-widest uppercase border border-white/15 text-white/70 hover:border-[#6B5B9E] hover:text-white transition">${rotulo}</button>`;
+            }
+
+            function botaoInativo(rotulo) {
+                return `<span class="px-4 py-2 text-[11px] font-black tracking-widest uppercase border border-white/5 text-white/20 cursor-not-allowed">${rotulo}</span>`;
+            }
+
+            function controlesHtml(meta) {
+                if (meta.last_page <= 1) return '';
+                const anterior = meta.current_page > 1 ? botao(meta.current_page - 1, 'Anterior') : botaoInativo('Anterior');
+                const proxima = meta.current_page < meta.last_page ? botao(meta.current_page + 1, 'Próxima') : botaoInativo('Próxima');
+                return `${anterior}
+                    <span class="text-[11px] font-black tracking-widest uppercase text-white/40">Página ${meta.current_page} de ${meta.last_page}</span>
+                    ${proxima}`;
+            }
+
+            async function carregar(pagina) {
+                grid.style.opacity = '0.4';
+                try {
+                    const url = new URL(urlBase, window.location.origin);
+                    url.searchParams.set('page', pagina);
+
+                    const resp = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                    if (!resp.ok) return;
+
+                    const meta = (await resp.json()).jogos;
+                    grid.innerHTML = meta.data.map(cardHtml).join('');
+                    paginacao.innerHTML = controlesHtml(meta);
+
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } finally {
+                    grid.style.opacity = '1';
+                }
+            }
+
+            paginacao.addEventListener('click', function (e) {
+                const btn = e.target.closest('[data-pagina]');
+                if (btn) carregar(btn.dataset.pagina);
+            });
+
+            // controles iniciais a partir do meta da página 1
+            paginacao.innerHTML = controlesHtml(metaInicial);
         })();
     </script>
 

@@ -92,16 +92,23 @@ class JogoController extends Controller
 
         $jogos = $this->jogoService->buscaPorNomeSimplificado($request->nome);
 
+
         return response()->json(['jogos' => JogoResource::criar($jogos)], status: 200);
     }
 
-    public function catalogo(): View
+    public function catalogo(Request $request): View|JsonResponse
     {
 
-        $generosEmAlta = $this->generoService->generosComMaisJogosComReviews(quantidade: 10, dias: 30);
-        $generos = $this->generoService->todosComJogos();
 
-        return View('catalogo.jogos.catalogo', compact('generos', 'generosEmAlta'));
+        $generos = $this->generoService->buscarTodos();
+        $jogos = $this->jogoService->emAlta(dias: 15, porPagina: 50);
+
+        if ($request->wantsJson()) {                                  // ← veio do fetch
+            return response()->json(['jogos' => JogoResource::criar($jogos)]);
+        }
+
+
+        return View('catalogo.jogos.catalogo', compact('jogos', 'generos'));
     }
 
 

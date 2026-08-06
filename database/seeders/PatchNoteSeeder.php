@@ -11,6 +11,16 @@ class PatchNoteSeeder extends Seeder
     {
         $notas = [
             [
+                'versao' => '0.7.0',
+                'titulo' => 'Catálogo repaginado',
+                'lancado_em' => '2026-08-06',
+                'mudancas' => [
+                    ['tipo' => 'novo', 'texto' => 'Catálogo reformulado: todos os jogos numa grade única com paginação, ordenados pelos mais avaliados.'],
+                    ['tipo' => 'melhoria', 'texto' => 'Grade do catálogo preenche a largura da tela em qualquer tamanho, com colunas e cards que se ajustam automaticamente.'],
+                    ['tipo' => 'melhoria', 'texto' => 'Seções de destaque passam a considerar todo o acervo, não apenas jogos com review recente.'],
+                ],
+            ],
+            [
                 'versao' => '0.6.0',
                 'titulo' => 'Paginação, destaques & changelog',
                 'lancado_em' => '2026-08-05',

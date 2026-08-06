@@ -98,18 +98,18 @@ class JogoRepositorio implements IJogoRepositorio
             ->get();
     }
 
-    public function emAlta(int $quantidade, int $dias): Collection
+    public function emAlta(?int $quantidade = null, int $dias = 30, ?int $porPagina = null): Collection|LengthAwarePaginator
     {
 
         $desde = now()->subDays($dias);
 
-        return $this->modelo->newQuery()
+        $query = $this->modelo->newQuery()
             ->withCount(['reviews' => fn($query) => $query->where('created_at', '>=', $desde)])
-            ->whereHas('reviews', fn($query) => $query->where('created_at', '>=', $desde))
             ->with(['desenvolvedora', 'generos', 'plataformas'])
             ->orderByDesc('reviews_count')
-            ->take($quantidade)
-            ->get();
+            ->when($quantidade, fn($query) => $query->take($quantidade));
+
+        return $quantidade ? $query->get() : $query->paginate($porPagina);
     }
 
     public function buscarPaginado(?string $nome, int $porPagina): LengthAwarePaginator
