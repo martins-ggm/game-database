@@ -4,6 +4,7 @@ namespace App\Repositorios\Catalogo;
 
 use App\Models\Catalogo\Jogo;
 use App\Repositorios\Catalogo\Interfaces\IJogoRepositorio;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
 class JogoRepositorio implements IJogoRepositorio
@@ -74,14 +75,6 @@ class JogoRepositorio implements IJogoRepositorio
     }
 
 
-    public function buscarPorNome(?String $nome = null): Collection
-    {
-        return $this->modelo->newQuery()
-            ->when($nome, fn($query) => $query
-                ->where('nome', 'ilike', "%{$nome}%"))
-            ->orderBy('nome', 'asc')
-            ->get();
-    }
 
 
     public function ultimosLancados(int $quantidade): Collection
@@ -117,5 +110,14 @@ class JogoRepositorio implements IJogoRepositorio
             ->orderByDesc('reviews_count')
             ->take($quantidade)
             ->get();
+    }
+
+    public function buscarPaginado(?string $nome, int $porPagina): LengthAwarePaginator
+    {
+        return $this->modelo->newQuery()
+            ->with(['desenvolvedora', 'plataformas', 'generos'])
+            ->when($nome, fn($query) => $query->where('nome', 'ilike', "%{$nome}%"))
+            ->orderBy('nome')
+            ->paginate($porPagina);
     }
 }

@@ -76,7 +76,7 @@
                     </tr>
                 </thead>
                 <tbody id="tabela-jogos">
-                    @forelse ($jogos ?? [] as $jogo)
+                    @forelse ($jogos as $jogo)
                         <tr class="border-b border-white/5 hover:bg-[#25232F] transition">
                             <td class="px-5 py-4">
                                 @if ($jogo->url_imagem_pequena)
@@ -112,7 +112,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr id="linha-vazia">
+                        <tr>
                             <td colspan="7"
                                 class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">
                                 Nenhum jogo cadastrado
@@ -122,17 +122,13 @@
                 </tbody>
             </table>
         </div>
+
+        {{-- paginação (jQuery preenche) --}}
+        <div id="paginacao" class="mt-4"></div>
     </main>
 
     {{-- footer --}}
-    <footer class="border-t border-white/10">
-        <div
-            class="max-w-[1600px] mx-auto px-6 sm:px-12 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p class="text-[10px] tracking-widest text-white/40 uppercase font-bold">&copy; 2026 Game Database</p>
-            <p class="text-[10px] tracking-widest text-white/40 uppercase font-bold">Built with the SISP architecture
-            </p>
-        </div>
-    </footer>
+    <x-footer />
 
     {{-- ============ MODAL (novo / editar) ============ --}}
     <div id="modal-jogo" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -409,18 +405,6 @@
                     </tr>`;
             }
 
-            function adicionarLinha(jogo) {
-                $('#linha-vazia').remove();
-                $('#tabela-jogos').append(linhaHtml(jogo));
-            }
-
-            function atualizarLinha(jogo) {
-                $('#tabela-jogos')
-                    .find('[data-editar-jogo="' + jogo.id + '"]')
-                    .closest('tr')
-                    .replaceWith(linhaHtml(jogo));
-            }
-
             function renderizarTabela(jogos) {
                 const tbody = $('#tabela-jogos');
                 tbody.empty();
@@ -449,36 +433,104 @@
                 }
             });
 
-            // ---------- busca (com debounce) ----------
-            const urlBuscar = "{{ route('catalogo.jogo.buscar') }}";
+            // ---------- carregamento + paginação (AJAX) ----------
+            const urlListar = "{{ route('catalogo.jogo.buscar') }}";
+            let paginaAtual = 1;
+            let termoBusca = '';
             let timerBusca = null;
-            let reqBusca = null;
+            let reqLista = null;
 
+            function carregar(pagina) {
+                if (reqLista) reqLista.abort();
+
+                reqLista = $.ajax({
+                    url: urlListar,
+                    method: 'GET',
+                    data: {
+                        page: pagina,
+                        nome: termoBusca
+                    },
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    },
+                    success: function(resp) {
+                        const meta = resp.jogos || resp.Jogos; // buscaPaginada envolve em { jogos: {...} }
+                        // se a página esvaziou (ex.: removeu o último item dela), volta uma
+                        if (meta.data.length === 0 && meta.current_page > 1) {
+                            carregar(meta.current_page - 1);
+                            return;
+                        }
+                        paginaAtual = meta.current_page;
+                        renderizarTabela(meta.data);
+                        renderizarPaginacao(meta);
+                    },
+                    error: function(xhr, status) {
+                        if (status === 'abort') return;
+                        mostrarErroMensagem(xhr.responseJSON?.message || 'Erro ao carregar os jogos.');
+                    }
+                });
+            }
+
+            function renderizarPaginacao(meta) {
+                const cont = $('#paginacao');
+                cont.empty();
+                if (meta.total === 0) return;
+
+                const base = 'px-3 py-2 text-[10px] font-black uppercase tracking-widest border transition';
+                const ativo = 'bg-[#6B5B9E] text-black border-[#6B5B9E]';
+                const inativo = 'border-white/15 text-white/60 hover:border-[#6B5B9E] hover:text-white';
+                const off = 'border-white/10 text-white/20 cursor-not-allowed';
+
+                function botao(pagina, rotulo, estado) {
+                    const desabilitado = estado === 'off' ? 'disabled' : '';
+                    const classe = estado === 'ativo' ? ativo : (estado === 'off' ? off : inativo);
+                    return `<button type="button" data-pagina="${pagina}" ${desabilitado} class="${base} ${classe}">${rotulo}</button>`;
+                }
+
+                let botoes = botao(meta.current_page - 1, '‹', meta.current_page === 1 ? 'off' : 'on');
+
+                // janela de páginas: atual ±2
+                const inicio = Math.max(1, meta.current_page - 2);
+                const fim = Math.min(meta.last_page, meta.current_page + 2);
+                for (let p = inicio; p <= fim; p++) {
+                    botoes += botao(p, p, p === meta.current_page ? 'ativo' : 'on');
+                }
+
+                botoes += botao(meta.current_page + 1, '›', meta.current_page === meta.last_page ? 'off' : 'on');
+
+                const resumo =
+                    `<span class="text-[10px] font-black uppercase tracking-widest text-white/40">Mostrando ${meta.from}–${meta.to} de ${meta.total}</span>`;
+                cont.html(
+                    `<div class="flex items-center justify-between gap-4 flex-wrap">${resumo}<div class="flex gap-1">${botoes}</div></div>`
+                );
+            }
+
+            // clique nos botões de página
+            $('#paginacao').on('click', '[data-pagina]', function() {
+                const p = parseInt($(this).attr('data-pagina'), 10);
+                if (!isNaN(p)) carregar(p);
+            });
+
+            // busca (com debounce) — sempre reinicia na página 1
             $('#busca').on('input', function() {
                 const termo = $(this).val();
-
                 clearTimeout(timerBusca);
                 timerBusca = setTimeout(function() {
-
-                    if (reqBusca) reqBusca.abort();
-
-                    reqBusca = $.ajax({
-                        url: urlBuscar,
-                        method: 'GET',
-                        data: { nome: termo },
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'Accept': 'application/json'
-                        },
-                        success: function(response) {
-                            renderizarTabela(response.jogos);
-                        },
-                        error: function(xhr, status) {
-                            if (status === 'abort') return;
-                            mostrarErroMensagem(xhr.responseJSON?.message || 'Erro na busca.');
-                        }
-                    });
+                    termoBusca = termo;
+                    carregar(1);
                 }, 300);
+            });
+
+            // estado inicial: a página 1 já veio renderizada pelo servidor (novo());
+            // aqui só desenhamos os controles a partir do meta do paginator, sem re-buscar.
+            paginaAtual = {{ $jogos->currentPage() }};
+            renderizarPaginacao({
+                current_page: {{ $jogos->currentPage() }},
+                last_page: {{ $jogos->lastPage() }},
+                from: {{ $jogos->firstItem() ?? 0 }},
+                to: {{ $jogos->lastItem() ?? 0 }},
+                total: {{ $jogos->total() }}
             });
 
             // ---------- abrir modal em modo edição ----------
@@ -574,13 +626,9 @@
                         'Accept': 'application/json'
                     },
                     success: function(response) {
-                        if (id) {
-                            atualizarLinha(response.jogo);
-                        } else {
-                            adicionarLinha(response.jogo);
-                        }
                         fecharModal();
                         mostrarSucesso(response.mensagem);
+                        carregar(paginaAtual); // recarrega a página atual pra manter a paginação consistente
                     },
                     error: function(xhr) {
                         if (xhr.status === 422) {
@@ -631,14 +679,9 @@
                         'Accept': 'application/json'
                     },
                     success: function(response) {
-                        linha.remove();
-                        if ($('#tabela-jogos tr').length === 0) {
-                            $('#tabela-jogos').html(
-                                '<tr id="linha-vazia"><td colspan="7" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhum jogo cadastrado</td></tr>'
-                            );
-                        }
                         fecharRemocao();
                         mostrarSucesso(response.mensagem);
+                        carregar(paginaAtual); // re-busca a página (o guard volta uma se esvaziou)
                     },
                     error: function(xhr) {
                         fecharRemocao();

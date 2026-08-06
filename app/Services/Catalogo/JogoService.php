@@ -7,6 +7,7 @@ use App\Models\Catalogo\Jogo;
 use App\Repositorios\Catalogo\Interfaces\IJogoRepositorio;
 use App\Services\Catalogo\Interfaces\IJogoService;
 use App\Services\Imagem\Interfaces\IImagemService;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -113,11 +114,7 @@ class JogoService implements IJogoService
         return $jogoAtualizado;
     }
 
-    public function buscarPorNome(?String $nome = null): Collection
-    {
-        return $this->jogorepositorio->buscarPorNome($nome);
-    }
-
+ 
     public function ultimosLancados(int $quantidade): Collection
     {
 
@@ -143,5 +140,10 @@ class JogoService implements IJogoService
     {
 
         return $this->jogorepositorio->emAlta($quantidade, $dias);
+    }
+
+    public function buscarPaginado(?string $nome = null, int $porPagina = 15): LengthAwarePaginator
+    {
+        return $this->jogorepositorio->buscarPaginado($nome, $porPagina);
     }
 }

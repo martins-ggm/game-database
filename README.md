@@ -1,59 +1,177 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎮 Game Database (GAMEDB)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Catálogo interativo de jogos — uma **biblioteca onde o usuário cataloga, descobre e organiza** seu universo gamer: monta sua coleção, avalia jogos e acompanha o que está em alta.
 
-## About Laravel
+> Projeto-sandbox construído para praticar a **arquitetura em camadas SISP** (Controller → DTO → Service → Repositório → Model → Resource) sobre Laravel 12. O foco aqui é tanto o produto quanto a **organização do código**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🧱 Arquitetura SISP
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+O coração do projeto. Cada requisição atravessa uma pilha de camadas com responsabilidades bem separadas, e a comunicação entre elas é feita por **interfaces** (nunca por classes concretas), resolvidas por **injeção de dependência**.
 
-## Learning Laravel
+```
+HTTP Request
+    │
+    ▼
+Controller ──▶ DTO            (recebe a Request, monta/normaliza os dados de entrada)
+    │
+    ▼
+Service                       (regra de negócio, orquestra transações — DB::transaction)
+    │
+    ▼
+Repositório                   (acesso a dados: queries Eloquent)
+    │
+    ▼
+Model                         (entidade: relações, casts, soft delete, criar()/editar())
+    │
+    ▼
+Resource                      (formata a saída)
+    │
+    ▼
+JSON  /  View (Blade)
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+| Camada | Responsabilidade |
+|---|---|
+| **Controller** | Recebe a `Request`, monta o **DTO**, chama o **Service** e devolve `View` ou `JsonResponse`. Não contém regra de negócio. |
+| **DTO** | Objeto de transporte dos dados de entrada (`fromRequest()`), com validação/normalização. |
+| **Service** | Regra de negócio. Orquestra transações (`DB::transaction`) e combina um ou mais repositórios. Depende de **interfaces**. |
+| **Repositório** | Único ponto que fala com o banco (Eloquent). Implementa uma interface. |
+| **Model** | Entidade Eloquent: relações, `$casts`, soft delete e fábricas (`criar()` / `editar()`). |
+| **Resource** | Formata a resposta. O `criar()` trata **item único, coleção e paginador** (`LengthAwarePaginator`) de forma transparente. |
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+**Interfaces + DI:** cada Service e Repositório expõe uma interface (`IJogoService`, `IJogoRepositorio`…). O [`AppServiceProvider`](app/Providers/AppServiceProvider.php) amarra `Interface → implementação`, e a injeção de dependência entrega tudo pronto no construtor. Trocar a implementação = trocar uma linha no provider.
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🛠️ Stack
 
-### Premium Partners
+- **[Laravel 12](https://laravel.com)** · PHP 8.2+
+- **PostgreSQL** (usa recursos específicos, ex.: `ilike`)
+- **[Intervention Image](https://image.intervention.io/)** — processamento de upload (redimensiona + converte para `webp`)
+- **Blade** + **Tailwind CSS v3 (via CDN)** — visual _MetroUI flat_, paleta lavanda (Espurr)
+- **jQuery** (telas autenticadas) e **JavaScript vanilla** (telas públicas) para as interações AJAX
+- **[Laravel Herd](https://herd.laravel.com)** recomendado para servir localmente (nginx + PHP-FPM → requisições em paralelo)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+> ℹ️ Tailwind e jQuery são carregados por **CDN** — não há pipeline Vite (`@vite`) nas views. Por isso **não é necessário `npm run build`/`npm run dev`** para rodar o projeto. O plugin do Tailwind v4 no editor pode acusar classes "canônicas" diferentes; são **falsos-positivos** (o projeto usa v3).
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 📁 Estrutura (organizada por domínio + camada)
 
-## Code of Conduct
+```
+app/
+├── Http/
+│   ├── Controllers/   ← Catalogo · Colecao · Gerenciador
+│   ├── DTO/           ← Catalogo · Review · Gerenciador
+│   ├── Resources/     ← formatação da saída (JSON)
+│   └── Middleware/    ← VerificarPermissao (rota admin)
+├── Services/          ← Catalogo · Colecao · Review · Gerenciador · Imagem  (+ Interfaces/)
+├── Repositorios/      ← Catalogo · Colecao · Review · Gerenciador           (+ Interfaces/)
+├── Models/            ← Catalogo · Colecao · Review · Gerenciador
+├── View/Components/   ← componentes Blade de classe (ex.: Footer)
+├── Helpers/           ← permissoes.php (helper global, autoloaded)
+└── Providers/         ← AppServiceProvider (bindings de DI)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+routes/                ← web.php (orquestra) + um arquivo por entidade + telas.php
+resources/views/       ← Blade, com components/ compartilhados (navbar, footer)
+database/              ← migrations + seeders
+```
 
-## Security Vulnerabilities
+### Domínios
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+| Domínio | Entidades | O que cobre |
+|---|---|---|
+| **Catalogo** | Jogo, Gênero, Plataforma, Desenvolvedora | Catálogo, cadastro admin, "em alta" |
+| **Colecao** | Coleção _(pivô 1ª classe jogo↔usuário)_, Situação | Biblioteca pessoal com status (jogando, na lista, dropado…) |
+| **Review** | Review | Avaliações (nota + comentário) por jogo |
+| **Gerenciador** | Usuário, PatchNote _(+ Perfil/Permissão dormentes)_ | Autenticação, acesso admin, home e changelog |
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## ✨ Funcionalidades
+
+- **Catálogo** de jogos organizado por gênero, com uma seção **"em alta"** (gêneros/jogos mais avaliados nos últimos 30 dias).
+- **Coleção pessoal**: adicione jogos à sua biblioteca com uma **situação**, e filtre por ela no perfil.
+- **Reviews**: nota + comentário na tela do jogo, com **média** e foto/nome do autor.
+- **Home**: destaques "em alta", notícias e **patch notes** (changelog paginado; a versão mais recente aparece no rodapé).
+- **CRUD admin** de jogos, gêneros, plataformas e desenvolvedoras — com **paginação** (AJAX) e busca.
+- **Autenticação** e **área admin** protegida por middleware (`permissao`), controlada por uma flag `admin` no usuário. _(Um modelo completo de perfis/permissões existe no banco, porém dormente.)_
+- **Upload de imagens** otimizado: redimensionado e convertido para `webp` no processamento.
+
+---
+
+## 🚀 Como rodar
+
+### Pré-requisitos
+- PHP **8.2+** e **Composer**
+- **PostgreSQL**
+- **[Laravel Herd](https://herd.laravel.com)** (recomendado) — ou `php artisan serve`
+
+### Passos
+
+```bash
+# 1. Dependências PHP
+composer install
+
+# 2. Ambiente
+cp .env.example .env
+php artisan key:generate
+# edite o .env: DB_CONNECTION=pgsql + credenciais do seu Postgres
+
+# 3. Banco (estrutura + dados de exemplo)
+php artisan migrate --seed
+
+# 4. Link do storage (necessário para servir as imagens em /storage)
+php artisan storage:link
+```
+
+### Servindo
+
+**Com Herd (recomendado):** aponte o Herd para a pasta e acesse `http://game-database.test`.
+```bash
+herd park     # dentro da pasta que contém seus projetos (cada subpasta vira <nome>.test)
+# ou
+herd link     # dentro deste projeto
+```
+
+**Ou com o servidor embutido:**
+```bash
+php artisan serve   # http://127.0.0.1:8000
+```
+
+> 💡 O Herd usa nginx + PHP-FPM e atende requisições **em paralelo** — as imagens carregam de imediato. O `php artisan serve` é single-thread e serializa as requisições (as capas "pipocam" uma a uma).
+
+### Seeders
+`DatabaseSeeder` popula Plataformas, Desenvolvedoras, Gêneros, Jogos, Situações e Patch Notes. Há ainda um `ReviewTesteSeeder` (não registrado no `DatabaseSeeder`) para gerar usuários e reviews de teste em massa:
+```bash
+php artisan db:seed --class=ReviewTesteSeeder
+```
+
+---
+
+## 📐 Convenções do projeto
+
+- **Nomenclatura em português** nas camadas (`Repositorios`, `Servicos`, `criar`, `editar`, `buscar…`).
+- **Soft delete** com coluna customizada **`removido_em`** (`const DELETED_AT = 'removido_em'` nos models).
+- **Uma interface por Service/Repositório**, com o bind no `AppServiceProvider`.
+- **Rotas separadas por entidade** (`jogos.php`, `generos.php`…) mais `telas.php` (apenas rotas que devolvem view), orquestradas pelo `web.php`.
+- **DTOs** para toda entrada de dados relevante (`fromRequest()`).
+
+> 📚 **Fontes de verdade internas:** [`docs/guidelines.md`](docs/guidelines.md) para a arquitetura/backend (camadas, rotas, validação, naming) e [`docs/estilo-visual.md`](docs/estilo-visual.md) para a identidade visual. Em caso de conflito, os docs mandam.
+
+---
+
+## 🔖 Commits e versionamento
+
+- **Mensagens de commit em português**, descritivas (ex.: _"Paginação nas listagens e sistema de patch notes"_). Este projeto usa esse estilo em vez de _conventional commits_ — divergência consciente do [`docs/guidelines.md`](docs/guidelines.md) §8, adequada ao ritmo de um sandbox.
+- **Patch notes = changelog vivo.** Mudanças significativas (feature nova, comportamento visível) geram uma **nova versão** (semver):
+  - _feature_ → bump **minor** (`0.5.0` → `0.6.0`)
+  - _correção_ → bump **patch** (`0.5.0` → `0.5.1`)
+  - interno/trivial (refactor, doc) → **sem** entrada
+- A versão nova é registrada em [`database/seeders/PatchNoteSeeder.php`](database/seeders/PatchNoteSeeder.php) (fonte versionada) e refletida na tabela `patch_notes` — aparecendo no changelog da home e no rodapé.
+
+---
+
+<sub>Construído sobre o [Laravel](https://laravel.com) · projeto de estudo da arquitetura SISP.</sub>

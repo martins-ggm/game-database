@@ -93,12 +93,7 @@
     </main>
 
     {{-- footer --}}
-    <footer class="border-t border-white/10">
-        <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p class="text-[10px] tracking-widest text-white/40 uppercase font-bold">&copy; 2026 Game Database</p>
-            <p class="text-[10px] tracking-widest text-white/40 uppercase font-bold">Built with the SISP architecture</p>
-        </div>
-    </footer>
+    <x-footer />
 
     {{-- ============ MODAL (nova / editar) ============ --}}
     <div id="modal-plataforma" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">

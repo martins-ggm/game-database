@@ -11,6 +11,18 @@ class PatchNoteSeeder extends Seeder
     {
         $notas = [
             [
+                'versao' => '0.6.0',
+                'titulo' => 'Paginação, destaques & changelog',
+                'lancado_em' => '2026-08-05',
+                'mudancas' => [
+                    ['tipo' => 'novo', 'texto' => 'Paginação nas listagens — no catálogo administrativo de jogos (com busca) e no próprio changelog.'],
+                    ['tipo' => 'novo', 'texto' => 'Seção de patch notes na home, com a versão atual exibida no rodapé de todas as telas.'],
+                    ['tipo' => 'novo', 'texto' => 'Jogos em destaque na home, puxando os mais avaliados recentemente.'],
+                    ['tipo' => 'melhoria', 'texto' => 'Rodapé padronizado em todas as telas via componente único.'],
+                    ['tipo' => 'melhoria', 'texto' => 'Rolagem horizontal nas seções da home em telas menores.'],
+                ],
+            ],
+            [
                 'versao' => '0.5.0',
                 'titulo' => 'Em alta & Catálogo',
                 'lancado_em' => '2026-08-05',

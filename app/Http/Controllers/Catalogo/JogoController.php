@@ -39,7 +39,7 @@ class JogoController extends Controller
         $plataformas = $this->plataformaService->buscarTodas();
         $generos = $this->generoService->buscarTodos();
         $desenvolvedoras = $this->desenvolvedoraservice->buscarTodas();
-        $jogos = $this->jogoService->buscarTodos();
+        $jogos = $this->jogoService->buscarPaginado(null, 15);
 
 
         return view(view: 'catalogo.jogos.jogos', data: compact('plataformas', 'generos', 'desenvolvedoras', 'jogos'));
@@ -74,12 +74,6 @@ class JogoController extends Controller
         return response()->json(['mensagem' => 'Jogo atualizado com sucesso!', 'jogo' => JogoResource::criar($jogo)], status: 200);
     }
 
-    public function buscar(Request $request): JsonResponse
-    {
-
-        $jogos = $this->jogoService->buscarPorNome($request->nome);
-        return response()->json(['jogos' => JogoResource::criar($jogos)], status: 200);
-    }
 
     public function visualizar(Request $request): View
     {
@@ -108,5 +102,14 @@ class JogoController extends Controller
         $generos = $this->generoService->todosComJogos();
 
         return View('catalogo.jogos.catalogo', compact('generos', 'generosEmAlta'));
+    }
+
+
+    public function buscar(Request $request): JsonResponse
+    {
+
+        $jogos = $this->jogoService->buscarPaginado($request->nome, 15);
+
+        return response()->json(['jogos' => JogoResource::criar($jogos)], status: 200);
     }
 }

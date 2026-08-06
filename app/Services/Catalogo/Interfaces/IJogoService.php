@@ -5,6 +5,7 @@ namespace App\Services\Catalogo\Interfaces;
 
 use app\Http\DTO\Catalogo\JogoDTO;
 use App\Models\Catalogo\Jogo;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
 interface IJogoService
@@ -15,9 +16,9 @@ interface IJogoService
     public function contarTodos(): int;
     public function remover(int $id): void;
     public function editar(JogoDTO $dados): Jogo;
-    public function buscarPorNome(?String $nome = null): Collection;
     public function ultimosLancados(int $quantidade): Collection;
     public function buscarPorId(Int $id): ?Jogo;
     public function buscaPorNomeSimplificado(String $nome): Collection;
     public function emAlta(int $quantidade, int $dias): Collection;
+    public function buscarPaginado(?string $nome = null, int $porPagina = 15): LengthAwarePaginator;
 }

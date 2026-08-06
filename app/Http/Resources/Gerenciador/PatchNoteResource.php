@@ -1,39 +1,22 @@
 <?php
 
-namespace App\Http\Resources\Catalogo\Jogo;
+namespace App\Http\Resources\Gerenciador;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Storage;
 
-class JogoResource extends JsonResource
+class PatchNoteResource extends JsonResource
 {
     public function toArray($request): array
     {
         return [
-            'id'   => $this->id,
-            'nome' => $this->nome,
-            'lancamento' => $this->lancamento?->format('Y-m-d'),
-            'descricao' => $this->descricao,
-            'imagem_grande' => $this->url_imagem_grande ? Storage::url($this->url_imagem_grande) : null,
-            'imagem_pequena' => $this->url_imagem_pequena ? Storage::url($this->url_imagem_pequena) : null,
-
-            'desenvolvedora' => $this->desenvolvedora ? [
-                'id'   => $this->desenvolvedora->id,
-                'nome' => $this->desenvolvedora->nome,
-            ] : null,
-
-            'plataformas' => $this->plataformas->map(fn($plataforma) => [
-                'id'   => $plataforma->id,
-                'nome' => $plataforma->nome,
-            ])->values(),
-
-            'generos' => $this->generos->map(fn($genero) => [
-                'id'   => $genero->id,
-                'nome' => $genero->nome,
-            ])->values(),
+            'id'         => $this->id,
+            'versao'     => $this->versao,
+            'titulo'     => $this->titulo,
+            'mudancas'   => $this->mudancas, // [{ "tipo": "novo", "texto": "..." }, ...]
+            'lancado_em' => $this->lancado_em?->format('Y-m-d'),
         ];
     }
 
