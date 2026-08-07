@@ -43,9 +43,14 @@ class ColecaoRepositorio implements IColecaoRepositorio
     public function buscarSituacao(int $jogoID, int $usuarioID): ?Colecao
     {
         return $this->modelo->newQuery()
-        ->where('jogo_id', $jogoID)
-        ->where('usuario_id', $usuarioID)
-        ->with('situacao')
-        ->first();
+            ->where('jogo_id', $jogoID)
+            ->where('usuario_id', $usuarioID)
+            ->with('situacao')
+            ->first();
+    }
+
+    public function contarTodasDoUsuario(int $usuarioID): int
+    {
+        return $this->modelo->newQuery()->where('usuario_id', $usuarioID)->count();
     }
 }

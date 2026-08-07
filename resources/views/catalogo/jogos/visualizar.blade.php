@@ -273,7 +273,7 @@
                             </div>
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center justify-between gap-3 mb-1">
-                                    <span class="font-bold text-sm tracking-wide truncate">{{ $review->usuario?->nome ?? 'Usuário' }}</span>
+                                    <a href="{{ route('gerenciador.usuario.perfil', $review->usuario?->id) }}" class="font-bold text-sm tracking-wide truncate">{{ $review->usuario?->nome ?? 'Usuário' }}</a>
                                     <span class="text-[10px] text-white/40 flex-shrink-0">{{ $review->created_at?->format('d/m/Y') }}</span>
                                 </div>
                                 <div class="text-[#6B5B9E] text-sm tracking-widest mb-2">{{ $estrelas($review->nota) }}</div>

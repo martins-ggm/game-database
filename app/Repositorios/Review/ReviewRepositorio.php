@@ -5,6 +5,7 @@ namespace App\Repositorios\Review;
 
 use App\Models\Review\Review;
 use App\Repositorios\Review\Interfaces\IReviewRepositorio;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
 class ReviewRepositorio implements IReviewRepositorio
@@ -57,5 +58,23 @@ class ReviewRepositorio implements IReviewRepositorio
     public function buscarReviews(int $jogoID): Collection
     {
         return $this->modelo->newQuery()->where('jogo_id', $jogoID)->with('usuario')->get();
+    }
+
+    public function totalReviewDoUsuario(int $usuarioID): int
+    {
+
+        return $this->modelo->newQuery()->where('usuario_id', $usuarioID)->count();
+    }
+
+    public function ReviewsDoUsuario(int $usuarioID, ?int $quantidade = null): Collection | LengthAwarePaginator
+    {
+
+        $query = $this->modelo->newQuery()
+            ->where('usuario_id', $usuarioID)
+            ->with('jogo','usuario')
+            ->orderBy('created_at', 'desc')
+            ->when($quantidade, fn($query) => $query->take($quantidade));
+
+        return $quantidade ? $query->get() : $query->paginate();
     }
 }

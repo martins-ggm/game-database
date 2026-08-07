@@ -11,6 +11,16 @@ class PatchNoteSeeder extends Seeder
     {
         $notas = [
             [
+                'versao' => '0.8.0',
+                'titulo' => 'Reviews no perfil',
+                'lancado_em' => '2026-08-07',
+                'mudancas' => [
+                    ['tipo' => 'novo', 'texto' => 'Seção de últimas reviews no perfil, com nota, capa e comentário reais.'],
+                    ['tipo' => 'novo', 'texto' => 'Tela dedicada com todas as reviews de um usuário, em duas colunas e com paginação.'],
+                    ['tipo' => 'melhoria', 'texto' => 'O nome de quem escreveu uma review agora leva ao perfil do autor.'],
+                ],
+            ],
+            [
                 'versao' => '0.7.0',
                 'titulo' => 'Catálogo repaginado',
                 'lancado_em' => '2026-08-06',

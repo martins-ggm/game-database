@@ -52,4 +52,11 @@ class ColecaoService implements IColecaoService
 
         return $this->colecaoRepositorio->buscarSituacao($jogoID, $usuarioID);
     }
+
+
+    public function contarTodasDoUsuario(int $usuarioID): int
+    {
+
+        return $this->colecaoRepositorio->contarTodasDoUsuario($usuarioID);
+    }
 }

@@ -3,6 +3,13 @@
 use App\Http\Controllers\Review\ReviewController;
 use Illuminate\Support\Facades\Route;
 
+
+
+
+
+
+Route::get('reviews/{id}', [ReviewController::class, 'reviewsUsuario'])->name('review.usuario');
+
 Route::middleware('auth')->group(function () {
 
     Route::post('review/criar', [ReviewController::class, 'criar'])->name('review.criar');
