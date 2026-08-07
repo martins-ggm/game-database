@@ -79,21 +79,25 @@
                                 'total' => $totalJogos,
                                 'descricao' =>
                                     'Cadastre títulos, edite metadados, vincule a plataformas e desenvolvedoras.',
+                                'rota' => 'catalogo.jogo.novo',
                             ],
                             [
                                 'titulo' => 'Desenvolvedoras',
                                 'total' => $totalDesenvolvedoras,
                                 'descricao' => 'Mantenha o catálogo de estúdios e suas informações públicas.',
+                                'rota' => 'catalogo.desenvolvedora.novo',
                             ],
                             [
                                 'titulo' => 'Plataformas',
                                 'total' => $totalPlataformas,
                                 'descricao' => 'Consoles, PC, handhelds — todos os destinos onde um jogo roda.',
+                                'rota' => 'catalogo.plataforma.novo',
                             ],
                             [
                                 'titulo' => 'Gêneros',
                                 'total' => $totalGeneros,
                                 'descricao' => 'Categorias usadas para filtrar e organizar o catálogo principal.',
+                                'rota' => 'catalogo.genero.novo',
                             ],
                         ];
                     @endphp
@@ -111,7 +115,7 @@
                                 <div class="flex items-center justify-between mt-auto pt-3 border-t border-white/10">
                                     <a href="#"
                                         class="text-[10px] font-black tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">Gerenciar</a>
-                                    <a href="#"
+                                    <a href="{{ route($modulo['rota']) }}"
                                         class="text-[10px] font-black tracking-widest uppercase text-[#6B5B9E] hover:text-[#8674B8] transition">+
                                         Novo</a>
                                 </div>
