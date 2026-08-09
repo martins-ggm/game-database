@@ -135,62 +135,67 @@
                         class="text-xl sm:text-2xl font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-4">
                         Atividade recente
                     </h2>
-                    <a href="#"
+                    <a href="{{ route('gerenciador.admin.auditoria') }}"
                         class="px-5 py-2 border border-white/30 text-white font-black tracking-widest uppercase text-[10px] hover:border-[#6B5B9E] hover:text-[#6B5B9E] transition">Ver
                         log completo</a>
                 </div>
 
                 @php
-                    $atividade = [
-                        [
-                            'tipo' => 'Jogo',
-                            'nome' => 'Persona 5 Royal',
-                            'acao' => 'cadastrado',
-                            'data' => '2026-05-28 14:32',
-                        ],
-                        [
-                            'tipo' => 'Plataforma',
-                            'nome' => 'Nintendo Switch 2',
-                            'acao' => 'cadastrada',
-                            'data' => '2026-05-27 09:15',
-                        ],
-                        [
-                            'tipo' => 'Desenvolvedora',
-                            'nome' => 'Atlus',
-                            'acao' => 'atualizada',
-                            'data' => '2026-05-26 18:47',
-                        ],
-                        [
-                            'tipo' => 'Jogo',
-                            'nome' => 'Hollow Knight: Silksong',
-                            'acao' => 'cadastrado',
-                            'data' => '2026-05-26 11:03',
-                        ],
-                        [
-                            'tipo' => 'Gênero',
-                            'nome' => 'Metroidvania',
-                            'acao' => 'cadastrado',
-                            'data' => '2026-05-25 22:18',
-                        ],
-                    ];
+                    // rótulo a partir do nome da rota: catalogo.jogo.criar → Jogo / cadastrado
+                    $rotuloAuditoria = function (?string $rota) {
+                        $partes = explode('.', (string) $rota);
+                        $acao = end($partes);
+                        $entidade = $partes[count($partes) - 2] ?? '';
+                        $entidades = [
+                            'jogo' => 'Jogo',
+                            'desenvolvedora' => 'Desenvolvedora',
+                            'plataforma' => 'Plataforma',
+                            'genero' => 'Gênero',
+                            'review' => 'Review',
+                            'usuario' => 'Usuário',
+                            'colecao' => 'Coleção',
+                        ];
+                        $acoes = [
+                            'criar' => 'cadastrado',
+                            'editar' => 'atualizado',
+                            'remover' => 'removido',
+                            'atualizar' => 'atualizado',
+                            'adicionar' => 'adicionado',
+                            'logout' => 'logout',
+                        ];
+                        return [
+                            'tipo' => $entidades[$entidade] ?? ucfirst($entidade ?: '—'),
+                            'acao' => $acoes[$acao] ?? $acao,
+                        ];
+                    };
                 @endphp
 
                 <div class="bg-[#1C1B26] border border-white/10">
-                    @foreach ($atividade as $i => $item)
+                    @forelse ($atividadeRecente as $item)
+                        @php $r = $rotuloAuditoria($item->rota); @endphp
                         <div
-                            class="flex items-center justify-between gap-4 px-5 py-4 {{ $i > 0 ? 'border-t border-white/5' : '' }}">
+                            class="flex items-center justify-between gap-4 px-5 py-4 {{ !$loop->first ? 'border-t border-white/5' : '' }}">
                             <div class="flex items-center gap-4 min-w-0">
                                 <span
-                                    class="flex-shrink-0 inline-block px-2 py-0.5 text-[10px] font-black tracking-widest uppercase bg-[#6B5B9E] text-black">{{ $item['tipo'] }}</span>
+                                    class="flex-shrink-0 inline-block px-2 py-0.5 text-[10px] font-black tracking-widest uppercase bg-[#6B5B9E] text-black">{{ $r['tipo'] }}</span>
                                 <p class="text-sm text-white truncate">
-                                    <span class="font-bold">{{ $item['nome'] }}</span>
-                                    <span class="text-white/40"> · {{ $item['acao'] }}</span>
+                                    <span class="font-bold">{{ $r['acao'] }}</span>
+                                    <span class="text-white/40"> · por <a
+                                            href="{{ route('gerenciador.usuario.perfil', $item->usuario->id) }}">{{ $item->usuario?->nome ?? 'sistema' }}</a>
+                                    </span>
+                                    @if ($item->alvo_id)
+                                        <span class="text-white/25"> · #{{ $item->alvo_id }}</span>
+                                    @endif
                                 </p>
                             </div>
                             <span
-                                class="text-[10px] text-white/40 tracking-widest uppercase font-bold flex-shrink-0">{{ $item['data'] }}</span>
+                                class="text-[10px] text-white/40 tracking-widest uppercase font-bold flex-shrink-0">{{ $item->created_at?->format('d/m/Y H:i') }}</span>
                         </div>
-                    @endforeach
+                    @empty
+                        <div class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest font-bold">
+                            Nenhuma atividade recente
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </section>

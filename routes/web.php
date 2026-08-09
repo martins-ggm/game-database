@@ -8,6 +8,7 @@
  |  plataformas.php / desenvolvedoras.php / generos.php → ações do catálogo
  |  usuarios.php → registro, login, logout, atualização
  |  colecao.php  → ações da coleção
+ |  gerenciador.php → ações administrativas (log de auditoria)
  */
 
 require __DIR__ . '/telas.php';
@@ -19,3 +20,4 @@ require __DIR__ . '/generos.php';
 require __DIR__ . '/usuarios.php';
 require __DIR__ . '/colecao.php';
 require __DIR__ . '/review.php';
+require __DIR__ . '/gerenciador.php';

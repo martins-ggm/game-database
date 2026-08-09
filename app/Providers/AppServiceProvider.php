@@ -88,6 +88,14 @@ class AppServiceProvider extends ServiceProvider
             \App\Services\Gerenciador\Interfaces\IPatchNoteService::class,
             \App\Services\Gerenciador\PatchNoteService::class
         );
+        $this->app->bind(
+            \App\Repositorios\Gerenciador\Interfaces\IAuditoriaRepositorio::class,
+            \App\Repositorios\Gerenciador\AuditoriaRepositorio::class
+        );
+        $this->app->bind(
+            \App\Services\Gerenciador\Interfaces\IAuditoriaService::class,
+            \App\Services\Gerenciador\AuditoriaService::class
+        );
     }
 
     /**

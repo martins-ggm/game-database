@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/catalogo/jogos/buscaSimples', [JogoController::class, 'buscaSimples'])->name('catalogo.jogo.buscaSimples');
 
 // Ações admin
-Route::middleware(['auth', 'permissao'])->group(function () {
+Route::middleware(['auth', 'permissao', 'auditoria'])->group(function () {
     Route::get('/jogo/buscar', [JogoController::class, 'buscar'])->name('catalogo.jogo.buscar');
     Route::post('/jogo/criar', [JogoController::class, 'criar'])->name('catalogo.jogo.criar');
     Route::post('/jogo/editar/{id}', [JogoController::class, 'editar'])->name('catalogo.jogo.editar');

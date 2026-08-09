@@ -433,7 +433,6 @@
                 }
             });
 
-            // ---------- carregamento + paginação (AJAX) ----------
             const urlListar = "{{ route('catalogo.jogo.buscar') }}";
             let paginaAtual = 1;
             let termoBusca = '';

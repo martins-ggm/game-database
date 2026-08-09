@@ -8,7 +8,7 @@ Route::post('/usuario/incluir', [UsuarioController::class, 'incluir'])->name('ge
 Route::post('/usuario/autenticar', [UsuarioController::class, 'autenticar'])->name('gerenciador.usuario.autenticar');
 
 // Autenticadas
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'auditoria'])->group(function () {
     Route::post('/logout', [UsuarioController::class, 'logout'])->name('gerenciador.usuario.logout');
     Route::post('/usuario/atualizar/{id}', [UsuarioController::class, 'editar'])->name('gerenciador.usuario.atualizar');
 });

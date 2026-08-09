@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'permissao' => \App\http\Middleware\VerificarPermissao::class,
+            'auditoria' => \App\http\Middleware\RegistrarAuditoria::class
         ]);
         $middleware->redirectGuestsTo(fn() => route('gerenciador.usuario.login'));
     })
