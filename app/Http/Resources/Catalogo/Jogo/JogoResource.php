@@ -2,11 +2,13 @@
 
 namespace App\Http\Resources\Catalogo\Jogo;
 
+use App\Http\Resources\Catalogo\Empresa\EmpresaSelectResource;
+use App\Http\Resources\Catalogo\Genero\GeneroSelectResource;
+use App\Http\Resources\Catalogo\Plataforma\PlataformaSelectResource;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Storage;
 
 class JogoResource extends JsonResource
 {
@@ -20,20 +22,23 @@ class JogoResource extends JsonResource
             'imagem_grande' => $this->capa(),
             'imagem_pequena' => $this->capa(false),
 
-            'desenvolvedora' => $this->desenvolvedora ? [
-                'id'   => $this->desenvolvedora->id,
-                'nome' => $this->desenvolvedora->nome,
-            ] : null,
+            // Aninhados via whenLoaded: sem eager load a chave some, em vez de
+            // disparar uma query escondida por linha. Quem consome estes campos
+            // (a tabela do admin) vem do buscarPaginado, que carrega as três.
+            'desenvolvedora' => $this->whenLoaded(
+                'desenvolvedoras',
+                fn() => $this->desenvolvedora ? EmpresaSelectResource::criar($this->desenvolvedora) : null
+            ),
 
-            'plataformas' => $this->plataformas->map(fn($plataforma) => [
-                'id'   => $plataforma->id,
-                'nome' => $plataforma->nome,
-            ])->values(),
+            'plataformas' => $this->whenLoaded(
+                'plataformas',
+                fn() => PlataformaSelectResource::criar($this->plataformas)
+            ),
 
-            'generos' => $this->generos->map(fn($genero) => [
-                'id'   => $genero->id,
-                'nome' => $genero->nome,
-            ])->values(),
+            'generos' => $this->whenLoaded(
+                'generos',
+                fn() => GeneroSelectResource::criar($this->generos)
+            ),
         ];
     }
 

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Gerenciador;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Gerenciador\PatchNoteResource;
+use App\Http\Resources\Gerenciador\PatchNote\PatchNoteResource;
 use App\Services\Catalogo\Interfaces\IJogoService;
 use App\Services\Gerenciador\Interfaces\IPatchNoteService;
 use Illuminate\Http\JsonResponse;

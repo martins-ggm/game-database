@@ -1,37 +1,30 @@
 <?php
 
-namespace App\Http\Resources\Review;
+namespace App\Http\Resources\Gerenciador\Usuario;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Arr;
 
-class ReviewResource extends JsonResource
+/**
+ * Contexto: usuário aninhado dentro de outra entidade — o autor de uma review,
+ * o responsável por um registro de auditoria. É a "etiqueta de usuário":
+ * identidade e avatar, nada mais.
+ *
+ * Deixa 'email' e 'perfil_id' de fora de propósito. Esses aninhados aparecem em
+ * respostas públicas (as reviews de um jogo são visíveis pra qualquer visitante),
+ * e o e-mail de terceiros não tem por que trafegar até lá.
+ *
+ * Herda com Arr::only conforme o guidelines 3.13.4 — o toArray do pai só lê
+ * colunas do próprio usuário, então não há query extra escondida.
+ */
+class UsuarioSelectResource extends UsuarioResource
 {
     public function toArray($request): array
     {
-        return [
-            'id'        => $this->id,
-            'nota'      => $this->nota,
-            'review'    => $this->review,
-            'criado_em' => $this->created_at?->format('d/m/Y H:i'),
-
-            // autor da review — eager-load com ->with('usuario')
-            'usuario' => $this->usuario ? [
-                'id'             => $this->usuario->id,
-                'nome'           => $this->usuario->nome,
-                'imagem_pequena' => imagem_url($this->usuario->url_imagem_pequena),
-            ] : null,
-
-            // jogo avaliado — útil ao listar as reviews de um usuário; eager-load com ->with('jogo')
-            'jogo' => $this->jogo ? [
-                'id'             => $this->jogo->id,
-                'nome'           => $this->jogo->nome,
-                'imagem_pequena' => $this->jogo->capa(false),
-            ] : null,
-        ];
+        return Arr::only(parent::toArray($request), ['id', 'nome', 'imagem_pequena']);
     }
 
     public static function criar($dados): array|JsonResource|AnonymousResourceCollection

@@ -118,7 +118,7 @@ class JogoService implements IJogoService
         return $jogoAtualizado;
     }
 
- 
+
     public function ultimosLancados(int $quantidade): Collection
     {
 
@@ -135,19 +135,28 @@ class JogoService implements IJogoService
     }
 
 
-    public function buscaPorNomeSimplificado(string $nome): Collection
+    public function buscaPorNomeSimplificado(string $nome, int $porPagina = 15, int $dias = 30): LengthAwarePaginator
     {
-        return $this->jogorepositorio->buscaPorNomeSimplificado($nome);
+        return $this->jogorepositorio->emAlta(nome: $nome);
     }
 
-    public function emAlta(?int $quantidade = null, int $dias = 30, ?int $porPagina = null): Collection|LengthAwarePaginator
+    public function emAlta(?int $quantidade = null, int $dias = 30, ?int $porPagina = null, ?string $nome = null): Collection|LengthAwarePaginator
     {
 
-        return $this->jogorepositorio->emAlta($quantidade, $dias, $porPagina);
+        return $this->jogorepositorio->emAlta(quantidade: $quantidade, dias: $dias, porPagina: $porPagina, nome: $nome);
     }
 
     public function buscarPaginado(?string $nome = null, int $porPagina = 15): LengthAwarePaginator
     {
         return $this->jogorepositorio->buscarPaginado($nome, $porPagina);
+    }
+
+    public function listarCatalogo(?string $nome = null, int $porPagina = 50, int $dias = 15): LengthAwarePaginator
+    {
+        return $this->jogorepositorio->emAlta(
+            dias: $dias,
+            porPagina: $porPagina,
+            nome: filled($nome) ? trim($nome) : null,
+        );
     }
 }

@@ -17,8 +17,7 @@ interface IJogoRepositorio
     public function remover(jogo $jogo): void;
     public function editar(Jogo $jogo, array $plataformas, array $generos, ?int $desenvolvedora = null): Jogo;
     public function ultimosLancados(int $quantidade): Collection;
-    public function buscaPorNomeSimplificado(String $nome): collection;
-    public function emAlta(?int $quantidade = null, int $dias = 30, ?int $porPagina = null): Collection|LengthAwarePaginator;
+    public function emAlta(?int $quantidade = null, int $dias = 30, ?int $porPagina = null, ?string $nome = null): Collection|LengthAwarePaginator;
     public function buscarPaginado(?string $nome, int $porPagina): LengthAwarePaginator;
     public function porIgdbIds(array $igdbIds): Collection;
     public function buscarPorIgdbId(int $igdbId): ?Jogo;

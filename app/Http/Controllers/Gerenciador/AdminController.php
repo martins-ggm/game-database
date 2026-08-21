@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Gerenciador;
 
 use Illuminate\View\View;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Gerenciador\AuditoriaResource;
+use App\Http\Resources\Gerenciador\Auditoria\AuditoriaResource;
 use App\Services\Catalogo\Interfaces\IEmpresaService;
 use App\Services\Catalogo\Interfaces\IGeneroService;
 use App\Services\Catalogo\Interfaces\IJogoService;

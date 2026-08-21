@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Catalogo;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\DTO\Catalogo\JogoDTO;
+use App\Http\Resources\Catalogo\Jogo\JogoListagemResource;
 use App\Http\Resources\Catalogo\Jogo\JogoResource;
 use App\Jobs\Igdb\BaixarCapaJogo;
 use App\Services\Catalogo\Interfaces\IEmpresaService;
@@ -85,8 +86,6 @@ class JogoController extends Controller
         $situacoes = $this->situacaoService->listarSituacoes();
         $jogo = $this->jogoService->buscarPorId($request->id);
 
-        // Capas vêm sob demanda: a tela já renderiza a imagem do CDN do IGDB,
-        // e este job traz a cópia local em segundo plano, para as próximas.
         if ($jogo->precisaBaixarCapa()) {
             BaixarCapaJogo::dispatch($jogo->id);
         }
@@ -100,7 +99,7 @@ class JogoController extends Controller
         $jogos = $this->jogoService->buscaPorNomeSimplificado($request->nome);
 
 
-        return response()->json(['jogos' => JogoResource::criar($jogos)], status: 200);
+        return response()->json(['jogos' => JogoListagemResource::criar($jogos)], status: 200);
     }
 
     public function catalogo(Request $request): View|JsonResponse
@@ -108,10 +107,10 @@ class JogoController extends Controller
 
 
         $generos = $this->generoService->buscarTodos();
-        $jogos = $this->jogoService->emAlta(dias: 15, porPagina: 50);
+        $jogos = $this->jogoService->listarCatalogo(nome: $request->nome, dias: 15, porPagina: 50);
 
         if ($request->wantsJson()) {                                  // ← veio do fetch
-            return response()->json(['jogos' => JogoResource::criar($jogos)]);
+            return response()->json(['jogos' => JogoListagemResource::criar($jogos)]);
         }
 
 

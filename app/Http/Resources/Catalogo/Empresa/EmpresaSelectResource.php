@@ -1,23 +1,25 @@
 <?php
 
-namespace App\Http\Resources\Gerenciador;
+namespace App\Http\Resources\Catalogo\Empresa;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Arr;
 
-class PatchNoteResource extends JsonResource
+/**
+ * Contexto: empresa aninhada dentro de outra entidade (ex: a desenvolvedora de
+ * um jogo) e dropdowns. Só identidade — sem 'criado_em'.
+ *
+ * Herda com Arr::only conforme o guidelines 3.13.4: o toArray do pai só lê
+ * colunas da própria empresa, então não há query extra escondida.
+ */
+class EmpresaSelectResource extends EmpresaResource
 {
     public function toArray($request): array
     {
-        return [
-            'id'         => $this->id,
-            'versao'     => $this->versao,
-            'titulo'     => $this->titulo,
-            'mudancas'   => $this->mudancas, // [{ "tipo": "novo", "texto": "..." }, ...]
-            'lancado_em' => $this->lancado_em?->format('Y-m-d'),
-        ];
+        return Arr::only(parent::toArray($request), ['id', 'nome']);
     }
 
     public static function criar($dados): array|JsonResource|AnonymousResourceCollection

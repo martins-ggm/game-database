@@ -18,7 +18,8 @@ interface IJogoService
     public function editar(JogoDTO $dados): Jogo;
     public function ultimosLancados(int $quantidade): Collection;
     public function buscarPorId(Int $id): ?Jogo;
-    public function buscaPorNomeSimplificado(String $nome): Collection;
-    public function emAlta(?int $quantidade = null, int $dias = 30, ?int $porPagina = null): Collection|LengthAwarePaginator;
+    public function buscaPorNomeSimplificado(string $nome, int $porPagina = 15, int $dias = 30): LengthAwarePaginator;
+    public function emAlta(?int $quantidade = null, int $dias = 30, ?int $porPagina = null, ?string $nome = null): Collection|LengthAwarePaginator;
     public function buscarPaginado(?string $nome = null, int $porPagina = 15): LengthAwarePaginator;
+    public function listarCatalogo(?string $nome = null, int $porPagina = 50, int $dias = 15): LengthAwarePaginator;
 }

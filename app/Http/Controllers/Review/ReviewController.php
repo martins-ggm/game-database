@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Review;
 
 use App\Http\Controllers\Controller;
 use App\Http\DTO\Review\ReviewDTO;
-use App\Http\Resources\Review\ReviewResource;
+use App\Http\Resources\Review\Review\ReviewResource;
 use App\Services\Review\Interfaces\IReviewService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

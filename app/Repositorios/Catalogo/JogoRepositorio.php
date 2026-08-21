@@ -124,17 +124,8 @@ class JogoRepositorio implements IJogoRepositorio
             ->get();
     }
 
-    public function buscaPorNomeSimplificado(string $nome): Collection
-    {
-        return $this->modelo->newQuery()
-            ->select('id', 'nome', 'url_imagem_pequena', 'lancamento')
-            ->where('nome', 'ilike', "%{$nome}%")
-            ->orderBy('nome')
-            ->limit(10)
-            ->get();
-    }
 
-    public function emAlta(?int $quantidade = null, int $dias = 30, ?int $porPagina = null): Collection|LengthAwarePaginator
+    public function emAlta(?int $quantidade = null, int $dias = 30, ?int $porPagina = null, ?string $nome = null): Collection|LengthAwarePaginator
     {
 
         $desde = now()->subDays($dias);
@@ -142,11 +133,9 @@ class JogoRepositorio implements IJogoRepositorio
         $query = $this->modelo->newQuery()
             ->withCount(['reviews' => fn($query) => $query->where('created_at', '>=', $desde)])
             ->with(['desenvolvedoras', 'generos', 'plataformas'])
+            ->when($nome, fn($query) => $query->where('nome', 'ilike', "%{$nome}%"))
             ->orderByDesc('reviews_count')
-            // Desempate obrigatório: quase todo jogo tem reviews_count = 0, e sem
-            // um segundo critério o Postgres é livre pra ordenar os empates como
-            // quiser a cada consulta — a paginação repete jogos numa página e
-            // esconde outros de vez.
+            ->orderBy('nome')
             ->orderBy('id')
             ->when($quantidade, fn($query) => $query->take($quantidade));
 

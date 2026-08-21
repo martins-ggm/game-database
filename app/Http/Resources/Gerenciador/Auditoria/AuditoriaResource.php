@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Resources\Gerenciador;
+namespace App\Http\Resources\Gerenciador\Auditoria;
 
+use App\Http\Resources\Gerenciador\Usuario\UsuarioSelectResource;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
@@ -23,12 +24,13 @@ class AuditoriaResource extends JsonResource
             'usuario_id' => $this->usuario_id,
             'rota' => $this->rota,
             'alvo_id' => $this->alvo_id,
-            'horario' => $this->$this->created_at?->format('d/m/Y H:i'),
+            'horario' => $this->created_at?->format('d/m/Y H:i'),
 
-            'usuario' => $this->usuario ? [
-                'id' => $this->usuario->id,
-                'nome' => $this->usuario->nome,
-            ] : null
+            // eager-load com ->with('usuario') — atividadeRecente e trazerTodas já fazem
+            'usuario' => $this->whenLoaded(
+                'usuario',
+                fn() => UsuarioSelectResource::criar($this->usuario)
+            ),
         ];
     }
 

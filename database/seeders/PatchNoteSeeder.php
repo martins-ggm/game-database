@@ -11,6 +11,21 @@ class PatchNoteSeeder extends Seeder
     {
         $notas = [
             [
+                'versao' => '0.10.0',
+                'titulo' => 'Busca no catálogo',
+                'lancado_em' => '2026-08-21',
+                'mudancas' => [
+                    ['tipo' => 'novo', 'texto' => 'Busca no catálogo: digite o nome e a grade filtra sozinha, sem recarregar a página.'],
+                    ['tipo' => 'novo', 'texto' => 'A busca do dashboard deixou de parar em 10 resultados — agora traz todos, carregando mais conforme você rola a lista.'],
+                    ['tipo' => 'novo', 'texto' => 'Paginação do catálogo com números de página, atalho para a última e campo para pular direto para a página que quiser.'],
+                    ['tipo' => 'melhoria', 'texto' => 'Resultados de busca passam a vir ordenados pelos jogos mais avaliados, e não em ordem alfabética.'],
+                    ['tipo' => 'melhoria', 'texto' => 'Catálogo e busca ficaram bem mais leves e rápidos de carregar.'],
+                    ['tipo' => 'melhoria', 'texto' => 'Miniaturas na busca voltam a usar a cópia local da capa quando existe, em vez de sempre buscar no IGDB.'],
+                    ['tipo' => 'correcao', 'texto' => 'Corrigido erro que derrubava a segunda página do log de auditoria.'],
+                    ['tipo' => 'correcao', 'texto' => 'Removido o botão "Buscar" do dashboard — a busca já acontece enquanto você digita.'],
+                ],
+            ],
+            [
                 'versao' => '0.9.0',
                 'titulo' => 'Catálogo alimentado pelo IGDB',
                 'lancado_em' => '2026-08-20',
