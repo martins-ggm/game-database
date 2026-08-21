@@ -422,9 +422,150 @@ Blade e Resource não sabem mais em que disco a imagem está. **Trocar de storag
 
 ---
 
-## 7. Manutenção
+## 7. Operação — o que rodar, e como saber o que está rodando
 
-### 7.1 `imagens:orfas`
+Esta seção é o runbook. As duas esteiras da seção 2 precisam de **processos diferentes**, e nenhum dos dois sobe sozinho.
+
+### 7.1 Resumo: o que precisa estar de pé
+
+| Quero que… | Processo | Obrigatório? |
+|---|---|---|
+| o catálogo se atualize sozinho | `php artisan schedule:work` | **sim**, senão o catálogo congela |
+| as capas virem cópia local | `php artisan queue:work --queue=igdb` | não — sem ele tudo vem do CDN |
+| desenvolver normalmente | `composer dev` | já inclui o worker de fila |
+
+> ⚠️ **`composer dev` NÃO inclui o scheduler.** Ele sobe `serve`, `queue:listen --queue=igdb,default`, `pail` e `vite`. Se quiser que o catálogo se atualize enquanto você desenvolve, o `schedule:work` vai num terminal à parte.
+
+### 7.2 Atualizar o catálogo
+
+```bash
+# um lote de 500, para conferir se está tudo de pé
+php artisan igdb:sincronizar
+
+# do cursor até o fim — é o que roda no backfill e na recuperação
+php artisan igdb:sincronizar --tudo
+
+# retomar depois de queda, hibernação ou reboot: MESMO comando
+php artisan igdb:sincronizar --tudo
+```
+
+**Nunca use `--reiniciar` para retomar.** Essa flag zera o cursor e reprocessa os 311 mil registros do começo — cerca de duas horas. Não corrompe nada (a escrita é ancorada em `igdb_id`), mas é tempo jogado fora. Ela só serve quando você quer mesmo uma varredura completa, por exemplo depois de mudar o filtro de `game_type`.
+
+Para deixar automático, em vez de rodar à mão:
+
+```bash
+php artisan schedule:work    # deixa o terminal ocupado; dispara o sync de hora em hora
+```
+
+Em produção Windows, o equivalente é uma tarefa no Agendador chamando `php artisan schedule:run` **a cada minuto**; em Linux, a linha de cron correspondente. O Laravel decide sozinho o que está devido — o gatilho de minuto é só o pulso.
+
+> ⚠️ **`schedule:list` engana.** Ele mostra a entrada e diz "Next Due: 43 minutes from now" mesmo quando **nada** está invocando o scheduler. Isso é só o Laravel calculando quando *seria* devido. Ver se está realmente rodando é a seção 7.5.
+
+### 7.3 Baixar as capas
+
+Não existe comando de backfill de capa, e é de propósito (seção 5.1). As capas são baixadas por job, disparado quando alguém abre a tela de um jogo. O que você roda é o **worker que consome esses jobs**:
+
+```bash
+php artisan queue:work --queue=igdb
+```
+
+Sem ele, as capas continuam vindo do CDN do IGDB e o site funciona normalmente — só não se forma cópia local. Os jobs ficam acumulados na tabela `jobs` esperando.
+
+```bash
+# processa o que está na fila e sai (útil para esvaziar um acúmulo)
+php artisan queue:work --queue=igdb --stop-when-empty
+
+# acelerar: vários workers em paralelo, cada um no seu terminal
+php artisan queue:work --queue=igdb
+```
+
+> ⚠️ **`queue:work` sem `--queue` não serve.** Ele escuta só a fila `default`, e os jobs de capa vão para a `igdb`. Ficam parados para sempre, sem erro nenhum.
+
+### 7.4 Limpar imagens sem dono
+
+```bash
+php artisan imagens:orfas              # relatório, não apaga nada
+php artisan imagens:orfas --apagar     # remove de fato
+```
+
+Detalhes em 8.1.
+
+### 7.5 Saber o que está rodando
+
+**Quais processos PHP estão de pé** (PowerShell) — mostra a linha de comando de cada um, então dá para distinguir `serve`, `queue:work`, `schedule:work` e `igdb:sincronizar`:
+
+```powershell
+Get-CimInstance Win32_Process -Filter "Name='php.exe'" |
+    Select-Object ProcessId, CommandLine | Format-List
+```
+
+Se não sair nada, **nada do pipeline está rodando**. É a checagem mais confiável — mais que o `schedule:list`.
+
+**Como está o pipeline** (funciona com qualquer coisa rodando ou não):
+
+```bash
+php artisan tinker --execute="
+\$s = \App\Models\Igdb\IgdbSincronizacao::first();
+printf(\"catalogo...: %s jogos  ·  cursor em %s  ·  ultimo lote %s\n\",
+    number_format(\App\Models\Catalogo\Jogo::count(), 0, ',', '.'),
+    date('d/m/Y H:i', \$s->ultimo_updated_at),
+    \$s->executado_em?->diffForHumans() ?? 'nunca');
+printf(\"capas......: %s locais de %s disponiveis\n\",
+    number_format(\App\Models\Catalogo\Jogo::whereNotNull('url_imagem_grande')->count(), 0, ',', '.'),
+    number_format(\App\Models\Catalogo\Jogo::whereNotNull('igdb_imagem_id')->count(), 0, ',', '.'));
+printf(\"fila igdb..: %d na fila  ·  %d falhas\n\",
+    \DB::table('jobs')->where('queue', 'igdb')->count(),
+    \DB::table('failed_jobs')->count());
+"
+```
+
+Saída típica com tudo em ordem:
+
+```
+catalogo...: 311.071 jogos  ·  cursor em 21/08/2026 14:50  ·  ultimo lote 53 minutes ago
+capas......: 20 locais de 267.188 disponiveis
+fila igdb..: 0 na fila  ·  0 falhas
+```
+
+Como ler cada linha:
+
+| Sintoma | O que significa |
+|---|---|
+| `ultimo lote` de horas atrás | O scheduler não está rodando. Ver 7.2 |
+| `cursor` muito atrás de hoje | Backfill incompleto. Rode `igdb:sincronizar --tudo` |
+| `na fila` crescendo e `locais` parado | Nenhum worker na fila `igdb`. Ver 7.3 |
+| `falhas` > 0 | Investigue com `php artisan queue:failed` |
+
+**O sync está avançando agora?** Rode a checagem acima duas vezes seguidas: se `cursor` e a contagem de jogos mudarem, está andando.
+
+**Verificações pontuais:**
+
+```bash
+php artisan schedule:list     # o que está agendado (não prova que roda — ver 7.2)
+php artisan queue:failed      # jobs que falharam
+php artisan queue:retry all   # reenfileira os que falharam
+```
+
+### 7.6 Ordem numa máquina limpa
+
+```bash
+composer install && npm install
+# preencher .env: IGDB_CLIENT_ID, IGDB_CLIENT_SECRET, DB_*, IMAGENS_*
+php artisan migrate
+php artisan db:seed                       # situações e patch notes; catálogo NÃO
+php artisan storage:link                  # só se IMAGENS_DISK=imagens
+php artisan igdb:sincronizar --tudo       # backfill: ~2h para 311 mil jogos
+```
+
+O backfill sobrevive a hibernação e suspensão — o processo é apenas suspenso e retoma sozinho. Se a máquina desligar de verdade, o cursor está no último lote **completo** (a transação envolve o lote inteiro), então perde-se no máximo 500 registros de trabalho e nunca dados. Retomar é rodar `--tudo` de novo.
+
+> **A ordem do backfill surpreende.** O cursor anda por `updated_at` — quando o IGDB editou o registro —, não por data de lançamento. Jogo popular é editado o tempo todo, então cai no **fim** da fila; jogo obscuro que ninguém toca vem primeiro. Splatoon, Elden Ring e Breath of the Wild só apareceram na última fatia do backfill. É esperado, não é erro.
+
+---
+
+## 8. Manutenção
+
+### 8.1 `imagens:orfas`
 
 A remoção de jogo é *soft delete*: a linha fica marcada em `removido_em` e pode voltar. Por isso o service **não apaga arquivo no `remover()`** — apagar ali deixaria um jogo restaurado apontando para arquivo inexistente.
 
@@ -444,17 +585,17 @@ Três cuidados no comando:
 - **Rede de segurança.** Se o banco não referenciar imagem alguma (banco vazio, conexão errada), todo arquivo pareceria órfão e o `--apagar` limparia o disco inteiro. O comando recusa esse caso.
 - **Ordenação no `chunk`.** Paginar sem `orderBy` repete e pula linhas, o que aqui significaria classificar como órfão um arquivo em uso.
 
-### 7.2 Seeders
+### 8.2 Seeders
 
 O catálogo **não é semeado**. `DatabaseSeeder` chama apenas `SituacaoSeeder` e `PatchNoteSeeder`; jogos, empresas, plataformas e gêneros vêm do IGDB. Semear essas tabelas à mão recria registros **sem `igdb_id`**, e o sync passa a criar duplicatas em vez de atualizar.
 
-### 7.3 Webhooks (fase futura)
+### 8.3 Webhooks (fase futura)
 
 O fluxo que o IGDB recomenda é paginar tudo uma vez e depois manter por **webhooks**. Isso exige `APP_URL` público, então hoje usamos poll horário. Quando houver URL pública, o caminho é uma rota com verificação de assinatura e um controller que converte o payload no mesmo `JogoIgdbDTO` — **nenhuma lógica nova, só outra porta de entrada**. O comando agendado fica como rede de segurança, em cadência diária.
 
 ---
 
-## 8. Armadilhas
+## 9. Armadilhas
 
 Todas apareceram durante a implementação. O que elas têm em comum é a falta de alarde: quase nenhuma dá erro.
 
@@ -475,7 +616,7 @@ Todas apareceram durante a implementação. O que elas têm em comum é a falta 
 
 ---
 
-## 9. Mapa de arquivos
+## 10. Mapa de arquivos
 
 | Arquivo | Papel |
 |---|---|
@@ -496,7 +637,7 @@ Todas apareceram durante a implementação. O que elas têm em comum é a falta 
 
 ---
 
-## 10. Atribuição e licença
+## 11. Atribuição e licença
 
 O IGDB pede crédito explícito em troca do uso gratuito da API. Está no rodapé (`resources/views/components/footer.blade.php`), presente em todas as telas via componente único, com link para o site deles:
 

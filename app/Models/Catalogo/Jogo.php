@@ -86,13 +86,6 @@ class Jogo extends Model
         return $this->hasMany(Review::class, 'jogo_id');
     }
 
-    // ------------------------------------------------------------ atributos
-
-    /**
-     * Ponte de compatibilidade: mantém $jogo->desenvolvedora respondendo nas
-     * views e Resources que existiam antes do pivot. Devolve a primeira
-     * desenvolvedora — um jogo pode ter mais de uma, e aí use desenvolvedoras().
-     */
     public function getDesenvolvedoraAttribute(): ?Empresa
     {
         return $this->desenvolvedoras->first();
@@ -109,13 +102,6 @@ class Jogo extends Model
             : null;
     }
 
-    /**
-     * Capa a exibir, na ordem: cópia local, depois CDN do IGDB, depois nada.
-     *
-     * É esta cascata que torna o backfill de imagem desnecessário — o catálogo
-     * já nasce com capa, e a cópia local só aparece para os jogos que alguém
-     * de fato abriu.
-     */
     public function capa(bool $grande = true): ?string
     {
         $local = $grande ? $this->url_imagem_grande : $this->url_imagem_pequena;
