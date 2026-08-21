@@ -5,7 +5,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Desenvolvedoras — Game Database</title>
+    <title>Empresas — Game Database</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,11 +39,11 @@
         {{-- cabeçalho da página --}}
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             <h1 class="text-2xl sm:text-3xl font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-4">
-                Desenvolvedoras
+                Empresas
             </h1>
-            <button type="button" id="btn-nova-desenvolvedora"
+            <button type="button" id="btn-nova-empresa"
                 class="self-start sm:self-auto px-6 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs hover:bg-[#8674B8] transition">
-                + Nova Desenvolvedora
+                + Nova Empresa
             </button>
         </div>
 
@@ -66,16 +66,16 @@
                             Ações</th>
                     </tr>
                 </thead>
-                <tbody id="tabela-desenvolvedoras">
-                    @forelse ($desenvolvedoras ?? [] as $desenvolvedora)
+                <tbody id="tabela-empresas">
+                    @forelse ($empresas ?? [] as $empresa)
                         <tr class="border-b border-white/5 hover:bg-[#25232F] transition">
-                            <td class="px-5 py-4 font-bold">{{ $desenvolvedora->nome }}</td>
+                            <td class="px-5 py-4 font-bold">{{ $empresa->nome }}</td>
                             <td class="px-5 py-4 text-right whitespace-nowrap">
-                                <button type="button" data-editar-desenvolvedora="{{ $desenvolvedora->id }}"
+                                <button type="button" data-editar-empresa="{{ $empresa->id }}"
                                     class="text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-[#6B5B9E] transition">
                                     Editar
                                 </button>
-                                <button type="button" data-remover-desenvolvedora="{{ $desenvolvedora->id }}"
+                                <button type="button" data-remover-empresa="{{ $empresa->id }}"
                                     class="ml-4 text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-red-400 transition">
                                     Excluir
                                 </button>
@@ -85,7 +85,7 @@
                         <tr id="linha-vazia">
                             <td colspan="2"
                                 class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">
-                                Nenhuma desenvolvedora cadastrada
+                                Nenhuma empresa cadastrada
                             </td>
                         </tr>
                     @endforelse
@@ -98,7 +98,7 @@
     <x-footer />
 
     {{-- ============ MODAL (nova / editar) ============ --}}
-    <div id="modal-desenvolvedora" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div id="modal-empresa" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
         {{-- backdrop --}}
         <div class="absolute inset-0 bg-black/70" data-fechar-modal></div>
 
@@ -109,7 +109,7 @@
             <div class="flex items-center justify-between px-6 py-5 border-b border-white/10">
                 <h2 id="modal-titulo"
                     class="text-lg font-black tracking-widest uppercase border-l-4 border-[#6B5B9E] pl-3">
-                    Nova Desenvolvedora
+                    Nova Empresa
                 </h2>
                 <button type="button" data-fechar-modal
                     class="text-white/40 hover:text-white text-2xl leading-none">&times;</button>
@@ -121,13 +121,13 @@
             </ul>
 
             {{-- form --}}
-            <form id="form-desenvolvedora" class="p-6 space-y-5">
-                <input type="hidden" id="desenvolvedora_id" name="id">
+            <form id="form-empresa" class="p-6 space-y-5">
+                <input type="hidden" id="empresa_id" name="id">
 
                 <div>
                     <label for="nome"
                         class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Nome</label>
-                    <input type="text" id="nome" name="nome" placeholder="Nome da desenvolvedora"
+                    <input type="text" id="nome" name="nome" placeholder="Nome da empresa"
                         class="w-full px-4 py-3 bg-[#11101A] border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#6B5B9E] transition">
                 </div>
 
@@ -188,7 +188,7 @@
     <script>
         $(function() {
 
-            const modal = $('#modal-desenvolvedora');
+            const modal = $('#modal-empresa');
 
             // ---------- helpers ----------
             function escapar(texto) {
@@ -196,9 +196,9 @@
             }
 
             function abrirModalNovo() {
-                $('#form-desenvolvedora')[0].reset();
-                $('#desenvolvedora_id').val('');
-                $('#modal-titulo').text('Nova Desenvolvedora');
+                $('#form-empresa')[0].reset();
+                $('#empresa_id').val('');
+                $('#modal-titulo').text('Nova Empresa');
                 $('#erros').addClass('hidden').empty();
                 modal.removeClass('hidden');
                 $('#nome').trigger('focus');
@@ -230,53 +230,53 @@
                 $('#erros').removeClass('hidden');
             }
 
-            function linhaHtml(desenvolvedora) {
+            function linhaHtml(empresa) {
                 return `
                     <tr class="border-b border-white/5 hover:bg-[#25232F] transition">
-                        <td class="px-5 py-4 font-bold">${escapar(desenvolvedora.nome)}</td>
+                        <td class="px-5 py-4 font-bold">${escapar(empresa.nome)}</td>
                         <td class="px-5 py-4 text-right whitespace-nowrap">
-                            <button type="button" data-editar-desenvolvedora="${desenvolvedora.id}"
+                            <button type="button" data-editar-empresa="${empresa.id}"
                                 class="text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-[#6B5B9E] transition">Editar</button>
-                            <button type="button" data-remover-desenvolvedora="${desenvolvedora.id}"
+                            <button type="button" data-remover-empresa="${empresa.id}"
                                 class="ml-4 text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-red-400 transition">Excluir</button>
                         </td>
                     </tr>`;
             }
 
-            function adicionarLinha(desenvolvedora) {
+            function adicionarLinha(empresa) {
                 $('#linha-vazia').remove();
-                $('#tabela-desenvolvedoras').append(linhaHtml(desenvolvedora));
+                $('#tabela-empresas').append(linhaHtml(empresa));
             }
 
-            function renderizarTabela(desenvolvedoras) {
-                const tbody = $('#tabela-desenvolvedoras');
+            function renderizarTabela(empresas) {
+                const tbody = $('#tabela-empresas');
                 tbody.empty();
 
-                if (desenvolvedoras.length === 0) {
+                if (empresas.length === 0) {
                     tbody.html(
-                        '<tr id="linha-vazia"><td colspan="2" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhuma desenvolvedora encontrada</td></tr>'
+                        '<tr id="linha-vazia"><td colspan="2" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhuma empresa encontrada</td></tr>'
                     );
                     return;
                 }
 
-                desenvolvedoras.forEach(function(desenvolvedora) {
-                    tbody.append(linhaHtml(desenvolvedora));
+                empresas.forEach(function(empresa) {
+                    tbody.append(linhaHtml(empresa));
                 });
             }
 
-            function atualizarLinha(desenvolvedora) {
-                const botao = $('#tabela-desenvolvedoras').find('[data-editar-desenvolvedora="' + desenvolvedora
+            function atualizarLinha(empresa) {
+                const botao = $('#tabela-empresas').find('[data-editar-empresa="' + empresa
                     .id + '"]');
                 const linha = botao.closest('tr');
-                linha.find('td').eq(0).text(desenvolvedora.nome);
+                linha.find('td').eq(0).text(empresa.nome);
             }
 
             // ---------- modal (abrir / fechar) ----------
-            $('#btn-nova-desenvolvedora').on('click', abrirModalNovo);
+            $('#btn-nova-empresa').on('click', abrirModalNovo);
             $('[data-fechar-modal]').on('click', fecharModal);
 
             // ---------- busca (com debounce) ----------
-            const urlBuscar = "{{ route('catalogo.desenvolvedora.buscar') }}";
+            const urlBuscar = "{{ route('catalogo.empresa.buscar') }}";
             let timerBusca = null;
             let reqBusca = null;
 
@@ -297,7 +297,7 @@
                             'Accept': 'application/json'
                         },
                         success: function (response) {
-                            renderizarTabela(response.desenvolvedoras);
+                            renderizarTabela(response.empresas);
                         },
                         error: function (xhr, status) {
                             if (status === 'abort') return;
@@ -308,13 +308,13 @@
             });
 
             // ---------- abrir modal em modo edição ----------
-            $('#tabela-desenvolvedoras').on('click', '[data-editar-desenvolvedora]', function() {
-                const id = $(this).attr('data-editar-desenvolvedora');
+            $('#tabela-empresas').on('click', '[data-editar-empresa]', function() {
+                const id = $(this).attr('data-editar-empresa');
                 const nome = $(this).closest('tr').find('td').eq(0).text().trim();
 
-                $('#desenvolvedora_id').val(id);
+                $('#empresa_id').val(id);
                 $('#nome').val(nome);
-                $('#modal-titulo').text('Editar Desenvolvedora');
+                $('#modal-titulo').text('Editar Empresa');
                 $('#erros').addClass('hidden').empty();
                 $('#mensagem').addClass('hidden').empty();
                 modal.removeClass('hidden');
@@ -322,19 +322,19 @@
             });
 
             // ---------- incluir / editar ----------
-            const urlEditarBase = "{{ route('catalogo.desenvolvedora.editar', ['id' => 'ID_PLACEHOLDER']) }}";
+            const urlEditarBase = "{{ route('catalogo.empresa.editar', ['id' => 'ID_PLACEHOLDER']) }}";
 
-            $('#form-desenvolvedora').on('submit', function(e) {
+            $('#form-empresa').on('submit', function(e) {
                 e.preventDefault();
                 $('#erros').addClass('hidden').empty();
                 $('#mensagem').addClass('hidden').empty();
 
-                const id = $('#desenvolvedora_id').val();
+                const id = $('#empresa_id').val();
 
                 const url = id ?
                     urlEditarBase.replace('ID_PLACEHOLDER', id) // tem id → editar
                     :
-                    "{{ route('catalogo.desenvolvedora.criar') }}"; // sem id → criar
+                    "{{ route('catalogo.empresa.criar') }}"; // sem id → criar
 
                 $.ajax({
                     url: url,
@@ -351,9 +351,9 @@
                     }),
                     success: function(response) {
                         if (id) {
-                            atualizarLinha(response.desenvolvedora);
+                            atualizarLinha(response.empresa);
                         } else {
-                            adicionarLinha(response.desenvolvedora);
+                            adicionarLinha(response.empresa);
                         }
                         fecharModal();
                         mostrarSucesso(response.mensagem);
@@ -369,7 +369,7 @@
             });
 
             // ---------- remover ----------
-            const urlRemoverBase = "{{ route('catalogo.desenvolvedora.remover', ['id' => 'ID_PLACEHOLDER']) }}";
+            const urlRemoverBase = "{{ route('catalogo.empresa.remover', ['id' => 'ID_PLACEHOLDER']) }}";
             const modalRemover = $('#modal-remover');
             let removerId = null;      // guarda quem está sendo removido
             let removerLinha = null;   // guarda a <tr> pra apagar depois
@@ -381,8 +381,8 @@
             }
 
             // clicar em "Excluir" → abre o modal de confirmação (não remove ainda)
-            $('#tabela-desenvolvedoras').on('click', '[data-remover-desenvolvedora]', function() {
-                removerId = $(this).attr('data-remover-desenvolvedora');
+            $('#tabela-empresas').on('click', '[data-remover-empresa]', function() {
+                removerId = $(this).attr('data-remover-empresa');
                 removerLinha = $(this).closest('tr');
                 const nome = removerLinha.find('td').eq(0).text().trim();
 
@@ -411,9 +411,9 @@
                     },
                     success: function(response) {
                         linha.remove();
-                        if ($('#tabela-desenvolvedoras tr').length === 0) {
-                            $('#tabela-desenvolvedoras').html(
-                                '<tr id="linha-vazia"><td colspan="2" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhuma desenvolvedora cadastrada</td></tr>'
+                        if ($('#tabela-empresas tr').length === 0) {
+                            $('#tabela-empresas').html(
+                                '<tr id="linha-vazia"><td colspan="2" class="px-5 py-12 text-center text-white/30 text-xs uppercase tracking-widest">Nenhuma empresa cadastrada</td></tr>'
                             );
                         }
                         fecharRemocao();

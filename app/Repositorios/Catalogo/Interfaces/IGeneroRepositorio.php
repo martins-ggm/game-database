@@ -18,4 +18,6 @@ interface IGeneroRepositorio
     public function contarTodos(): int;
     public function todosComJogos(): Collection;
     public function generosComMaisJogosComReviews(int $quantidade, int $dias): Collection;
+    public function mapaPorIgdbId(array $igdbIds): array;
+    public function criarEmLote(array $registros): void;
 }

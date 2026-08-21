@@ -32,7 +32,7 @@
                 Painel Administrativo
             </h1>
             <p class="text-sm sm:text-base text-white/60 mt-4 ml-5 max-w-2xl">
-                Cadastre e gerencie os dados que abastecem a biblioteca — jogos, desenvolvedoras, plataformas e gêneros.
+                Cadastre e gerencie os dados que abastecem a biblioteca — jogos, empresas, plataformas e gêneros.
             </p>
         </section>
 
@@ -47,9 +47,9 @@
                     class="px-6 py-3 bg-[#6B5B9E] text-black font-black tracking-widest uppercase text-xs hover:bg-[#8674B8] transition">
                     + Novo jogo
                 </a>
-                <a href="{{ Route('catalogo.desenvolvedora.novo') }}"
+                <a href="{{ Route('catalogo.empresa.novo') }}"
                     class="px-6 py-3 border border-white/30 text-white font-black tracking-widest uppercase text-xs hover:border-[#6B5B9E] hover:text-[#6B5B9E] transition">
-                    + Desenvolvedora
+                    + Empresa
                 </a>
                 <a href="{{ Route('catalogo.plataforma.novo') }}"
                     class="px-6 py-3 border border-white/30 text-white font-black tracking-widest uppercase text-xs hover:border-[#6B5B9E] hover:text-[#6B5B9E] transition">
@@ -82,10 +82,10 @@
                                 'rota' => 'catalogo.jogo.novo',
                             ],
                             [
-                                'titulo' => 'Desenvolvedoras',
-                                'total' => $totalDesenvolvedoras,
+                                'titulo' => 'Empresas',
+                                'total' => $totalEmpresas,
                                 'descricao' => 'Mantenha o catálogo de estúdios e suas informações públicas.',
-                                'rota' => 'catalogo.desenvolvedora.novo',
+                                'rota' => 'catalogo.empresa.novo',
                             ],
                             [
                                 'titulo' => 'Plataformas',
@@ -103,24 +103,21 @@
                     @endphp
 
                     @foreach ($modulos as $modulo)
-                        <article class="bg-[#1C1B26] hover:bg-[#25232F] transition flex flex-col">
-                            <div
-                                class="aspect-video bg-[#11101A] border-b border-white/5 flex items-center justify-center">
-                                <span
-                                    class="text-5xl sm:text-6xl font-black text-[#6B5B9E]">{{ $modulo['total'] }}</span>
-                            </div>
-                            <div class="p-5 flex-1 flex flex-col gap-3">
-                                <h3 class="text-sm font-black tracking-widest uppercase">{{ $modulo['titulo'] }}</h3>
-                                <p class="text-xs text-white/60 leading-relaxed">{{ $modulo['descricao'] }}</p>
-                                <div class="flex items-center justify-between mt-auto pt-3 border-t border-white/10">
-                                    <a href="#"
-                                        class="text-[10px] font-black tracking-widest uppercase text-white/60 hover:text-[#6B5B9E] transition">Gerenciar</a>
-                                    <a href="{{ route($modulo['rota']) }}"
-                                        class="text-[10px] font-black tracking-widest uppercase text-[#6B5B9E] hover:text-[#8674B8] transition">+
-                                        Novo</a>
+                        <a href="{{ route($modulo['rota']) }}">
+                            <article class="bg-[#1C1B26] hover:bg-[#25232F] transition flex flex-col">
+                                <div
+                                    class="aspect-video bg-[#11101A] border-b border-white/5 flex items-center justify-center">
+                                    <span
+                                        class="text-5xl sm:text-6xl font-black text-[#6B5B9E]">{{ $modulo['total'] }}</span>
                                 </div>
-                            </div>
-                        </article>
+                                <div class="p-5 flex-1 flex flex-col gap-3">
+                                    <h3 class="text-sm font-black tracking-widest uppercase">{{ $modulo['titulo'] }}
+                                    </h3>
+                                    <p class="text-xs text-white/60 leading-relaxed">{{ $modulo['descricao'] }}</p>
+
+                                </div>
+                            </article>
+                        </a>
                     @endforeach
 
                 </div>
@@ -148,7 +145,7 @@
                         $entidade = $partes[count($partes) - 2] ?? '';
                         $entidades = [
                             'jogo' => 'Jogo',
-                            'desenvolvedora' => 'Desenvolvedora',
+                            'empresa' => 'Empresa',
                             'plataforma' => 'Plataforma',
                             'genero' => 'Gênero',
                             'review' => 'Review',

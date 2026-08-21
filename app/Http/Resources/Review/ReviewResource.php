@@ -22,14 +22,14 @@ class ReviewResource extends JsonResource
             'usuario' => $this->usuario ? [
                 'id'             => $this->usuario->id,
                 'nome'           => $this->usuario->nome,
-                'imagem_pequena' => $this->usuario->url_imagem_pequena ? Storage::url($this->usuario->url_imagem_pequena) : null,
+                'imagem_pequena' => imagem_url($this->usuario->url_imagem_pequena),
             ] : null,
 
             // jogo avaliado — útil ao listar as reviews de um usuário; eager-load com ->with('jogo')
             'jogo' => $this->jogo ? [
                 'id'             => $this->jogo->id,
                 'nome'           => $this->jogo->nome,
-                'imagem_pequena' => $this->jogo->url_imagem_pequena ? Storage::url($this->jogo->url_imagem_pequena) : null,
+                'imagem_pequena' => $this->jogo->capa(false),
             ] : null,
         ];
     }

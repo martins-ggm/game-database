@@ -160,8 +160,8 @@
                 <a href="{{ route('catalogo.jogo.visualizar', $jogo->id) }}"
                     class="group relative flex-shrink-0 w-64 md:w-80 aspect-[3/4] bg-[#1C1B26] overflow-hidden border border-white/5 flex items-end">
                     {{-- imagem de fundo (capa em retrato 3:4) --}}
-                    @if ($jogo->url_imagem_grande)
-                        <img src="{{ Storage::url($jogo->url_imagem_grande) }}" alt="Capa de {{ $jogo->nome }}"
+                    @if ($jogo->capa())
+                        <img src="{{ $jogo->capa() }}" alt="Capa de {{ $jogo->nome }}"
                             loading="lazy" decoding="async"
                             class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500">
                     @endif

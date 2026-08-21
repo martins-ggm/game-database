@@ -17,8 +17,8 @@ class JogoResource extends JsonResource
             'nome' => $this->nome,
             'lancamento' => $this->lancamento?->format('Y-m-d'),
             'descricao' => $this->descricao,
-            'imagem_grande' => $this->url_imagem_grande ? Storage::url($this->url_imagem_grande) : null,
-            'imagem_pequena' => $this->url_imagem_pequena ? Storage::url($this->url_imagem_pequena) : null,
+            'imagem_grande' => $this->capa(),
+            'imagem_pequena' => $this->capa(false),
 
             'desenvolvedora' => $this->desenvolvedora ? [
                 'id'   => $this->desenvolvedora->id,

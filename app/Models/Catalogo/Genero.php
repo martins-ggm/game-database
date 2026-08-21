@@ -15,7 +15,13 @@ class Genero extends Model
     const DELETED_AT = 'removido_em';
 
     protected $fillable = [
+        'igdb_id',
         'nome',
+        'slug',
+    ];
+
+    protected $casts = [
+        'igdb_id' => 'integer',
     ];
 
     public function jogos(): BelongsToMany
@@ -23,16 +29,18 @@ class Genero extends Model
         return $this->belongsToMany(Jogo::class, 'jogo_generos');
     }
 
-    public static function criar(String $nome): self
+    public static function criar(string $nome, ?int $igdbId = null, ?string $slug = null): self
     {
         $genero = new self();
         $genero->nome = $nome;
+        $genero->igdb_id = $igdbId;
+        $genero->slug = $slug;
+
         return $genero;
     }
 
-    public function editar(String $nome): self
+    public function editar(string $nome): self
     {
-
         $this->nome = $nome;
 
         return $this;

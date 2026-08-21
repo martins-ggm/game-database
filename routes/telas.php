@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Catalogo\DesenvolvedoraController;
+use App\Http\Controllers\Catalogo\EmpresaController;
 use App\Http\Controllers\Catalogo\GeneroController;
 use App\Http\Controllers\Catalogo\JogoController;
 use App\Http\Controllers\Catalogo\PlataformaController;
@@ -39,6 +39,6 @@ Route::middleware(['auth', 'permissao'])->group(function () {
     Route::get('/admin', [AdminController::class, 'visualizar'])->name('gerenciador.admin.visualizar');
     Route::get('/jogo/novo', [JogoController::class, 'novo'])->name('catalogo.jogo.novo');
     Route::get('/plataforma/novo', [PlataformaController::class, 'novo'])->name('catalogo.plataforma.novo');
-    Route::get('/desenvolvedora/novo', [DesenvolvedoraController::class, 'novo'])->name('catalogo.desenvolvedora.novo');
+    Route::get('/empresa/novo', [EmpresaController::class, 'novo'])->name('catalogo.empresa.novo');
     Route::get('/genero/novo', [GeneroController::class, 'novo'])->name('catalogo.genero.novo');
 });

@@ -79,8 +79,8 @@
                     @forelse ($jogos as $jogo)
                         <tr class="border-b border-white/5 hover:bg-[#25232F] transition">
                             <td class="px-5 py-4">
-                                @if ($jogo->url_imagem_pequena)
-                                    <img src="{{ asset('storage/' . $jogo->url_imagem_pequena) }}" alt=""
+                                @if ($jogo->capa(false))
+                                    <img src="{{ $jogo->capa(false) }}" alt=""
                                         loading="lazy" decoding="async"
                                         class="w-12 h-16 object-cover border border-white/10">
                                 @else
@@ -96,11 +96,11 @@
                                 {{ $jogo->generos->pluck('nome')->implode(', ') ?: '—' }}</td>
                             <td class="px-5 py-4 text-right whitespace-nowrap">
                                 <button type="button" data-editar-jogo="{{ $jogo->id }}"
-                                    data-desenvolvedora="{{ $jogo->desenvolvedora_id }}"
+                                    data-desenvolvedora="{{ $jogo->desenvolvedora?->id }}"
                                     data-lancamento="{{ $jogo->lancamento?->format('Y-m-d') }}"
                                     data-plataformas="{{ $jogo->plataformas->pluck('id')->implode(',') }}"
                                     data-generos="{{ $jogo->generos->pluck('id')->implode(',') }}"
-                                    data-imagem="{{ $jogo->url_imagem_pequena ? asset('storage/' . $jogo->url_imagem_pequena) : '' }}"
+                                    data-imagem="{{ $jogo->capa(false) ?? '' }}"
                                     data-descricao="{{ $jogo->descricao }}"
                                     class="text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-[#6B5B9E] transition">
                                     Editar

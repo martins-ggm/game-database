@@ -51,7 +51,7 @@ class UsuarioController extends Controller
     public function autenticar(Request $request)
     {
 
-        $dto = UsuarioLoginDTO::fromRequest(request: $request, bool_validar_login: false);
+        $dto = UsuarioLoginDTO::fromRequest(request: $request, bool_validar_login: true);
         $usuario = $this->usuario_service->autenticar(dados: $dto);
 
         $request->session()->regenerate();

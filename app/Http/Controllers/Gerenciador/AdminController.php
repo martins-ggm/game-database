@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Gerenciador;
 use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Gerenciador\AuditoriaResource;
-use App\Services\Catalogo\Interfaces\IDesenvolvedoraService;
+use App\Services\Catalogo\Interfaces\IEmpresaService;
 use App\Services\Catalogo\Interfaces\IGeneroService;
 use App\Services\Catalogo\Interfaces\IJogoService;
 use App\Services\Catalogo\Interfaces\IPlataformaService;
@@ -20,14 +20,14 @@ class AdminController extends Controller
         protected IPlataformaService $plataforma_service,
         protected IGeneroService $generoService,
         protected IJogoService $jogoService,
-        protected IDesenvolvedoraService $desenvolvedoraService,
+        protected IEmpresaService $empresaService,
         protected IAuditoriaService $auditoriaService
     ) {}
 
 
     public function visualizar(): View
     {
-        $totalDesenvolvedoras = $this->desenvolvedoraService->contarTodas();
+        $totalEmpresas = $this->empresaService->contarTodas();
         $totalJogos = $this->jogoService->contarTodos();
         $totalGeneros = $this->generoService->contarTodos();
         $totalPlataformas = $this->plataforma_service->contarTodas();
@@ -35,7 +35,7 @@ class AdminController extends Controller
 
         return view(view: 'gerenciador.admin', data: compact(
             'totalPlataformas',
-            'totalDesenvolvedoras',
+            'totalEmpresas',
             'totalJogos',
             'totalGeneros',
             'atividadeRecente'

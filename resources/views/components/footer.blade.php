@@ -12,6 +12,14 @@
                 @endif
             </p>
         </div>
-        <p class="text-[10px] tracking-widest text-white/40 uppercase font-bold">Built with love ;)</p>
+        <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+            {{-- Crédito pedido pelo IGDB em troca do uso gratuito da API. --}}
+            <a href="https://www.igdb.com" target="_blank" rel="noopener"
+                class="text-[10px] tracking-widest text-white/40 uppercase font-bold hover:text-[#6B5B9E] transition">
+                Game data freely provided by IGDB.com
+            </a>
+            <span class="hidden sm:inline text-white/15">·</span>
+            <p class="text-[10px] tracking-widest text-white/40 uppercase font-bold">Built with love ;)</p>
+        </div>
     </div>
 </footer>

@@ -37,7 +37,7 @@
                 <div id="avatar-container"
                     class="w-32 h-32 sm:w-40 sm:h-40 bg-[#1C1B26] border border-white/10 flex items-center justify-center flex-shrink-0 overflow-hidden">
                     @if ($usuario->url_imagem_grande)
-                        <img id="avatar-img" src="{{ Storage::url($usuario->url_imagem_grande) }}"
+                        <img id="avatar-img" src="{{ imagem_url($usuario->url_imagem_grande) }}"
                             alt="Foto de {{ $usuario->nome }}" class="w-full h-full object-cover">
                     @else
                         <span
@@ -108,8 +108,8 @@
                         <a href="{{ route('catalogo.jogo.visualizar', $item->jogo->id) }}"
                             class="group flex-shrink-0 w-44 sm:w-52 bg-[#1C1B26] hover:bg-[#25232F] transition flex flex-col">
                             <div class="aspect-[3/4] bg-[#11101A] overflow-hidden border-b border-white/5">
-                                @if ($item->jogo->url_imagem_pequena)
-                                    <img src="{{ Storage::url($item->jogo->url_imagem_pequena) }}"
+                                @if ($item->jogo->capa(false))
+                                    <img src="{{ $item->jogo->capa(false) }}"
                                         alt="Capa de {{ $item->jogo->nome }}" loading="lazy" decoding="async"
                                         class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                                 @else
@@ -164,8 +164,8 @@
                                 class="bg-[#1C1B26] hover:bg-[#25232F] transition p-5 flex gap-4">
                                 <div
                                     class="w-16 sm:w-20 aspect-[3/4] flex-shrink-0 bg-[#11101A] border border-white/5 overflow-hidden flex items-center justify-center">
-                                    @if ($review->jogo?->url_imagem_pequena)
-                                        <img src="{{ Storage::url($review->jogo->url_imagem_pequena) }}"
+                                    @if ($review->jogo?->capa(false))
+                                        <img src="{{ $review->jogo->capa(false) }}"
                                             alt="Capa de {{ $review->jogo->nome }}" loading="lazy" decoding="async"
                                             class="w-full h-full object-cover">
                                     @else
@@ -234,7 +234,7 @@
                             <div
                                 class="w-24 h-24 flex-shrink-0 bg-[#11101A] border border-white/10 overflow-hidden flex items-center justify-center">
                                 <img id="preview-avatar"
-                                    src="{{ $usuario->url_imagem_grande ? Storage::url($usuario->url_imagem_grande) : '' }}"
+                                    src="{{ $usuario->url_imagem_grande ? imagem_url($usuario->url_imagem_grande) : '' }}"
                                     class="w-full h-full object-cover {{ $usuario->url_imagem_grande ? '' : 'hidden' }}">
                                 <span id="preview-avatar-vazio"
                                     class="text-[10px] text-white/30 uppercase tracking-widest {{ $usuario->url_imagem_grande ? 'hidden' : '' }}">Sem

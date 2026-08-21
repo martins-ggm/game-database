@@ -95,8 +95,8 @@
                         <a href="{{ route('catalogo.jogo.visualizar', $jogo->id) }}"
                             class="group bg-[#1C1B26] hover:bg-[#25232F] transition flex flex-col">
                             <div class="aspect-[3/4] bg-[#11101A] overflow-hidden border-b border-white/5">
-                                @if ($jogo->url_imagem_pequena)
-                                    <img src="{{ Storage::url($jogo->url_imagem_pequena) }}"
+                                @if ($jogo->capa(false))
+                                    <img src="{{ $jogo->capa(false) }}"
                                         alt="Capa de {{ $jogo->nome }}" loading="lazy" decoding="async"
                                         class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                                 @else

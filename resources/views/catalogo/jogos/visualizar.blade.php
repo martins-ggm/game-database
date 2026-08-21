@@ -53,8 +53,8 @@
                     {{-- capa --}}
                     <div class="w-full max-w-[260px] mx-auto md:mx-0 flex-shrink-0">
                         <div class="aspect-[3/4] bg-[#1C1B26] border border-white/10 overflow-hidden">
-                            @if ($jogo->url_imagem_grande)
-                                <img src="{{ asset('storage/' . $jogo->url_imagem_grande) }}"
+                            @if ($jogo->capa())
+                                <img src="{{ $jogo->capa() }}"
                                     alt="Capa de {{ $jogo->nome }}" class="w-full h-full object-cover">
                             @else
                                 <div
@@ -207,7 +207,7 @@
                                     <div
                                         class="w-12 h-12 flex-shrink-0 bg-[#11101A] border border-white/10 overflow-hidden flex items-center justify-center text-[#6B5B9E] font-black text-lg uppercase">
                                         @if (auth()->user()->url_imagem_pequena)
-                                            <img src="{{ Storage::url(auth()->user()->url_imagem_pequena) }}"
+                                            <img src="{{ imagem_url(auth()->user()->url_imagem_pequena) }}"
                                                 alt="{{ auth()->user()->nome }}" class="w-full h-full object-cover">
                                         @else
                                             {{ mb_substr(auth()->user()->nome, 0, 1) }}
@@ -265,7 +265,7 @@
                             <div
                                 class="w-12 h-12 flex-shrink-0 bg-[#11101A] border border-white/10 overflow-hidden flex items-center justify-center text-[#6B5B9E] font-black text-lg uppercase">
                                 @if ($review->usuario?->url_imagem_pequena)
-                                    <img src="{{ Storage::url($review->usuario->url_imagem_pequena) }}"
+                                    <img src="{{ imagem_url($review->usuario->url_imagem_pequena) }}"
                                         alt="{{ $review->usuario->nome }}" class="w-full h-full object-cover">
                                 @else
                                     {{ mb_substr($review->usuario?->nome ?? '?', 0, 1) }}
@@ -321,7 +321,7 @@
 
                 <label for="review-texto"
                     class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">
-                    Comentário <span class="text-white/30 normal-case">(opcional)</span>
+                    Comentário
                 </label>
                 <textarea id="review-texto" rows="4" placeholder="Conte o que achou do jogo..."
                     class="w-full px-4 py-3 bg-[#11101A] border border-white/10 text-white placeholder-white/30 text-sm resize-none focus:outline-none focus:border-[#6B5B9E] transition">{{ $reviewUsuario->review ?? '' }}</textarea>

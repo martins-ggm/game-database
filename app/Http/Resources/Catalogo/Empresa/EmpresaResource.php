@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Resources\Catalogo\Desenvolvedora;
+namespace App\Http\Resources\Catalogo\Empresa;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class DesenvolvedoraResource extends JsonResource
+class EmpresaResource extends JsonResource
 {
     public function toArray($request): array
     {

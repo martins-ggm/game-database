@@ -63,8 +63,8 @@
                                 {{-- capa (retrato 3:4) --}}
                                 <a href="{{ $review->jogo ? route('catalogo.jogo.visualizar', $review->jogo->id) : '#' }}"
                                     class="w-24 sm:w-28 aspect-[3/4] flex-shrink-0 bg-[#11101A] border border-white/5 overflow-hidden flex items-center justify-center">
-                                    @if ($review->jogo?->url_imagem_pequena)
-                                        <img src="{{ Storage::url($review->jogo->url_imagem_pequena) }}"
+                                    @if ($review->jogo?->capa(false))
+                                        <img src="{{ $review->jogo->capa(false) }}"
                                             alt="Capa de {{ $review->jogo->nome }}" loading="lazy" decoding="async"
                                             class="w-full h-full object-cover">
                                     @else

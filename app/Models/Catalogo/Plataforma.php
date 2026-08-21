@@ -15,12 +15,19 @@ class Plataforma extends Model
     const DELETED_AT = 'removido_em';
 
     protected $fillable = [
+        'igdb_id',
         'nome',
-        'lancamento'
+        'slug',
+        'abreviacao',
+        'geracao',
+        'logo_id',
+        'lancamento',
     ];
 
     protected $casts = [
-        'lancamento' => 'date'
+        'lancamento' => 'date',
+        'igdb_id'    => 'integer',
+        'geracao'    => 'integer',
     ];
 
     public function jogos(): BelongsToMany
@@ -28,21 +35,43 @@ class Plataforma extends Model
         return $this->belongsToMany(Jogo::class, 'jogo_plataformas');
     }
 
-
-    public static function criar(string $nome, string $lancamento): self
+    /** Rótulo curto para selos de card: "PS4" quando existir, senão o nome. */
+    public function rotuloCurto(): string
     {
+        return $this->abreviacao ?: $this->nome;
+    }
 
+    public static function criar(
+        string $nome,
+        ?string $lancamento = null,
+        ?int $igdbId = null,
+        ?string $slug = null,
+        ?string $abreviacao = null,
+        ?int $geracao = null,
+        ?string $logoId = null,
+    ): self {
         $plataforma = new self();
         $plataforma->nome = $nome;
         $plataforma->lancamento = $lancamento;
+        $plataforma->igdb_id = $igdbId;
+        $plataforma->slug = $slug;
+        $plataforma->abreviacao = $abreviacao;
+        $plataforma->geracao = $geracao;
+        $plataforma->logo_id = $logoId;
+
         return $plataforma;
     }
 
-    public function editar(string $nome, string $lancamento): self
-    {
-
+    public function editar(
+        string $nome,
+        ?string $lancamento = null,
+        ?string $abreviacao = null,
+        ?int $geracao = null,
+    ): self {
         $this->nome = $nome;
         $this->lancamento = $lancamento;
+        $this->abreviacao = $abreviacao;
+        $this->geracao = $geracao;
 
         return $this;
     }

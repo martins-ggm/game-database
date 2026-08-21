@@ -1,7 +1,5 @@
 <?php
 
-
-
 declare(strict_types=1);
 
 
@@ -13,8 +11,6 @@ use App\Repositorios\Gerenciador\Interfaces\IUsuarioRepositorio;
 
 class UsuarioRepositorio implements IUsuarioRepositorio
 {
-
-
 
     public function __construct(protected Usuario $modelo) {}
 

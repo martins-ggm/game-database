@@ -28,15 +28,19 @@ class JogoService implements IJogoService
             return DB::transaction(function () use ($dados, $caminhos) {
 
                 $jogo = Jogo::criar(
-                    $dados->nome,
-                    $dados->desenvolvedora,
-                    $dados->lancamento,
-                    $caminhos['grande'],
-                    $caminhos['pequena'],
-                    $dados->descricao
+                    nome: $dados->nome,
+                    lancamento: $dados->lancamento,
+                    grande: $caminhos['grande'],
+                    pequena: $caminhos['pequena'],
+                    descricao: $dados->descricao
                 );
 
-                return $this->jogorepositorio->criar($jogo, $dados->plataformas, $dados->generos);
+                return $this->jogorepositorio->criar(
+                    $jogo,
+                    $dados->plataformas,
+                    $dados->generos,
+                    $dados->desenvolvedora
+                );
             });
         } catch (\Throwable $e) {
 
@@ -84,10 +88,9 @@ class JogoService implements IJogoService
             $jogoAtualizado = DB::transaction(function () use ($jogo, $dados, $caminhosNovos) {
 
                 $jogo->editar(
-                    $dados->nome,
-                    $dados->desenvolvedora,
-                    $dados->lancamento,
-                    $dados->descricao
+                    nome: $dados->nome,
+                    lancamento: $dados->lancamento,
+                    descricao: $dados->descricao
                 );
                 if ($caminhosNovos) {
                     $jogo->url_imagem_grande = $caminhosNovos['grande'];
@@ -96,7 +99,8 @@ class JogoService implements IJogoService
                 return $this->jogorepositorio->editar(
                     $jogo,
                     $dados->plataformas,
-                    $dados->generos
+                    $dados->generos,
+                    $dados->desenvolvedora
                 );
             });
         } catch (\Throwable $e) {

@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\DTO\Catalogo\JogoDTO;
 use App\Http\Resources\Catalogo\Jogo\JogoResource;
-use App\Services\Catalogo\Interfaces\IDesenvolvedoraService;
+use App\Jobs\Igdb\BaixarCapaJogo;
+use App\Services\Catalogo\Interfaces\IEmpresaService;
 use App\Services\Catalogo\Interfaces\IGeneroService;
 use App\Services\Catalogo\Interfaces\IJogoService;
 use App\Services\Catalogo\Interfaces\IPlataformaService;
@@ -26,7 +27,7 @@ class JogoController extends Controller
         protected IJogoService $jogoService,
         protected IPlataformaService $plataformaService,
         protected IGeneroService $generoService,
-        protected IDesenvolvedoraService $desenvolvedoraservice,
+        protected IEmpresaService $desenvolvedoraservice,
         protected ISituacaoService $situacaoService,
         protected IColecaoService $colecao,
         protected IReviewService $reviewService
@@ -83,6 +84,12 @@ class JogoController extends Controller
         $situacao =  auth()->check() ? $this->colecao->buscarSituacao($request->id, auth()->id()) : null;
         $situacoes = $this->situacaoService->listarSituacoes();
         $jogo = $this->jogoService->buscarPorId($request->id);
+
+        // Capas vêm sob demanda: a tela já renderiza a imagem do CDN do IGDB,
+        // e este job traz a cópia local em segundo plano, para as próximas.
+        if ($jogo->precisaBaixarCapa()) {
+            BaixarCapaJogo::dispatch($jogo->id);
+        }
 
         return View('catalogo.jogos.visualizar', compact('jogo', 'situacoes', 'situacao', 'reviewUsuario', 'reviews'));
     }

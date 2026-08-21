@@ -15,7 +15,7 @@ require __DIR__ . '/telas.php';
 
 require __DIR__ . '/jogos.php';
 require __DIR__ . '/plataformas.php';
-require __DIR__ . '/desenvolvedoras.php';
+require __DIR__ . '/empresas.php';
 require __DIR__ . '/generos.php';
 require __DIR__ . '/usuarios.php';
 require __DIR__ . '/colecao.php';

@@ -7,7 +7,7 @@ namespace App\Http\DTO\Catalogo;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
-class DesenvolvedoraDTO
+class EmpresaDTO
 {
 
 

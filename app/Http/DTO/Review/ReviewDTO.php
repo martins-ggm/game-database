@@ -60,10 +60,10 @@ class ReviewDTO
                 'jogo_id' => ['required', 'integer'],
                 'usuario_id' => ['required', 'integer'],
                 'nota' => ['required', 'numeric'],
-                'review' => ['nullable', 'string'],
+                'review' => ['required', 'string'],
 
             ]
-        );
+        )->validate();
     }
 
     public function validarEditar(): void
@@ -83,9 +83,10 @@ class ReviewDTO
                 'jogo_id' => ['required', 'integer'],
                 'usuario_id' => ['required', 'integer'],
                 'nota' => ['required', 'numeric'],
-                'review' => ['nullable', 'string'],
+                'review' => ['required', 'string'],
 
-            ]
-        );
+            ],
+            ['review.required' => 'O review é obrigatório']
+        )->validate();
     }
 }

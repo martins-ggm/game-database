@@ -2,14 +2,14 @@
 
 namespace Database\Seeders;
 
-use App\Models\Catalogo\Desenvolvedora;
+use App\Models\Catalogo\Empresa;
 use Illuminate\Database\Seeder;
 
-class DesenvolvedoraSeeder extends Seeder
+class EmpresaSeeder extends Seeder
 {
     public function run(): void
     {
-        $desenvolvedoras = [
+        $empresas = [
             '343 Industries',
             'Arc System Works',
             'Arkane Studios',
@@ -82,8 +82,8 @@ class DesenvolvedoraSeeder extends Seeder
             'Valve',
         ];
 
-        foreach ($desenvolvedoras as $nome) {
-            Desenvolvedora::firstOrCreate(['nome' => $nome]);
+        foreach ($empresas as $nome) {
+            Empresa::firstOrCreate(['nome' => $nome]);
         }
     }
 }

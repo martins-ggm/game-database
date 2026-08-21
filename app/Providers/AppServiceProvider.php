@@ -25,12 +25,12 @@ class AppServiceProvider extends ServiceProvider
             \App\Repositorios\Catalogo\PlataformaRepositorio::class,
         );
         $this->app->bind(
-            \App\Repositorios\Catalogo\Interfaces\IDesenvolvedoraRepositorio::class,
-            \App\Repositorios\Catalogo\DesenvolvedoraRepositorio::class
+            \App\Repositorios\Catalogo\Interfaces\IEmpresaRepositorio::class,
+            \App\Repositorios\Catalogo\EmpresaRepositorio::class
         );
         $this->app->bind(
-            \App\Services\Catalogo\Interfaces\IDesenvolvedoraService::class,
-            \App\Services\Catalogo\DesenvolvedoraService::class
+            \App\Services\Catalogo\Interfaces\IEmpresaService::class,
+            \App\Services\Catalogo\EmpresaService::class
         );
         $this->app->bind(
             \App\Services\Catalogo\Interfaces\IGeneroService::class,
@@ -95,6 +95,14 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             \App\Services\Gerenciador\Interfaces\IAuditoriaService::class,
             \App\Services\Gerenciador\AuditoriaService::class
+        );
+        $this->app->bind(
+            \App\Services\Igdb\Interfaces\IIgdbClient::class,
+            \App\Services\Igdb\IgdbClient::class
+        );
+        $this->app->bind(
+            \App\Services\Igdb\Interfaces\IIgdbSincronizacaoService::class,
+            \App\Services\Igdb\IgdbSincronizacaoService::class
         );
     }
 

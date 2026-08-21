@@ -4,11 +4,13 @@ namespace App\Repositorios\Catalogo;
 
 use App\Models\Catalogo\Genero;
 use App\Repositorios\Catalogo\Interfaces\IGeneroRepositorio;
+use App\Repositorios\Concerns\ResolvePorIgdbId;
 use Illuminate\Database\Eloquent\Collection;
 
 class GeneroRepositorio implements IGeneroRepositorio
 {
 
+    use ResolvePorIgdbId;
 
     public function __construct(protected Genero $modelo) {}
 

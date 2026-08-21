@@ -4,11 +4,14 @@ namespace App\Repositorios\Catalogo;
 
 use App\Models\Catalogo\Plataforma;
 use App\Repositorios\Catalogo\Interfaces\IPlataformaRepositorio;
+use App\Repositorios\Concerns\ResolvePorIgdbId;
 use Illuminate\Database\Eloquent\Collection;
 
 
 class PlataformaRepositorio implements IPlataformaRepositorio
 {
+
+    use ResolvePorIgdbId;
 
     public function __construct(protected Plataforma $modelo) {}
 

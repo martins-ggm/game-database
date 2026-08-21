@@ -17,4 +17,6 @@ interface IPlataformaRepositorio
     public function buscarTodas(): Collection;
     public function contarTodas(): int;
     public function buscar(?String $nome = null): Collection;
+    public function mapaPorIgdbId(array $igdbIds): array;
+    public function criarEmLote(array $registros): void;
 }

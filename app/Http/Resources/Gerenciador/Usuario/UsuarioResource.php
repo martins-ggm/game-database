@@ -27,8 +27,8 @@ class UsuarioResource extends JsonResource
                 'email' => $this->email,
                 'perfil_id' => $this->perfil_id,
                 'criado_em' => $this->created_at?->format('d/m/Y H:i'),
-                'imagem_grande' => $this->url_imagem_grande ? Storage::url($this->url_imagem_grande) : null,
-                'imagem_pequena' => $this->url_imagem_pequena ? Storage::url($this->url_imagem_pequena) : null,
+                'imagem_grande' => imagem_url($this->url_imagem_grande),
+                'imagem_pequena' => imagem_url($this->url_imagem_pequena),
 
             ];
     }

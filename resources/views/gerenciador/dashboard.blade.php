@@ -67,8 +67,8 @@
                         </p>
                     </div>
                     <div class="bg-[#1C1B26] py-8 text-center">
-                        <div class="text-4xl sm:text-5xl font-black text-[#6B5B9E]"> {{ $totalDesenvolvedoras }}</div>
-                        <p class="text-[10px] uppercase tracking-widest text-white/40 mt-2 font-bold">Desenvolvedoras
+                        <div class="text-4xl sm:text-5xl font-black text-[#6B5B9E]"> {{ $totalEmpresas }}</div>
+                        <p class="text-[10px] uppercase tracking-widest text-white/40 mt-2 font-bold">Empresas
                         </p>
                     </div>
                     <div class="bg-[#1C1B26] py-8 text-center">
@@ -99,8 +99,8 @@
                 @forelse ($emAlta as $jogo)
                     <a href="{{ route('catalogo.jogo.visualizar', $jogo->id) }}" class="bg-[#1C1B26] hover:bg-[#25232F] transition cursor-pointer flex flex-col">
                         <div class="aspect-[3/4] bg-[#11101A] border-b border-white/5 overflow-hidden">
-                            @if ($jogo->url_imagem_grande)
-                                <img src="{{ asset('storage/' . $jogo->url_imagem_grande) }}"
+                            @if ($jogo->capa())
+                                <img src="{{ $jogo->capa() }}"
                                     alt="Capa de {{ $jogo->nome }}" class="w-full h-full object-cover">
                             @else
                                 <div

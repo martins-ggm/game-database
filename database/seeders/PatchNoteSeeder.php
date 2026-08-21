@@ -11,6 +11,15 @@ class PatchNoteSeeder extends Seeder
     {
         $notas = [
             [
+                'versao' => '0.9.0',
+                'titulo' => 'Catálogo alimentado pelo IGDB',
+                'lancado_em' => '2026-08-20',
+                'mudancas' => [
+                    ['tipo' => 'novo', 'texto' => 'O acervo agora vem da API do IGDB e se atualiza sozinho — jogos, empresas, plataformas e gêneros.'],
+                    ['tipo' => 'melhoria', 'texto' => 'Crédito ao IGDB no rodapé, como pede o uso da API.'],
+                ],
+            ],
+            [
                 'versao' => '0.8.0',
                 'titulo' => 'Reviews no perfil',
                 'lancado_em' => '2026-08-07',
